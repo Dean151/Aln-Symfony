@@ -2,7 +2,7 @@
 
 namespace App\Aln\Command;
 
-use App\Aln\Socket\FeederCommunicator;
+use App\Aln\Socket\MessageDequeueInterface;
 use Bunny\Async\Client;
 use Bunny\Channel;
 use Bunny\Message;
@@ -15,7 +15,6 @@ use React\Socket\SocketServer;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
@@ -25,10 +24,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 final class RunSocketCommand extends Command
 {
-    private FeederCommunicator $communicator;
+    private MessageDequeueInterface $communicator;
     protected static $defaultName = 'aln:socket:run';
 
-    public function __construct(FeederCommunicator $communicator)
+    public function __construct(MessageDequeueInterface $communicator)
     {
         $this->communicator = $communicator;
         parent::__construct();
@@ -45,9 +44,6 @@ final class RunSocketCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $logger = new ConsoleLogger($output);
-        $this->communicator->setLogger($logger);
-
         $loop = Loop::get();
 
         $rabbitmqHost = $_ENV['RABBITMQ_HOST'] ?? '127.0.0.1';

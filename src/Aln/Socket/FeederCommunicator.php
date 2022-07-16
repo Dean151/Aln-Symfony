@@ -16,14 +16,13 @@ use Bunny\Message;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 use Ratchet\ConnectionInterface;
-use Ratchet\MessageComponentInterface;
 use Ratchet\RFC6455\Messaging\Frame;
 use Safe\DateTimeImmutable;
 use Safe\Exceptions\StringsException;
 
 use function Safe\hex2bin;
 
-final class FeederCommunicator implements MessageComponentInterface
+final class FeederCommunicator implements MessageDequeueInterface, MessageEnqueueInterface
 {
     private AlnFeederRepository $feederRepository;
     private AlnMealRepository $mealRepository;
@@ -47,11 +46,6 @@ final class FeederCommunicator implements MessageComponentInterface
         $this->mealRepository = $mealRepository;
         $this->messageFactory = $messageFactory;
         $this->doctrine = $doctrine;
-        $this->logger = $logger;
-    }
-
-    public function setLogger(LoggerInterface $logger): void
-    {
         $this->logger = $logger;
     }
 
