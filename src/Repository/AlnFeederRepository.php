@@ -38,4 +38,21 @@ final class AlnFeederRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
+    public function findOneByIdentifier(string $identifier): ?AlnFeeder
+    {
+        return $this->findOneBy(['identifier' => $identifier]);
+    }
+
+    public function findOrCreateFeeder(string $identifier): AlnFeeder
+    {
+        if ($feeder = $this->findOneByIdentifier($identifier)) {
+            return $feeder;
+        }
+        $feeder = new AlnFeeder();
+        $feeder->setIdentifier($identifier);
+        $this->add($feeder);
+
+        return $feeder;
+    }
 }
