@@ -163,7 +163,6 @@ final class FeederCommunicator implements MessageComponentInterface
         $time = $this->messageFactory->currentTime();
         $this->send($time, $message->getIdentifier());
 
-        // FIXME: flush?
         $this->doctrine->getManager()->flush();
     }
 
