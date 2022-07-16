@@ -4,7 +4,7 @@ namespace App\Aln\Socket\Messages;
 
 use App\Aln\Socket\MessageTranscriber;
 
-abstract class IdentifiedMessage implements IncomingMessageInterface
+abstract class IdentifiedMessage implements MessageInterface
 {
     use MessageTranscriber;
 

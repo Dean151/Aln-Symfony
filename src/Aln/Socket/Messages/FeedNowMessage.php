@@ -4,7 +4,7 @@ namespace App\Aln\Socket\Messages;
 
 use App\Aln\Socket\MessageTranscriber;
 
-final class FeedNowMessage implements OutgoingMessageInterface
+final class FeedNowMessage implements MessageInterface
 {
     use MessageTranscriber;
 
@@ -13,12 +13,28 @@ final class FeedNowMessage implements OutgoingMessageInterface
      */
     private int $mealAmount;
 
+    public static function decodeFrom(string $hexadecimal): self
+    {
+        $hexadecimalMealAmount = substr($hexadecimal, -4);
+        $mealAmount = self::decodeMealAmount($hexadecimalMealAmount);
+
+        return new FeedNowMessage($mealAmount);
+    }
+
     /**
      * @param int<5, 150> $mealAmount
      */
     public function __construct(int $mealAmount)
     {
         $this->mealAmount = $mealAmount;
+    }
+
+    /**
+     * @return int<5, 150>
+     */
+    public function getMealAmount(): int
+    {
+        return $this->mealAmount;
     }
 
     public function hexadecimal(): string

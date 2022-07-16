@@ -4,34 +4,43 @@ namespace App\Aln\Socket\Messages;
 
 use App\Aln\Socket\MessageTranscriber;
 
-final class TimeMessage implements OutgoingMessageInterface
+final class TimeMessage implements MessageInterface
 {
     use MessageTranscriber;
 
     /**
-     * @var int<0, 23>
+     * @var array{hours: int<0, 23>, minutes: int<0, 59>}
      */
-    private int $hours;
+    private array $time;
 
-    /**
-     * @var int<0, 59>
-     */
-    private int $minutes;
-
-    /**
-     * @param int<0, 23> $hours
-     * @param int<0, 59> $minutes
-     */
-    public function __construct(int $hours, int $minutes)
+    public static function decodeFrom(string $hexadecimal): self
     {
-        $this->hours = $hours;
-        $this->minutes = $minutes;
+        $hexadecimalTime = substr($hexadecimal, -4);
+        $time = self::decodeTime($hexadecimalTime);
+
+        return new TimeMessage($time);
+    }
+
+    /**
+     * @param array{hours: int<0, 23>, minutes: int<0, 59>} $time
+     */
+    public function __construct(array $time)
+    {
+        $this->time = $time;
+    }
+
+    /**
+     * @return array{hours: int<0, 23>, minutes: int<0, 59>}
+     */
+    public function getTime(): array
+    {
+        return $this->time;
     }
 
     public function hexadecimal(): string
     {
         $prefix = '9da10601';
-        $time = $this->encodeTime(['hours' => $this->hours, 'minutes' => $this->minutes]);
+        $time = $this->encodeTime($this->time);
 
         return $prefix.$time;
     }

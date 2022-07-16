@@ -3,12 +3,16 @@
 namespace App\Tests\Aln\Socket;
 
 use App\Aln\Socket\MessageFactory;
+use App\Aln\Socket\Messages\ChangeDefaultMealMessage;
+use App\Aln\Socket\Messages\ChangePlanningMessage;
 use App\Aln\Socket\Messages\DefaultMealChangedMessage;
 use App\Aln\Socket\Messages\EmptyFeederMessage;
+use App\Aln\Socket\Messages\FeedNowMessage;
 use App\Aln\Socket\Messages\IdentificationMessage;
 use App\Aln\Socket\Messages\MealButtonPressedMessage;
 use App\Aln\Socket\Messages\MealDistributedMessage;
 use App\Aln\Socket\Messages\PlanningChangedMessage;
+use App\Aln\Socket\Messages\TimeMessage;
 use PHPUnit\Framework\TestCase;
 
 final class MessageFactoryTest extends TestCase
@@ -113,7 +117,7 @@ final class MessageFactoryTest extends TestCase
     }
 
     /**
-     * @param array<string, int> $expectedTime
+     * @param array{hours: int<0, 23>, minutes: int<0, 59>} $expectedTime
      * @dataProvider provideEmptyFeederData
      */
     public function testEmptyFeeder(string $hexadecimal, string $expectedIdentifier, array $expectedTime, int $expectedMealAmount): void
@@ -132,46 +136,92 @@ final class MessageFactoryTest extends TestCase
         yield ['9da1145a59583938373635343332312103850005', 'ZYX987654321', ['hours' => 7, 'minutes' => 1], 5];
     }
 
-    public function testTime(): void
+    /**
+     * @param array{hours: int<0, 23>, minutes: int<0, 59>} $time
+     * @dataProvider provideTimeData
+     */
+    public function testTime(string $hexadecimal, array $time): void
     {
-        $this->assertEquals('9da106010000', $this->getFactory()->time(16, 0)->hexadecimal());
-        $this->assertEquals('9da10601059f', $this->getFactory()->time(15, 59)->hexadecimal());
+        $this->assertEquals($hexadecimal, $this->getFactory()->time($time)->hexadecimal());
+        $this->assertEquals($time, TimeMessage::decodeFrom($hexadecimal)->getTime());
     }
 
-    public function testCurrentTime(): void
+    public function provideTimeData(): \Generator
     {
-        // Time goes from 0000 to 05a0 excluded
-        $this->assertMatchesRegularExpression('/^9da106010(?:5\d[[:xdigit:]]|[0-4][[:xdigit:]]{2})$/', $this->getFactory()->currentTime()->hexadecimal());
+        yield ['9da106010000', ['hours' => 16, 'minutes' => 0]];
+        yield ['9da106010050', ['hours' => 17, 'minutes' => 20]];
+        yield ['9da10601030c', ['hours' => 5, 'minutes' => 0]];
+        yield ['9da106010492', ['hours' => 11, 'minutes' => 30]];
+        yield ['9da10601059f', ['hours' => 15, 'minutes' => 59]];
     }
 
-    public function testChangeDefaultMeal(): void
+    public function testAllTimes(): void
     {
-        $this->assertEquals('9da106c30005', $this->getFactory()->changeDefaultMeal(5)->hexadecimal());
-        $this->assertEquals('9da106c3000c', $this->getFactory()->changeDefaultMeal(12)->hexadecimal());
-        $this->assertEquals('9da106c30032', $this->getFactory()->changeDefaultMeal(50)->hexadecimal());
-        $this->assertEquals('9da106c30064', $this->getFactory()->changeDefaultMeal(100)->hexadecimal());
-        $this->assertEquals('9da106c30096', $this->getFactory()->changeDefaultMeal(150)->hexadecimal());
+        for ($hours = 0; $hours < 24; ++$hours) {
+            for ($minutes = 0; $minutes < 60; ++$minutes) {
+                $this->assertMatchesRegularExpression('/^9da106010(?:5\d[[:xdigit:]]|[0-4][[:xdigit:]]{2})$/', $this->getFactory()->time(['hours' => $hours, 'minutes' => $minutes])->hexadecimal());
+            }
+        }
     }
 
-    public function testFeedNow(): void
+    /**
+     * @param int<5, 150> $mealAmount
+     * @dataProvider provideDefaultMealData
+     */
+    public function testChangeDefaultMeal(string $hexadecimal, int $mealAmount): void
     {
-        $this->assertEquals('9da106a20005', $this->getFactory()->feedNow(5)->hexadecimal());
-        $this->assertEquals('9da106a2000c', $this->getFactory()->feedNow(12)->hexadecimal());
-        $this->assertEquals('9da106a20032', $this->getFactory()->feedNow(50)->hexadecimal());
-        $this->assertEquals('9da106a20064', $this->getFactory()->feedNow(100)->hexadecimal());
-        $this->assertEquals('9da106a20096', $this->getFactory()->feedNow(150)->hexadecimal());
+        $this->assertEquals($hexadecimal, $this->getFactory()->changeDefaultMeal($mealAmount)->hexadecimal());
+        $this->assertEquals($mealAmount, ChangeDefaultMealMessage::decodeFrom($hexadecimal)->getMealAmount());
     }
 
-    public function testChangePlanning(): void
+    public function provideDefaultMealData(): \Generator
+    {
+        yield ['9da106c30005', 5];
+        yield ['9da106c3000c', 12];
+        yield ['9da106c30032', 50];
+        yield ['9da106c30064', 100];
+        yield ['9da106c30096', 150];
+    }
+
+    /**
+     * @param int<5, 150> $mealAmount
+     * @dataProvider provideFeedNowData
+     */
+    public function testFeedNow(string $hexadecimal, int $mealAmount): void
+    {
+        $this->assertEquals($hexadecimal, $this->getFactory()->feedNow($mealAmount)->hexadecimal());
+        $this->assertEquals($mealAmount, FeedNowMessage::decodeFrom($hexadecimal)->getMealAmount());
+    }
+
+    public function provideFeedNowData(): \Generator
+    {
+        yield ['9da106a20005', 5];
+        yield ['9da106a2000c', 12];
+        yield ['9da106a20032', 50];
+        yield ['9da106a20064', 100];
+        yield ['9da106a20096', 150];
+    }
+
+    /**
+     * @param array<array{time: array{hours: int<0, 23>, minutes: int<0, 59>}, amount: int<5, 150>}> $meals
+     * @dataProvider provideChangePlanningData
+     */
+    public function testChangePlanning(string $hexadecimal, array $meals): void
+    {
+        $this->assertEquals($hexadecimal, $this->getFactory()->changePlanning($meals)->hexadecimal());
+        $this->assertEquals($meals, ChangePlanningMessage::decodeFrom($hexadecimal)->getMeals());
+    }
+
+    public function provideChangePlanningData(): \Generator
     {
         $meal1 = ['time' => ['hours' => 11, 'minutes' => 30], 'amount' => 10];
         $meal2 = ['time' => ['hours' => 17, 'minutes' => 20], 'amount' => 15];
         $meal3 = ['time' => ['hours' => 5, 'minutes' => 0], 'amount' => 5];
-        $this->assertEquals('9da12dc400', $this->getFactory()->changePlanning([])->hexadecimal());
-        $this->assertEquals('9da12dc4010492000a', $this->getFactory()->changePlanning([$meal1])->hexadecimal());
-        $this->assertEquals('9da12dc4010050000f', $this->getFactory()->changePlanning([$meal2])->hexadecimal());
-        $this->assertEquals('9da12dc401030c0005', $this->getFactory()->changePlanning([$meal3])->hexadecimal());
-        $this->assertEquals('9da12dc4020492000a0050000f', $this->getFactory()->changePlanning([$meal1, $meal2])->hexadecimal());
-        $this->assertEquals('9da12dc4030492000a0050000f030c0005', $this->getFactory()->changePlanning([$meal1, $meal2, $meal3])->hexadecimal());
+        yield ['9da12dc400', []];
+        yield ['9da12dc4010492000a', [$meal1]];
+        yield ['9da12dc4010050000f', [$meal2]];
+        yield ['9da12dc401030c0005', [$meal3]];
+        yield ['9da12dc4020492000a0050000f', [$meal1, $meal2]];
+        yield ['9da12dc4030492000a0050000f030c0005', [$meal1, $meal2, $meal3]];
     }
 }

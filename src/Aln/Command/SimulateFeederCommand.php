@@ -51,7 +51,13 @@ class SimulateFeederCommand extends Command
         $wsHost = $_ENV['WEBSOCKET_HOST'] ?? '127.0.0.1';
         $wsPort = $_ENV['WEBSOCKET_PORT'] ?? 9999;
         $output->writeln("Starting fake feeder on {$wsHost}:{$wsPort}");
-        connect('ws://'.$wsHost.':'.$wsPort, [], ['Sec-WebSocket-Extensions' => 'permessage-deflate'], $loop)->then(function (WebSocket $connection) use ($output, $loop, $identifier) {
+        connect('ws://'.$wsHost.':'.$wsPort, [], [], $loop)->then(function (WebSocket $connection) use ($output, $loop, $identifier) {
+            // Simulate identification call every 10s
+            $identification = new IdentificationMessage($identifier);
+            $this->send($connection, $identification->hexadecimal(), $output);
+            $loop->addPeriodicTimer(10, function () use ($connection, $identification, $output) {
+                $this->send($connection, $identification->hexadecimal(), $output);
+            });
             $connection->on('message', function (MessageInterface $message) use ($output) {
                 $hexadecimal = bin2hex($message->getContents());
                 $output->writeln("Received data $hexadecimal");
@@ -59,12 +65,6 @@ class SimulateFeederCommand extends Command
             $connection->on('close', function ($code = null, $reason = null) use ($output, $loop) {
                 $output->writeln("Connection closed: {$reason}\n");
                 $loop->stop();
-            });
-            // Simulate identification call every 10s
-            $identification = new IdentificationMessage($identifier);
-            $this->send($connection, $identification->hexadecimal(), $output);
-            $loop->addPeriodicTimer(10, function () use ($connection, $identification, $output) {
-                $this->send($connection, $identification->hexadecimal(), $output);
             });
         }, function ($e) use ($output, $loop) {
             $output->writeln($e->getMessage());

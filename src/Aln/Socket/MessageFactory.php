@@ -8,9 +8,9 @@ use App\Aln\Socket\Messages\DefaultMealChangedMessage;
 use App\Aln\Socket\Messages\EmptyFeederMessage;
 use App\Aln\Socket\Messages\FeedNowMessage;
 use App\Aln\Socket\Messages\IdentificationMessage;
-use App\Aln\Socket\Messages\IncomingMessageInterface;
 use App\Aln\Socket\Messages\MealButtonPressedMessage;
 use App\Aln\Socket\Messages\MealDistributedMessage;
+use App\Aln\Socket\Messages\MessageInterface;
 use App\Aln\Socket\Messages\PlanningChangedMessage;
 use App\Aln\Socket\Messages\TimeMessage;
 use Safe\DateTimeImmutable;
@@ -23,7 +23,7 @@ final class MessageFactory
     /**
      * @throws PcreException|\RuntimeException
      */
-    public function identifyIncoming(string $hexadecimal): IncomingMessageInterface
+    public function identifyIncoming(string $hexadecimal): MessageInterface
     {
         if (!str_starts_with($hexadecimal, '9da114')) {
             throw new \RuntimeException('All incoming messages should start with 9da114');
@@ -50,12 +50,11 @@ final class MessageFactory
     }
 
     /**
-     * @param int<0, 23> $hours
-     * @param int<0, 59> $minutes
+     * @param array{hours: int<0, 23>, minutes: int<0, 59>} $time
      */
-    public function time(int $hours, int $minutes): TimeMessage
+    public function time(array $time): TimeMessage
     {
-        return new TimeMessage($hours, $minutes);
+        return new TimeMessage($time);
     }
 
     public function currentTime(): TimeMessage
@@ -65,7 +64,7 @@ final class MessageFactory
         $minutes = (int) $currentDatetime->format('i');
         assert($minutes >= 0 && $minutes < 60);
 
-        return $this->time($hours, $minutes);
+        return $this->time(['hours' => $hours, 'minutes' => $minutes]);
     }
 
     /**

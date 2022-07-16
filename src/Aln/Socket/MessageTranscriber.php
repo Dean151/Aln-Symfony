@@ -24,10 +24,31 @@ trait MessageTranscriber
     {
         $mealAmount = (int) hexdec($hexadecimalMealAmount);
         if ($mealAmount < 5 || $mealAmount > 150) {
-            throw new \RuntimeException('Amount is out of bounds [5...150]');
+            throw new \RuntimeException("Amount $mealAmount is out of bounds [5...150]");
         }
 
         return $mealAmount;
+    }
+
+    /**
+     * @return array<array{time: array{hours: int<0, 23>, minutes: int<0, 59>}, amount: int<5, 150>}>
+     */
+    protected static function decodePlanning(string $hexadecimalMeals): array
+    {
+        $hexadecimalCount = substr($hexadecimalMeals, 0, 2);
+        $hexadecimalMeals = substr($hexadecimalMeals, 2);
+        $meals = [];
+        for ($left = hexdec($hexadecimalCount); $left > 0; --$left) {
+            $hexadecimalTime = substr($hexadecimalMeals, 0, 4);
+            $hexadecimalAmount = substr($hexadecimalMeals, 4, 4);
+            $time = self::decodeTime($hexadecimalTime);
+            $amount = self::decodeMealAmount($hexadecimalAmount);
+            $meals[] = ['time' => $time, 'amount' => $amount];
+
+            $hexadecimalMeals = substr($hexadecimalMeals, 8);
+        }
+
+        return $meals;
     }
 
     /**

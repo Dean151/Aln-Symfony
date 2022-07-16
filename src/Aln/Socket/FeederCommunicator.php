@@ -5,7 +5,7 @@ namespace App\Aln\Socket;
 use App\Aln\Socket\Messages\EmptyFeederMessage;
 use App\Aln\Socket\Messages\IdentificationMessage;
 use App\Aln\Socket\Messages\MealButtonPressedMessage;
-use App\Aln\Socket\Messages\OutgoingMessageInterface;
+use App\Aln\Socket\Messages\MessageInterface;
 use App\Entity\AlnFeeder;
 use App\Entity\AlnMeal;
 use App\Repository\AlnFeederRepository;
@@ -89,7 +89,7 @@ final class FeederCommunicator implements MessageDequeueInterface, MessageEnqueu
     /**
      * @throws StringsException|\Exception
      */
-    public function enqueueMessage(AlnFeeder $feeder, OutgoingMessageInterface $message): void
+    public function enqueueMessage(AlnFeeder $feeder, MessageInterface $message): void
     {
         $queueClient = new Client([
             'host' => $_ENV['RABBITMQ_HOST'] ?? '127.0.0.1',
@@ -134,7 +134,7 @@ final class FeederCommunicator implements MessageDequeueInterface, MessageEnqueu
         return $this->connections[$identifier] ?? null;
     }
 
-    private function send(OutgoingMessageInterface $message, string $identifier): void
+    private function send(MessageInterface $message, string $identifier): void
     {
         $this->logger->debug("Sending to $identifier: ".$message->hexadecimal());
         $frame = new Frame(hex2bin($message->hexadecimal()), true, Frame::OP_BINARY);
