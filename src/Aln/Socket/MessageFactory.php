@@ -3,6 +3,7 @@
 namespace App\Aln\Socket;
 
 use App\Aln\Socket\Messages\ChangeDefaultMealMessage;
+use App\Aln\Socket\Messages\ChangePlanningMessage;
 use App\Aln\Socket\Messages\DefaultMealChangedMessage;
 use App\Aln\Socket\Messages\EmptyFeederMessage;
 use App\Aln\Socket\Messages\FeedNowMessage;
@@ -83,5 +84,11 @@ final class MessageFactory
         return new FeedNowMessage($mealAmount);
     }
 
-    // TODO: add planning change!
+    /**
+     * @param array<array{time: array{hours: int<0, 23>, minutes: int<0, 59>}, amount: int<5, 150>}> $meals
+     */
+    public function changePlanning(array $meals): ChangePlanningMessage
+    {
+        return new ChangePlanningMessage($meals);
+    }
 }

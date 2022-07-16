@@ -31,7 +31,7 @@ final class TimeMessage implements OutgoingMessageInterface
     public function hexadecimal(): string
     {
         $prefix = '9da10601';
-        $time = $this->encodeTime($this->hours, $this->minutes);
+        $time = $this->encodeTime(['hours' => $this->hours, 'minutes' => $this->minutes]);
 
         return $prefix.$time;
     }

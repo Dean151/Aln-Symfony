@@ -39,27 +39,42 @@ trait MessageTranscriber
     }
 
     /**
-     * @return array<string, int>
+     * @param array<array{time: array{hours: int<0, 23>, minutes: int<0, 59>}, amount: int<5, 150>}> $meals
+     */
+    protected function encodePlanning(array $meals): string
+    {
+        $hexadecimalCount = str_pad(dechex(count($meals)), 2, '0', STR_PAD_LEFT);
+        $hexadecimalMeals = implode(array_map(function ($meal) {
+            $hexadecimalTime = $this->encodeTime($meal['time']);
+            $hexadecimalAmount = $this->encodeMealAmount($meal['amount']);
+
+            return $hexadecimalTime.$hexadecimalAmount;
+        }, $meals));
+
+        return $hexadecimalCount.$hexadecimalMeals;
+    }
+
+    /**
+     * @return array{hours: int<0, 23>, minutes: int<0, 59>}
      */
     protected function decodeTime(string $hexadecimalTime): array
     {
         $globalMinutes = (int) hexdec($hexadecimalTime);
         $hours = ((($globalMinutes - ($globalMinutes % 60)) / 60) + 16) % 24;
         $minutes = ($globalMinutes % 60);
+        assert($hours >= 0);
+        assert($minutes >= 0);
 
         return ['hours' => $hours, 'minutes' => $minutes];
     }
 
     /**
-     * @param int<0, 23> $hours
-     * @param int<0, 59> $minutes
+     * @param array{hours: int<0, 23>, minutes: int<0, 59>} $time
      */
-    protected function encodeTime(int $hours, int $minutes): string
+    protected function encodeTime(array $time): string
     {
-        assert($hours % 24 == $hours);
-        assert($minutes % 60 == $minutes);
-        $hoursWithOffset = ($hours + 8) % 24;
-        $numberOfMinutes = $hoursWithOffset * 60 + $minutes;
+        $hoursWithOffset = ($time['hours'] + 8) % 24;
+        $numberOfMinutes = $hoursWithOffset * 60 + $time['minutes'];
         $b2 = $numberOfMinutes % 256;
         $b1 = ($numberOfMinutes - $b2) / 256;
 

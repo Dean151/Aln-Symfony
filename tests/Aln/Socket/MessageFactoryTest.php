@@ -156,5 +156,16 @@ final class MessageFactoryTest extends TestCase
         $this->assertEquals('9da106a20096', $this->getFactory()->feedNow(150)->hexadecimal());
     }
 
-    // TODO: test planning change!
+    public function testChangePlanning(): void
+    {
+        $meal1 = ['time' => ['hours' => 11, 'minutes' => 30], 'amount' => 10];
+        $meal2 = ['time' => ['hours' => 17, 'minutes' => 20], 'amount' => 15];
+        $meal3 = ['time' => ['hours' => 5, 'minutes' => 0], 'amount' => 5];
+        $this->assertEquals('9da12dc400', $this->getFactory()->changePlanning([])->hexadecimal());
+        $this->assertEquals('9da12dc4010492000a', $this->getFactory()->changePlanning([$meal1])->hexadecimal());
+        $this->assertEquals('9da12dc4010050000f', $this->getFactory()->changePlanning([$meal2])->hexadecimal());
+        $this->assertEquals('9da12dc401030c0005', $this->getFactory()->changePlanning([$meal3])->hexadecimal());
+        $this->assertEquals('9da12dc4020492000a0050000f', $this->getFactory()->changePlanning([$meal1, $meal2])->hexadecimal());
+        $this->assertEquals('9da12dc4030492000a0050000f030c0005', $this->getFactory()->changePlanning([$meal1, $meal2, $meal3])->hexadecimal());
+    }
 }
