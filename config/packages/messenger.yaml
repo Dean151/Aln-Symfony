@@ -1,0 +1,7 @@
+framework:
+    messenger:
+        transports:
+            async:
+                dsn: '%env(RABBITMQ_URL)%'
+
+        routing:

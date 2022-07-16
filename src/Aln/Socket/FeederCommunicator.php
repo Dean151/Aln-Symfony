@@ -23,6 +23,11 @@ final class FeederCommunicator implements MessageComponentInterface
         $this->connections = new \SplObjectStorage();
     }
 
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
+    }
+
     public function onOpen(ConnectionInterface $conn): void
     {
         $this->connections->attach($conn);

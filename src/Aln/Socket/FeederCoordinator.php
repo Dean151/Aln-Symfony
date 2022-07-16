@@ -8,9 +8,11 @@ use App\Aln\Socket\Messages\MealButtonPressedMessage;
 use App\Entity\AlnMeal;
 use App\Repository\AlnFeederRepository;
 use App\Repository\AlnMealRepository;
+use Bunny\Message;
 use Psr\Log\LoggerInterface;
 use Ratchet\ConnectionInterface;
 use Safe\DateTimeImmutable;
+use Safe\Exceptions\PcreException;
 
 use function Safe\hex2bin;
 
@@ -33,6 +35,14 @@ final class FeederCoordinator
         $this->logger = $logger;
     }
 
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     * @throws PcreException
+     */
     public function handleSocketMessage(ConnectionInterface $connection, string $hexadecimal): void
     {
         $message = $this->messageFactory->identifyIncoming($hexadecimal);
@@ -43,6 +53,11 @@ final class FeederCoordinator
         } elseif ($message instanceof EmptyFeederMessage) {
             $this->recordEmptyFeeder($message);
         }
+    }
+
+    public function handleQueueMessage(Message $message): void
+    {
+        // TODO: handle queue message, instantiate an OutgoingMessage and send it via socket!
     }
 
     private function identify(IdentificationMessage $message, ConnectionInterface $connection): void
