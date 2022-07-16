@@ -14,7 +14,7 @@ final class Version20220716071313 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Created aln_feeder table';
+        return 'Created table for feeders';
     }
 
     public function up(Schema $schema): void
