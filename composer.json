@@ -12,10 +12,14 @@
         "symfony/flex": "^2",
         "symfony/framework-bundle": "6.1.*",
         "symfony/runtime": "6.1.*",
-        "symfony/yaml": "6.1.*"
+        "symfony/yaml": "6.1.*",
+        "thecodingmachine/safe": "^2.2"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.9"
+        "friendsofphp/php-cs-fixer": "^3.9",
+        "phpstan/phpstan": "^1.8",
+        "phpstan/phpstan-symfony": "^1.2",
+        "thecodingmachine/phpstan-safe-rule": "^1.2"
     },
     "config": {
         "allow-plugins": {
@@ -62,8 +66,12 @@
         "sniff": [
             "php-cs-fixer fix --dry-run"
         ],
+        "stan": [
+            "phpstan analyse --memory-limit 1G"
+        ],
         "test": [
-            "@sniff"
+            "@sniff",
+            "@stan"
         ]
     },
     "conflict": {
