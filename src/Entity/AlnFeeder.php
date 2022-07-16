@@ -23,9 +23,6 @@ class AlnFeeder
     #[ORM\Column(length: 255)]
     private string $name;
 
-    #[ORM\Column(length: 64)]
-    private string $ip;
-
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private \DateTimeImmutable $lastSeen;
 
@@ -79,18 +76,6 @@ class AlnFeeder
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getIp(): string
-    {
-        return $this->ip;
-    }
-
-    public function setIp(string $ip): self
-    {
-        $this->ip = $ip;
 
         return $this;
     }

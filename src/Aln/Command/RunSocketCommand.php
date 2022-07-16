@@ -3,7 +3,6 @@
 namespace App\Aln\Command;
 
 use App\Aln\Socket\FeederCommunicator;
-use App\Aln\Socket\FeederCoordinator;
 use Bunny\Async\Client;
 use Bunny\Channel;
 use Bunny\Message;
@@ -27,13 +26,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class RunSocketCommand extends Command
 {
     private FeederCommunicator $communicator;
-    private FeederCoordinator $coordinator;
     protected static $defaultName = 'aln:socket:run';
 
-    public function __construct(FeederCommunicator $communicator, FeederCoordinator $coordinator)
+    public function __construct(FeederCommunicator $communicator)
     {
         $this->communicator = $communicator;
-        $this->coordinator = $coordinator;
         parent::__construct();
     }
 
@@ -50,7 +47,6 @@ final class RunSocketCommand extends Command
     {
         $logger = new ConsoleLogger($output);
         $this->communicator->setLogger($logger);
-        $this->coordinator->setLogger($logger);
 
         $loop = Loop::get();
 
@@ -66,21 +62,21 @@ final class RunSocketCommand extends Command
             'password' => $_ENV['RABBITMQ_PASSWORD'] ?? 'guest',
         ]);
         $connect = $queueClient->connect();
-        $connect->then(function (Client $client) {
+        $channel = $connect->then(function (Client $client) {
             return $client->channel();
-        })
-        ->then(function (Channel $channel) {
+        });
+        $qos = $channel->then(function (Channel $channel) {
             $qos = $channel->qos(0, 5);
             assert($qos instanceof Promise);
 
             return $qos->then(function () use ($channel) {
                 return $channel;
             });
-        })
-        ->then(function (Channel $channel) {
+        });
+        $qos->then(function (Channel $channel) {
             $channel->consume(
                 function (Message $message, Channel $channel, Client $client) {
-                    $this->coordinator->handleQueueMessage($message);
+                    $this->communicator->dequeueMessage($message);
                     $channel->ack($message);
                 },
                 $_ENV['RABBITMQ_ALN_QUEUE'] ?? 'aln'
