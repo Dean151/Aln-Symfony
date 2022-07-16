@@ -15,6 +15,7 @@
         "symfony/yaml": "6.1.*"
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.9"
     },
     "config": {
         "allow-plugins": {
@@ -57,6 +58,12 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "sniff": [
+            "php-cs-fixer fix --dry-run"
+        ],
+        "test": [
+            "@sniff"
         ]
     },
     "conflict": {
