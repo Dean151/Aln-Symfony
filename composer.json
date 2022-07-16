@@ -85,6 +85,12 @@
             "@unit"
         ]
     },
+    "scripts-descriptions": {
+        "sniff": "Run PHP Code Sniffer analysis on codebase",
+        "stan": "Run PHPStan analysis on codebase",
+        "unit": "Run PHPUnit tests on codebase",
+        "test": "Run PHP Code Sniffer, PHPStan analysis & PHPUnit tests on codebase"
+    },
     "conflict": {
         "symfony/symfony": "*"
     },
