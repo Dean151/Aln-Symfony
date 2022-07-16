@@ -2,10 +2,10 @@
 
 namespace App\Aln\Socket\Messages;
 
-interface IncomingMessageInterface
+interface IncomingMessageInterface extends OutgoingMessageInterface
 {
     /**
      * @throws \RuntimeException
      */
-    public function __construct(string $hexadecimal);
+    public static function decodeFrom(string $hexadecimal): self;
 }

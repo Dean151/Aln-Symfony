@@ -4,33 +4,60 @@ namespace App\Aln\Socket\Messages;
 
 final class EmptyFeederMessage extends IdentifiedMessage
 {
-    private int $hours;
-    private int $minutes;
-    private int $mealQuantity;
+    /**
+     * @var array{hours: int<0, 23>, minutes: int<0, 59>}
+     */
+    private array $time;
 
-    public function __construct(string $hexadecimal)
+    /**
+     * @var int<5, 150>
+     */
+    private int $mealAmount;
+
+    public static function decodeFrom(string $hexadecimal): self
     {
         $hexadecimalIdentifier = substr($hexadecimal, 6, -10);
         $hexadecimalTime = substr($hexadecimal, -8, 4);
         $hexadecimalMealAmount = substr($hexadecimal, -4);
-        $this->identifier = $this->decodeIdentifier($hexadecimalIdentifier);
-        ['hours' => $this->hours, 'minutes' => $this->minutes] = $this->decodeTime($hexadecimalTime);
-        $this->mealQuantity = $this->decodeMealAmount($hexadecimalMealAmount);
+        $identifier = self::decodeIdentifier($hexadecimalIdentifier);
+        $time = self::decodeTime($hexadecimalTime);
+        $mealAmount = self::decodeMealAmount($hexadecimalMealAmount);
+
+        return new EmptyFeederMessage($identifier, $time, $mealAmount);
     }
 
     /**
-     * @return array<string, int>
+     * @param array{hours: int<0, 23>, minutes: int<0, 59>} $time
+     * @param int<5, 150>                                   $mealAmount
+     */
+    public function __construct(string $identifier, array $time, int $mealAmount)
+    {
+        $this->time = $time;
+        $this->mealAmount = $mealAmount;
+        parent::__construct($identifier);
+    }
+
+    /**
+     * @return array{hours: int<0, 23>, minutes: int<0, 59>}
      */
     public function getTime()
     {
-        return ['hours' => $this->hours, 'minutes' => $this->minutes];
+        return $this->time;
     }
 
     /**
-     * @return-stan int<5, 150>
+     * @return int<5, 150>
      */
-    public function getMealQuantity(): int
+    public function getMealAmount(): int
     {
-        return $this->mealQuantity;
+        return $this->mealAmount;
+    }
+
+    public function hexadecimal(): string
+    {
+        $time = $this->encodeTime($this->time);
+        $amount = $this->encodeMealAmount($this->mealAmount);
+
+        return '9da114'.bin2hex($this->identifier).'21'.$time.$amount;
     }
 }

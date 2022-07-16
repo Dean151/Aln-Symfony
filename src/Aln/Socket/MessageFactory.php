@@ -29,22 +29,22 @@ final class MessageFactory
             throw new \RuntimeException('All incoming messages should start with 9da114');
         }
         if (str_ends_with($hexadecimal, '01d0010000')) {
-            return new IdentificationMessage($hexadecimal);
+            return IdentificationMessage::decodeFrom($hexadecimal);
         }
         if (str_ends_with($hexadecimal, 'c3d0a10000')) {
-            return new DefaultMealChangedMessage($hexadecimal);
+            return DefaultMealChangedMessage::decodeFrom($hexadecimal);
         }
         if (str_ends_with($hexadecimal, 'c4d0a10000')) {
-            return new PlanningChangedMessage($hexadecimal);
+            return PlanningChangedMessage::decodeFrom($hexadecimal);
         }
         if (str_ends_with($hexadecimal, 'a2d0a10000')) {
-            return new MealDistributedMessage($hexadecimal);
+            return MealDistributedMessage::decodeFrom($hexadecimal);
         }
         if (preg_match('/21038400([0-9a-f]{2})$/', $hexadecimal, $matches)) {
-            return new MealButtonPressedMessage($hexadecimal);
+            return MealButtonPressedMessage::decodeFrom($hexadecimal);
         }
         if (preg_match('/210(?:5\d[[:xdigit:]]|[0-4][[:xdigit:]]{2})(00[0-9][0-9a-f])$/', $hexadecimal, $matches)) {
-            return new EmptyFeederMessage($hexadecimal);
+            return EmptyFeederMessage::decodeFrom($hexadecimal);
         }
         throw new \RuntimeException('Unknown incoming message: '.$hexadecimal);
     }

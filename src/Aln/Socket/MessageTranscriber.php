@@ -7,7 +7,7 @@ use function Safe\preg_match;
 
 trait MessageTranscriber
 {
-    protected function decodeIdentifier(string $hexadecimalIdentifier): string
+    protected static function decodeIdentifier(string $hexadecimalIdentifier): string
     {
         $identifier = hex2bin($hexadecimalIdentifier);
         if (!preg_match('/^\w+$/', $identifier)) {
@@ -20,7 +20,7 @@ trait MessageTranscriber
     /**
      * @return int<5, 150>
      */
-    protected function decodeMealAmount(string $hexadecimalMealAmount): int
+    protected static function decodeMealAmount(string $hexadecimalMealAmount): int
     {
         $mealAmount = (int) hexdec($hexadecimalMealAmount);
         if ($mealAmount < 5 || $mealAmount > 150) {
@@ -28,6 +28,20 @@ trait MessageTranscriber
         }
 
         return $mealAmount;
+    }
+
+    /**
+     * @return array{hours: int<0, 23>, minutes: int<0, 59>}
+     */
+    protected static function decodeTime(string $hexadecimalTime): array
+    {
+        $globalMinutes = (int) hexdec($hexadecimalTime);
+        $hours = ((($globalMinutes - ($globalMinutes % 60)) / 60) + 16) % 24;
+        $minutes = ($globalMinutes % 60);
+        assert($hours >= 0);
+        assert($minutes >= 0);
+
+        return ['hours' => $hours, 'minutes' => $minutes];
     }
 
     /**
@@ -52,20 +66,6 @@ trait MessageTranscriber
         }, $meals));
 
         return $hexadecimalCount.$hexadecimalMeals;
-    }
-
-    /**
-     * @return array{hours: int<0, 23>, minutes: int<0, 59>}
-     */
-    protected function decodeTime(string $hexadecimalTime): array
-    {
-        $globalMinutes = (int) hexdec($hexadecimalTime);
-        $hours = ((($globalMinutes - ($globalMinutes % 60)) / 60) + 16) % 24;
-        $minutes = ($globalMinutes % 60);
-        assert($hours >= 0);
-        assert($minutes >= 0);
-
-        return ['hours' => $hours, 'minutes' => $minutes];
     }
 
     /**

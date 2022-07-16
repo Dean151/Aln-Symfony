@@ -45,7 +45,6 @@ class AlnFeeder
     {
         $this->identifier = '';
         $this->name = '';
-        $this->ip = '';
         $this->lastSeen = new DateTimeImmutable();
         $this->meals = new ArrayCollection();
         $this->plannings = new ArrayCollection();

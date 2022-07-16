@@ -169,10 +169,10 @@ final class FeederCommunicator implements MessageComponentInterface
 
     private function recordManualMeal(MealButtonPressedMessage $message): void
     {
-        $this->logger->info("Feeder {$message->getIdentifier()} served a meal of {$message->getMealQuantity()}g");
+        $this->logger->info("Feeder {$message->getIdentifier()} served a meal of {$message->getMealAmount()}g");
 
         $feeder = $this->feederRepository->findOrCreateFeeder($message->getIdentifier());
-        $feeder->setDefaultMealAmount($message->getMealQuantity());
+        $feeder->setDefaultMealAmount($message->getMealAmount());
 
         $now = new DateTimeImmutable();
         $meal = new AlnMeal();

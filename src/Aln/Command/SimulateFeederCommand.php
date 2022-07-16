@@ -2,6 +2,8 @@
 
 namespace App\Aln\Command;
 
+use App\Aln\Socket\Messages\IdentificationMessage;
+
 use function Ratchet\Client\connect;
 
 use Ratchet\Client\WebSocket;
@@ -59,9 +61,10 @@ class SimulateFeederCommand extends Command
                 $loop->stop();
             });
             // Simulate identification call every 10s
-            $this->send($connection, $this->identificationMessage($identifier), $output);
-            $loop->addPeriodicTimer(10, function () use ($connection, $identifier, $output) {
-                $this->send($connection, $this->identificationMessage($identifier), $output);
+            $identification = new IdentificationMessage($identifier);
+            $this->send($connection, $identification->hexadecimal(), $output);
+            $loop->addPeriodicTimer(10, function () use ($connection, $identification, $output) {
+                $this->send($connection, $identification->hexadecimal(), $output);
             });
         }, function ($e) use ($output, $loop) {
             $output->writeln($e->getMessage());
@@ -80,10 +83,5 @@ class SimulateFeederCommand extends Command
         } else {
             $output->writeln("Failed sending data $hexadecimal");
         }
-    }
-
-    private function identificationMessage(string $identifier): string
-    {
-        return '9da114'.bin2hex($identifier).'01d0010000';
     }
 }

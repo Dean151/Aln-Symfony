@@ -4,9 +4,16 @@ namespace App\Aln\Socket\Messages;
 
 final class PlanningChangedMessage extends IdentifiedMessage
 {
-    public function __construct(string $hexadecimal)
+    public static function decodeFrom(string $hexadecimal): self
     {
         $hexadecimalIdentifier = substr($hexadecimal, 6, -10);
-        $this->identifier = $this->decodeIdentifier($hexadecimalIdentifier);
+        $identifier = self::decodeIdentifier($hexadecimalIdentifier);
+
+        return new PlanningChangedMessage($identifier);
+    }
+
+    public function hexadecimal(): string
+    {
+        return '9da114'.bin2hex($this->identifier).'c4d0a10000';
     }
 }

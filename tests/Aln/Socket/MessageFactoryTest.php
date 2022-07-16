@@ -32,6 +32,7 @@ final class MessageFactoryTest extends TestCase
         $message = $this->getFactory()->identifyIncoming($hexadecimal);
         $this->assertInstanceOf(IdentificationMessage::class, $message);
         $this->assertEquals($expectedIdentifier, $message->getIdentifier());
+        $this->assertStringStartsWith($message->hexadecimal(), $hexadecimal);
     }
 
     public function provideIdentificationData(): \Generator
@@ -50,6 +51,7 @@ final class MessageFactoryTest extends TestCase
         $message = $this->getFactory()->identifyIncoming($hexadecimal);
         $this->assertInstanceOf(DefaultMealChangedMessage::class, $message);
         $this->assertEquals($expectedIdentifier, $message->getIdentifier());
+        $this->assertEquals($hexadecimal, $message->hexadecimal());
     }
 
     public function provideDefaultMealChangedData(): \Generator
@@ -66,6 +68,7 @@ final class MessageFactoryTest extends TestCase
         $message = $this->getFactory()->identifyIncoming($hexadecimal);
         $this->assertInstanceOf(PlanningChangedMessage::class, $message);
         $this->assertEquals($expectedIdentifier, $message->getIdentifier());
+        $this->assertEquals($hexadecimal, $message->hexadecimal());
     }
 
     public function providePlanningChangedData(): \Generator
@@ -82,6 +85,7 @@ final class MessageFactoryTest extends TestCase
         $message = $this->getFactory()->identifyIncoming($hexadecimal);
         $this->assertInstanceOf(MealDistributedMessage::class, $message);
         $this->assertEquals($expectedIdentifier, $message->getIdentifier());
+        $this->assertEquals($hexadecimal, $message->hexadecimal());
     }
 
     public function provideMealDistributedData(): \Generator
@@ -98,7 +102,8 @@ final class MessageFactoryTest extends TestCase
         $message = $this->getFactory()->identifyIncoming($hexadecimal);
         $this->assertInstanceOf(MealButtonPressedMessage::class, $message);
         $this->assertEquals($expectedIdentifier, $message->getIdentifier());
-        $this->assertEquals($expectedMealAmount, $message->getMealQuantity());
+        $this->assertEquals($expectedMealAmount, $message->getMealAmount());
+        $this->assertEquals($hexadecimal, $message->hexadecimal());
     }
 
     public function provideMealButtonPressedData(): \Generator
@@ -117,7 +122,8 @@ final class MessageFactoryTest extends TestCase
         $this->assertInstanceOf(EmptyFeederMessage::class, $message);
         $this->assertEquals($expectedIdentifier, $message->getIdentifier());
         $this->assertEquals($expectedTime, $message->getTime());
-        $this->assertEquals($expectedMealAmount, $message->getMealQuantity());
+        $this->assertEquals($expectedMealAmount, $message->getMealAmount());
+        $this->assertEquals($hexadecimal, $message->hexadecimal());
     }
 
     public function provideEmptyFeederData(): \Generator
