@@ -79,7 +79,7 @@
             "@auto-scripts"
         ],
         "sniff": [
-            "php-cs-fixer fix --dry-run"
+            "php-cs-fixer fix"
         ],
         "stan": [
             "phpstan analyse --memory-limit 1G"
