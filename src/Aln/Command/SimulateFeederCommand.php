@@ -69,7 +69,7 @@ class SimulateFeederCommand extends Command
                 $this->send($connection, $identification->hexadecimal(), $output);
             });
             $connection->on('message', function (MessageInterface $message) use ($connection, $output, $loop, $identifier, $feederIsEmpty) {
-                $hexadecimal = bin2hex($message->getContents());
+                $hexadecimal = bin2hex($message->getPayload());
                 $this->handleMessage($connection, $hexadecimal, $output, $loop, $identifier, $feederIsEmpty);
             });
             $connection->on('close', function ($code = null, $reason = null) use ($output, $loop) {
@@ -132,7 +132,7 @@ class SimulateFeederCommand extends Command
                 });
             }
         } else {
-            $output->writeln("Unknown data $hexadecimal");
+            $output->writeln("Unknown data received: $hexadecimal");
         }
     }
 }

@@ -96,13 +96,24 @@
             "@sniff",
             "@stan",
             "@unit"
+        ],
+        "start":  [
+            "docker-compose up -d",
+            "symfony server:start -d",
+            "symfony run -d --watch=config,src symfony console aln:socket:run -vvv"
+        ],
+        "stop": [
+            "symfony server:stop",
+            "docker-compose stop"
         ]
     },
     "scripts-descriptions": {
         "sniff": "Run PHP Code Sniffer analysis on codebase",
         "stan": "Run PHPStan analysis on codebase",
         "unit": "Run PHPUnit tests on codebase",
-        "test": "Run PHP Code Sniffer, PHPStan analysis & PHPUnit tests on codebase"
+        "test": "Run PHP Code Sniffer, PHPStan analysis & PHPUnit tests on codebase",
+        "start": "Start webserver & socket server for development",
+        "stop": "Stop webserver & socket server for development"
     },
     "conflict": {
         "symfony/symfony": "*"
