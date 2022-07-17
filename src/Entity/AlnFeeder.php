@@ -14,12 +14,22 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     collectionOperations: [],
     itemOperations: [
-        'get',
-        'put',
+        'get' => [
+            'openapi_context' => [
+                'summary' => 'Retrieve feeder status and settings',
+                'description' => 'Retrieve feeder status and settings',
+            ],
+        ],
+        'put' => [
+            'openapi_context' => [
+                'summary' => 'Update feeder name',
+                'description' => 'Update feeder name',
+            ],
+        ],
     ],
     shortName: 'Feeder',
-    normalizationContext: ['groups' => ['feeder:output']],
     denormalizationContext: ['groups' => ['feeder:input']],
+    normalizationContext: ['groups' => ['feeder:output']],
 )]
 #[ORM\Entity(repositoryClass: AlnFeederRepository::class)]
 class AlnFeeder
