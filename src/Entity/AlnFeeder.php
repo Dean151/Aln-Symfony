@@ -10,6 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Safe\DateTimeImmutable;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
     collectionOperations: [],
@@ -30,6 +31,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     shortName: 'Feeder',
     denormalizationContext: ['groups' => ['feeder:input']],
     normalizationContext: ['groups' => ['feeder:output']],
+    validationGroups: ['feeder:validation'],
 )]
 #[ORM\Entity(repositoryClass: AlnFeederRepository::class)]
 class AlnFeeder
@@ -46,6 +48,7 @@ class AlnFeeder
 
     #[ORM\Column(length: 255)]
     #[Groups(['feeder:input', 'feeder:output'])]
+    #[Assert\Length(max: 255, groups: ['feeder:validation'])]
     private string $name;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
