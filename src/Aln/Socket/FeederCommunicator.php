@@ -6,6 +6,7 @@ use App\Aln\Socket\Messages\EmptyFeederMessage;
 use App\Aln\Socket\Messages\IdentificationMessage;
 use App\Aln\Socket\Messages\MealButtonPressedMessage;
 use App\Aln\Socket\Messages\MessageInterface;
+use App\Aln\Socket\Messages\TimeMessage;
 use App\Entity\AlnFeeder;
 use App\Entity\AlnMeal;
 use App\Repository\AlnFeederRepository;
@@ -26,7 +27,6 @@ final class FeederCommunicator implements MessageDequeueInterface, MessageEnqueu
 {
     private AlnFeederRepository $feederRepository;
     private AlnMealRepository $mealRepository;
-    private MessageFactory $messageFactory;
     private ManagerRegistry $doctrine;
     private LoggerInterface $logger;
 
@@ -38,13 +38,11 @@ final class FeederCommunicator implements MessageDequeueInterface, MessageEnqueu
     public function __construct(
         AlnFeederRepository $feederRepository,
         AlnMealRepository $mealRepository,
-        MessageFactory $messageFactory,
         ManagerRegistry $doctrine,
         LoggerInterface $logger
     ) {
         $this->feederRepository = $feederRepository;
         $this->mealRepository = $mealRepository;
-        $this->messageFactory = $messageFactory;
         $this->doctrine = $doctrine;
         $this->logger = $logger;
     }
@@ -72,9 +70,9 @@ final class FeederCommunicator implements MessageDequeueInterface, MessageEnqueu
         $hexadecimalMessage = bin2hex($msg);
         $this->logger->debug("Data received: {$hexadecimalMessage}");
         try {
-            $message = $this->messageFactory->identifyIncoming($hexadecimalMessage);
+            $message = MessageIdentification::identifyIncomingMessage($hexadecimalMessage);
             if ($message instanceof IdentificationMessage) {
-                $this->identify($message, $from);
+                $this->identified($message, $from);
             } elseif ($message instanceof MealButtonPressedMessage) {
                 $this->recordManualMeal($message);
             } elseif ($message instanceof EmptyFeederMessage) {
@@ -146,7 +144,7 @@ final class FeederCommunicator implements MessageDequeueInterface, MessageEnqueu
         }
     }
 
-    private function identify(IdentificationMessage $message, ConnectionInterface $connection): void
+    private function identified(IdentificationMessage $message, ConnectionInterface $connection): void
     {
         $this->logger->info("Feeder identified with {$message->getIdentifier()}");
         $this->persist($connection, $message->getIdentifier());
@@ -154,8 +152,7 @@ final class FeederCommunicator implements MessageDequeueInterface, MessageEnqueu
         $feeder = $this->feederRepository->findOrCreateFeeder($message->getIdentifier());
         $feeder->setLastSeen(new DateTimeImmutable());
 
-        $time = $this->messageFactory->time();
-        $this->send($time, $message->getIdentifier());
+        $this->send(new TimeMessage(), $message->getIdentifier());
 
         $this->doctrine->getManager()->flush();
     }

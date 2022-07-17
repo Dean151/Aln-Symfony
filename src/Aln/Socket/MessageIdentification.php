@@ -2,27 +2,23 @@
 
 namespace App\Aln\Socket;
 
-use App\Aln\Socket\Messages\ChangeDefaultMealMessage;
-use App\Aln\Socket\Messages\ChangePlanningMessage;
 use App\Aln\Socket\Messages\DefaultMealChangedMessage;
 use App\Aln\Socket\Messages\EmptyFeederMessage;
-use App\Aln\Socket\Messages\FeedNowMessage;
 use App\Aln\Socket\Messages\IdentificationMessage;
 use App\Aln\Socket\Messages\MealButtonPressedMessage;
 use App\Aln\Socket\Messages\MealDistributedMessage;
 use App\Aln\Socket\Messages\MessageInterface;
 use App\Aln\Socket\Messages\PlanningChangedMessage;
-use App\Aln\Socket\Messages\TimeMessage;
 use Safe\Exceptions\PcreException;
 
 use function Safe\preg_match;
 
-final class MessageFactory
+final class MessageIdentification
 {
     /**
      * @throws PcreException|\RuntimeException
      */
-    public function identifyIncoming(string $hexadecimal): MessageInterface
+    public static function identifyIncomingMessage(string $hexadecimal): MessageInterface
     {
         if (!str_starts_with($hexadecimal, '9da114')) {
             throw new \RuntimeException('All incoming messages should start with 9da114');
@@ -46,37 +42,5 @@ final class MessageFactory
             return EmptyFeederMessage::decodeFrom($hexadecimal);
         }
         throw new \RuntimeException('Unknown incoming message: '.$hexadecimal);
-    }
-
-    /**
-     * @param ?array{hours: int<0, 23>, minutes: int<0, 59>} $time
-     */
-    public function time(?array $time = null): TimeMessage
-    {
-        return new TimeMessage($time);
-    }
-
-    /**
-     * @param int<5, 150> $mealAmount
-     */
-    public function changeDefaultMeal(int $mealAmount): ChangeDefaultMealMessage
-    {
-        return new ChangeDefaultMealMessage($mealAmount);
-    }
-
-    /**
-     * @param int<5, 150> $mealAmount
-     */
-    public function feedNow(int $mealAmount): FeedNowMessage
-    {
-        return new FeedNowMessage($mealAmount);
-    }
-
-    /**
-     * @param array<array{time: array{hours: int<0, 23>, minutes: int<0, 59>}, amount: int<5, 150>}> $meals
-     */
-    public function changePlanning(array $meals): ChangePlanningMessage
-    {
-        return new ChangePlanningMessage($meals);
     }
 }

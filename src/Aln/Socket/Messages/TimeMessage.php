@@ -38,7 +38,7 @@ final class TimeMessage implements MessageInterface
     /**
      * @param ?array{hours: int<0, 23>, minutes: int<0, 59>} $time
      */
-    public function __construct(?array $time)
+    public function __construct(?array $time = null)
     {
         $this->time = $time ?? TimeMessage::now();
     }
