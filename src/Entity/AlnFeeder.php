@@ -2,13 +2,17 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\ChangeDefaultMealController;
+use App\Controller\FeedNowController;
 use App\Repository\AlnFeederRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Safe\DateTimeImmutable;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -55,6 +59,7 @@ class AlnFeeder
     #[Groups(['feeder:output'])]
     private \DateTimeImmutable $lastSeen;
 
+    #[ApiProperty(required: true, example: 'Newton')]
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     #[Groups(['feeder:output'])]
     private ?int $defaultMealAmount = null;
@@ -191,5 +196,13 @@ class AlnFeeder
         }
 
         return $this;
+    }
+
+    #[Groups(['feeder:output'])]
+    public function getIsAvailable(): bool
+    {
+        $now = new DateTimeImmutable();
+
+        return ($now->getTimestamp() - $this->lastSeen->getTimestamp()) <= 30;
     }
 }

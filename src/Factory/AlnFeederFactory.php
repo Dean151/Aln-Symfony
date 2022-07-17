@@ -28,6 +28,9 @@ use Zenstruck\Foundry\RepositoryProxy;
  */
 final class AlnFeederFactory extends ModelFactory
 {
+    public const AVAILABLE_FEEDER_IDENTIFIER = 'ABC123456789';
+    public const UNAVAILABLE_FEEDER_IDENTIFIER = 'ZYX987654321';
+
     /**
      * @return array<string, mixed>
      */
@@ -36,7 +39,6 @@ final class AlnFeederFactory extends ModelFactory
         return [
             'identifier' => self::faker()->bothify('???#########'),
             'name' => self::faker()->firstName(),
-            'ip' => self::faker()->ipv4(),
             'lastSeen' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
         ];
     }

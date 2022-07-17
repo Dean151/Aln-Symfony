@@ -11,6 +11,7 @@ use App\Aln\Socket\Messages\IdentificationMessage;
 use App\Aln\Socket\Messages\MealDistributedMessage;
 use App\Aln\Socket\Messages\PlanningChangedMessage;
 use App\Aln\Socket\Messages\TimeMessage;
+use App\Factory\AlnFeederFactory;
 
 use function Ratchet\Client\connect;
 
@@ -40,7 +41,7 @@ class SimulateFeederCommand extends Command
     {
         $this->setHelp('Run a fake feeder to connect on the websocket');
         $this->setDescription('Run a fake feeder that behave just like a real feeder, and that will help to debug APIs.');
-        $this->addArgument('identifier', InputArgument::OPTIONAL, 'The feeder identifier to simulate', 'ALE123456789');
+        $this->addArgument('identifier', InputArgument::OPTIONAL, 'The feeder identifier to simulate', AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
         $this->addArgument('empty-feeder', InputArgument::OPTIONAL, 'Simulate when feeder is empty', false);
     }
 
@@ -65,7 +66,8 @@ class SimulateFeederCommand extends Command
             // Simulate identification call every 10s
             $identification = new IdentificationMessage($identifier);
             $this->send($connection, $identification->hexadecimal(), $output);
-            $loop->addPeriodicTimer(10, function () use ($connection, $identification, $output) {
+            $delay = 'test' === $_ENV['APP_ENV'] ? 1 : 10;
+            $loop->addPeriodicTimer($delay, function () use ($connection, $identification, $output) {
                 $this->send($connection, $identification->hexadecimal(), $output);
             });
             $connection->on('message', function (MessageInterface $message) use ($connection, $output, $loop, $identifier, $feederIsEmpty) {
