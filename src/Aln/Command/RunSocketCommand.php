@@ -79,7 +79,6 @@ final class RunSocketCommand extends Command
         new IoServer(new HttpServer(new WsServer($this->communicator)), $socketServer, $loop);
         $output->writeln('Server is running');
 
-        // Will run the underlying loop
         $loop->run();
 
         return Command::SUCCESS;

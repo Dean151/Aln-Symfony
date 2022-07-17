@@ -29,7 +29,7 @@ abstract class AbstractSocketController extends AbstractController
         try {
             $feederResponded = $this->queue->enqueueSocketMessageAndWait($feeder, $message);
         } catch (AMQPTimeoutException $e) {
-            throw new ServiceUnavailableHttpException(null, 'Feeder did not responded in time.');
+            throw new ServiceUnavailableHttpException(null, 'Feeder did not responded in time.', $e);
         }
 
         if (!$feederResponded) {

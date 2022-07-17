@@ -105,26 +105,36 @@
             "phpstan analyse --memory-limit 1G"
         ],
         "unit": [
-            "symfony console doctrine:database:create -e test --no-interaction --if-not-exists",
-            "symfony console doctrine:migration:migrate -e test --no-interaction --all-or-nothing --allow-no-migration",
-            "symfony console doctrine:fixtures:load -e test --no-interaction",
-            "symfony run -d symfony console aln:socket:run -e test &> /dev/null || true",
-            "symfony run -d symfony console aln:feeder:simulate -e test &> /dev/null || true",
-            "sleep 3",
-            "bin/phpunit"
+            "@pause",
+            "symfony console -e test doctrine:database:create --no-interaction --if-not-exists",
+            "symfony console -e test doctrine:migration:migrate --no-interaction --all-or-nothing --allow-no-migration",
+            "symfony console -e test doctrine:fixtures:load --no-interaction",
+            "symfony run -d symfony console -e test aln:socket:run &> /dev/null || true",
+            "symfony run -d symfony console -e test aln:feeder:simulate ABC123456789 &> /dev/null || true",
+            "symfony run -d symfony console -e test aln:feeder:simulate --not-responding OBU293827463 &> /dev/null || true",
+            "symfony run -d symfony console -e test aln:feeder:simulate --empty-feeder ABE382749283 &> /dev/null || true",
+            "sleep 2",
+            "bin/phpunit",
+            "@start"
         ],
         "test": [
             "@sniff",
             "@stan",
             "@unit"
         ],
-        "start":  [
+        "boot": [
             "docker-compose up -d",
+            "@start"
+        ],
+        "start": [
             "symfony server:start -d",
             "symfony run -d --watch=config,src symfony console aln:socket:run"
         ],
+        "pause": [
+            "symfony server:stop"
+        ],
         "stop": [
-            "symfony server:stop",
+            "@pause",
             "docker-compose stop"
         ]
     },
@@ -133,8 +143,10 @@
         "stan": "Run PHPStan analysis on codebase",
         "unit": "Run PHPUnit tests on codebase",
         "test": "Run PHP Code Sniffer, PHPStan analysis & PHPUnit tests on codebase",
+        "boot": "Start docker, then webserver and socket",
         "start": "Start webserver & socket server for development",
-        "stop": "Stop webserver & socket server for development"
+        "pause": "Stop webserver & socket server",
+        "stop": "Stop Docker, webserver and socket"
     },
     "conflict": {
         "symfony/symfony": "*"
