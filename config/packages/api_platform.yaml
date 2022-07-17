@@ -1,4 +1,6 @@
 api_platform:
+    title: 'Aln-Symfony'
+    show_webby: false
     mapping:
         paths: ['%kernel.project_dir%/src/Entity']
     patch_formats:

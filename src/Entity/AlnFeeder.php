@@ -2,31 +2,48 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\AlnFeederRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Safe\DateTimeImmutable;
+use Symfony\Component\Serializer\Annotation\Groups;
 
+#[ApiResource(
+    collectionOperations: [],
+    itemOperations: [
+        'get',
+        'put',
+    ],
+    shortName: 'Feeder',
+    normalizationContext: ['groups' => ['feeder:output']],
+    denormalizationContext: ['groups' => ['feeder:input']],
+)]
 #[ORM\Entity(repositoryClass: AlnFeederRepository::class)]
 class AlnFeeder
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column()]
+    #[Groups(['feeder:output'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 16)]
+    #[Groups(['feeder:output'])]
     private string $identifier;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['feeder:input', 'feeder:output'])]
     private string $name;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Groups(['feeder:output'])]
     private \DateTimeImmutable $lastSeen;
 
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+    #[Groups(['feeder:output'])]
     private ?int $defaultMealAmount = null;
 
     /**
