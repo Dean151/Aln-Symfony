@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Aln-API.iml" filepath="$PROJECT_DIR$/.idea/Aln-API.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Aln-Symfony.iml" filepath="$PROJECT_DIR$/.idea/Aln-Symfony.iml" />
     </modules>
   </component>
 </project>
