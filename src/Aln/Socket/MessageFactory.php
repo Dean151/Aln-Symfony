@@ -13,7 +13,6 @@ use App\Aln\Socket\Messages\MealDistributedMessage;
 use App\Aln\Socket\Messages\MessageInterface;
 use App\Aln\Socket\Messages\PlanningChangedMessage;
 use App\Aln\Socket\Messages\TimeMessage;
-use Safe\DateTimeImmutable;
 use Safe\Exceptions\PcreException;
 
 use function Safe\preg_match;
@@ -50,21 +49,11 @@ final class MessageFactory
     }
 
     /**
-     * @param array{hours: int<0, 23>, minutes: int<0, 59>} $time
+     * @param ?array{hours: int<0, 23>, minutes: int<0, 59>} $time
      */
-    public function time(array $time): TimeMessage
+    public function time(?array $time = null): TimeMessage
     {
         return new TimeMessage($time);
-    }
-
-    public function currentTime(): TimeMessage
-    {
-        $currentDatetime = new DateTimeImmutable('now', new \DateTimeZone('UTC'));
-        $hours = (int) $currentDatetime->format('H');
-        $minutes = (int) $currentDatetime->format('i');
-        assert($minutes >= 0 && $minutes < 60);
-
-        return $this->time(['hours' => $hours, 'minutes' => $minutes]);
     }
 
     /**

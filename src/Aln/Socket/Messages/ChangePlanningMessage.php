@@ -37,6 +37,11 @@ class ChangePlanningMessage implements MessageInterface
         return $this->meals;
     }
 
+    public function getCount(): int
+    {
+        return count($this->meals);
+    }
+
     public function hexadecimal(): string
     {
         $prefix = '9da12dc4';

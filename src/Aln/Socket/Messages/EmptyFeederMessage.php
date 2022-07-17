@@ -23,16 +23,16 @@ final class EmptyFeederMessage extends IdentifiedMessage
         $time = self::decodeTime($hexadecimalTime);
         $mealAmount = self::decodeMealAmount($hexadecimalMealAmount);
 
-        return new EmptyFeederMessage($identifier, $time, $mealAmount);
+        return new EmptyFeederMessage($identifier, $mealAmount, $time);
     }
 
     /**
-     * @param array{hours: int<0, 23>, minutes: int<0, 59>} $time
-     * @param int<5, 150>                                   $mealAmount
+     * @param ?array{hours: int<0, 23>, minutes: int<0, 59>} $time
+     * @param int<5, 150>                                    $mealAmount
      */
-    public function __construct(string $identifier, array $time, int $mealAmount)
+    public function __construct(string $identifier, int $mealAmount, ?array $time = null)
     {
-        $this->time = $time;
+        $this->time = $time ?? TimeMessage::now();
         $this->mealAmount = $mealAmount;
         parent::__construct($identifier);
     }

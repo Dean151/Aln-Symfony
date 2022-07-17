@@ -3,6 +3,7 @@
 namespace App\Aln\Socket\Messages;
 
 use App\Aln\Socket\MessageTranscriber;
+use Safe\DateTimeImmutable;
 
 final class TimeMessage implements MessageInterface
 {
@@ -13,6 +14,19 @@ final class TimeMessage implements MessageInterface
      */
     private array $time;
 
+    /**
+     * @return array{hours: int<0, 23>, minutes: int<0, 59>}
+     */
+    public static function now(): array
+    {
+        $currentDatetime = new DateTimeImmutable('now', new \DateTimeZone('UTC'));
+        $hours = (int) $currentDatetime->format('H');
+        $minutes = (int) $currentDatetime->format('i');
+        assert($minutes >= 0 && $minutes < 60);
+
+        return ['hours' => $hours, 'minutes' => $minutes];
+    }
+
     public static function decodeFrom(string $hexadecimal): self
     {
         $hexadecimalTime = substr($hexadecimal, -4);
@@ -22,11 +36,11 @@ final class TimeMessage implements MessageInterface
     }
 
     /**
-     * @param array{hours: int<0, 23>, minutes: int<0, 59>} $time
+     * @param ?array{hours: int<0, 23>, minutes: int<0, 59>} $time
      */
-    public function __construct(array $time)
+    public function __construct(?array $time)
     {
-        $this->time = $time;
+        $this->time = $time ?? TimeMessage::now();
     }
 
     /**

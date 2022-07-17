@@ -154,7 +154,7 @@ final class FeederCommunicator implements MessageDequeueInterface, MessageEnqueu
         $feeder = $this->feederRepository->findOrCreateFeeder($message->getIdentifier());
         $feeder->setLastSeen(new DateTimeImmutable());
 
-        $time = $this->messageFactory->currentTime();
+        $time = $this->messageFactory->time();
         $this->send($time, $message->getIdentifier());
 
         $this->doctrine->getManager()->flush();
