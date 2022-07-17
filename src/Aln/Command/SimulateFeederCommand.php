@@ -46,7 +46,7 @@ class SimulateFeederCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if (!class_exists(\Ratchet\Client\WebSocket::class)) {
+        if (!class_exists(WebSocket::class)) {
             throw new \RuntimeException('Simulate feeder is only available when --dev dependencies are installed with composer.');
         }
 
