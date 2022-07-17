@@ -2,10 +2,12 @@
 
 namespace App\Aln\Socket;
 
-use Bunny\Message;
+use PhpAmqpLib\Message\AMQPMessage;
 use Ratchet\MessageComponentInterface;
+use React\EventLoop\LoopInterface;
+use React\Promise\PromiseInterface;
 
 interface MessageDequeueInterface extends MessageComponentInterface
 {
-    public function dequeueMessage(Message $message): void;
+    public function dequeueMessageAndWait(AMQPMessage $message, LoopInterface $loop, float $timeout = 5): PromiseInterface;
 }

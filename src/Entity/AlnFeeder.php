@@ -14,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Safe\DateTimeImmutable;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
@@ -29,6 +30,30 @@ use Symfony\Component\Validator\Constraints as Assert;
             'openapi_context' => [
                 'summary' => 'Update feeder name',
                 'description' => 'Update feeder name',
+            ],
+        ],
+        'feed' => [
+            'method' => 'POST',
+            'status' => Response::HTTP_OK,
+            'path' => '/feeders/{id}/feed',
+            'controller' => FeedNowController::class,
+            'denormalization_context' => ['groups' => ['feeding:input']],
+            'validation_groups' => ['feeding:validation'],
+            'openapi_context' => [
+                'summary' => 'Trigger a meal immediately with specified amount in grams',
+                'description' => 'Trigger a meal immediately with specified amount in grams',
+            ],
+        ],
+        'amount' => [
+            'method' => 'PUT',
+            'status' => Response::HTTP_OK,
+            'path' => '/feeders/{id}/amount',
+            'controller' => ChangeDefaultMealController::class,
+            'denormalization_context' => ['groups' => ['feeding:input']],
+            'validation_groups' => ['feeding:validation'],
+            'openapi_context' => [
+                'summary' => 'Update the amount distributed when the feeder button is pressed in grams',
+                'description' => 'Update the amount distributed when the feeder button is pressed in grams',
             ],
         ],
     ],
@@ -75,6 +100,11 @@ class AlnFeeder
      */
     #[ORM\OneToMany(mappedBy: 'feeder', targetEntity: AlnMeal::class, orphanRemoval: true)]
     private Collection $meals;
+
+    #[ApiProperty(required: true, example: 5)]
+    #[Groups(['feeding:input'])]
+    #[Assert\Range(min: 5, max: 150, groups: ['feeding:validation'])]
+    public int $amount; // DTO used for feeding ; and changing default meal amount
 
     public function __construct()
     {
@@ -198,8 +228,9 @@ class AlnFeeder
         return $this;
     }
 
+    #[SerializedName('isAvailable')]
     #[Groups(['feeder:output'])]
-    public function getIsAvailable(): bool
+    public function isAvailable(): bool
     {
         $now = new DateTimeImmutable();
 

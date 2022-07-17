@@ -74,7 +74,6 @@
       <path value="$PROJECT_DIR$/vendor/psr/http-message" />
       <path value="$PROJECT_DIR$/vendor/psr/http-factory" />
       <path value="$PROJECT_DIR$/vendor/cboden/ratchet" />
-      <path value="$PROJECT_DIR$/vendor/bunny/bunny" />
       <path value="$PROJECT_DIR$/vendor/symfony/messenger" />
       <path value="$PROJECT_DIR$/vendor/symfony/amqp-messenger" />
       <path value="$PROJECT_DIR$/vendor/twig/twig" />
@@ -156,6 +155,11 @@
       <path value="$PROJECT_DIR$/vendor/willdurand/negotiation" />
       <path value="$PROJECT_DIR$/vendor/symfony/http-client-contracts" />
       <path value="$PROJECT_DIR$/vendor/symfony/http-client" />
+      <path value="$PROJECT_DIR$/vendor/paragonie/random_compat" />
+      <path value="$PROJECT_DIR$/vendor/paragonie/constant_time_encoding" />
+      <path value="$PROJECT_DIR$/vendor/phpseclib/phpseclib" />
+      <path value="$PROJECT_DIR$/vendor/php-amqplib/php-amqplib" />
+      <path value="$PROJECT_DIR$/vendor/gos/react-amqp" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1">

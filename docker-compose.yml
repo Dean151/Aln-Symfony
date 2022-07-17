@@ -19,7 +19,9 @@ services:
 ###< doctrine/doctrine-bundle ###
   rabbitmq:
     image: rabbitmq:3.7-management
-    ports: [ 5672, 15672 ]
+    ports:
+      - 5672:5672
+      - 15672
 
 volumes:
 ###> doctrine/doctrine-bundle ###

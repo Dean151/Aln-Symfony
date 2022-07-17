@@ -9,18 +9,20 @@ final class GetFeederApiTest extends FeederApiTest
 {
     public function testAvailableFeederStatus(): void
     {
-        $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
+        $feeder = $this->findFeeder(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
         $client = self::createClient();
-        $client->request('GET', "/api/feeders/{$id}", [
+        $client->request('GET', "/api/feeders/{$feeder->getId()}", [
             'headers' => [
                 'Accept' => 'application/json',
             ],
         ]);
         $this->assertResponseIsSuccessful();
         $this->assertJsonContains([
-            'id' => $id,
+            'id' => $feeder->getId(),
             'identifier' => AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER,
-            'defaultMealAmount' => null,
+            'name' => $feeder->getName(),
+            'lastSeen' => $feeder->getLastSeen()->format('c'),
+            'defaultMealAmount' => $feeder->getDefaultMealAmount(),
             'isAvailable' => true,
         ]);
     }

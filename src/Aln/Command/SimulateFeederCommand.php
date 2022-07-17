@@ -121,7 +121,7 @@ class SimulateFeederCommand extends Command
                 $this->send($connection, $response->hexadecimal(), $output);
             });
         } elseif (str_starts_with($hexadecimal, '9da106a2')) {
-            $message = FeedNowMessage::decodeFrom('9da106a2');
+            $message = FeedNowMessage::decodeFrom($hexadecimal);
             $output->writeln("Meal distributed of {$message->getMealAmount()}g");
             $loop->addTimer(0.5, function () use ($identifier, $connection, $output) {
                 $response = new MealDistributedMessage($identifier);

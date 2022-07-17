@@ -3,27 +3,29 @@
 namespace App\Aln\Socket;
 
 use App\Aln\Socket\Messages\EmptyFeederMessage;
+use App\Aln\Socket\Messages\ExpectationMessage;
 use App\Aln\Socket\Messages\IdentificationMessage;
 use App\Aln\Socket\Messages\MealButtonPressedMessage;
-use App\Aln\Socket\Messages\MessageInterface;
 use App\Aln\Socket\Messages\TimeMessage;
-use App\Entity\AlnFeeder;
 use App\Entity\AlnMeal;
 use App\Repository\AlnFeederRepository;
 use App\Repository\AlnMealRepository;
-use Bunny\Channel;
-use Bunny\Client;
-use Bunny\Message;
 use Doctrine\Persistence\ManagerRegistry;
+use PhpAmqpLib\Message\AMQPMessage;
 use Psr\Log\LoggerInterface;
 use Ratchet\ConnectionInterface;
 use Ratchet\RFC6455\Messaging\Frame;
+use React\EventLoop\LoopInterface;
+use React\Promise\Promise;
+use React\Promise\PromiseInterface;
+
+use function React\Promise\Timer\timeout;
+
 use Safe\DateTimeImmutable;
-use Safe\Exceptions\StringsException;
 
 use function Safe\hex2bin;
 
-final class FeederCommunicator implements MessageDequeueInterface, MessageEnqueueInterface
+final class FeederCommunicator implements MessageDequeueInterface
 {
     private AlnFeederRepository $feederRepository;
     private AlnMealRepository $mealRepository;
@@ -34,6 +36,11 @@ final class FeederCommunicator implements MessageDequeueInterface, MessageEnqueu
      * @var array<string, ConnectionInterface>
      */
     private array $connections = [];
+
+    /**
+     * @var array<string, int>
+     */
+    private array $completedExpectations = [];
 
     public function __construct(
         AlnFeederRepository $feederRepository,
@@ -49,13 +56,13 @@ final class FeederCommunicator implements MessageDequeueInterface, MessageEnqueu
 
     public function onOpen(ConnectionInterface $conn): void
     {
-        $this->logger->info('New connexion opened');
+        $this->logger->info('New connection opened');
     }
 
     public function onClose(ConnectionInterface $conn): void
     {
         if ($identifier = array_search($conn, $this->connections, true)) {
-            $this->logger->info("Connexion closed with feeder $identifier");
+            $this->logger->info("connection closed with feeder $identifier");
             unset($this->connections[$identifier]);
         }
     }
@@ -77,6 +84,8 @@ final class FeederCommunicator implements MessageDequeueInterface, MessageEnqueu
                 $this->recordManualMeal($message);
             } elseif ($message instanceof EmptyFeederMessage) {
                 $this->recordEmptyFeeder($message);
+            } elseif ($message instanceof ExpectationMessage) {
+                $this->completedExpectations[$message->hexadecimal()] = time();
             }
         } catch (\Exception $e) {
             $this->logger->warning($e->getMessage(), ['exception' => $e]);
@@ -84,42 +93,38 @@ final class FeederCommunicator implements MessageDequeueInterface, MessageEnqueu
         }
     }
 
-    /**
-     * @throws StringsException|\Exception
-     */
-    public function enqueueMessage(AlnFeeder $feeder, MessageInterface $message): void
+    public function dequeueMessageAndWait(AMQPMessage $message, LoopInterface $loop, float $timeout = 5): PromiseInterface
     {
-        $queueClient = new Client([
-            'host' => $_ENV['RABBITMQ_HOST'] ?? '127.0.0.1',
-            'port' => $_ENV['RABBITMQ_PORT'] ?? 5672,
-            'vhost' => $_ENV['RABBITMQ_VHOST'] ?? '/',
-            'user' => $_ENV['RABBITMQ_USERNAME'] ?? 'guest',
-            'password' => $_ENV['RABBITMQ_PASSWORD'] ?? 'guest',
-        ]);
-        $queue = $_ENV['RABBITMQ_ALN_QUEUE'] ?? 'aln';
-        $connect = $queueClient->connect();
-        $channel = $connect->channel();
-        assert($channel instanceof Channel);
-        $channel->queueDeclare($queue);
-        $channel->publish(hex2bin($message->hexadecimal()), ['identifier' => $feeder->getIdentifier()], '', $queue, true, true);
-    }
-
-    public function dequeueMessage(Message $message): void
-    {
-        $identifier = $message->getHeader('identifier');
-        if (!is_string($identifier)) {
-            $this->logger->error('Missing identifier in Queue Message');
-
-            return;
+        [$identifier, $hexadecimal] = explode('|', $message->getBody());
+        $expectation = MessageIdentification::findExpectedResponseMessage($hexadecimal, $identifier);
+        if (!$this->sendInSocket($hexadecimal, $identifier)) {
+            return new Promise(function ($resolve, $reject) {
+                $reject();
+            });
         }
-        $connection = $this->find($identifier);
-        if (!$connection instanceof ConnectionInterface) {
-            $this->logger->warning("No connection for identifier: $identifier");
-
-            return;
+        if (null === $expectation) {
+            return new Promise(function ($resolve) {
+                $resolve();
+            });
         }
 
-        $connection->send($message->content);
+        $promise = new Promise(function ($resolve) use ($loop, $expectation, &$callback) {
+            $callback = function () use ($resolve, $loop, $expectation, &$callback) {
+                if (isset($this->completedExpectations[$expectation->hexadecimal()])) {
+                    $time = $this->completedExpectations[$expectation->hexadecimal()];
+                    if (time() - $time < 5) {
+                        unset($this->completedExpectations[$expectation->hexadecimal()]);
+                        $resolve();
+                    }
+                }
+                $loop->addTimer(0.5, $callback);
+            };
+            $loop->addTimer(0.5, $callback);
+        }, function () use (&$callback) {
+            $callback = function () {};
+        });
+
+        return timeout($promise, $timeout, $loop);
     }
 
     private function persist(ConnectionInterface $connection, string $identifier): void
@@ -132,16 +137,20 @@ final class FeederCommunicator implements MessageDequeueInterface, MessageEnqueu
         return $this->connections[$identifier] ?? null;
     }
 
-    private function send(MessageInterface $message, string $identifier): void
+    private function sendInSocket(string $hexadecimal, string $identifier): bool
     {
-        $this->logger->debug("Sending to $identifier: ".$message->hexadecimal());
-        $frame = new Frame(hex2bin($message->hexadecimal()), true, Frame::OP_BINARY);
-        $connexion = $this->find($identifier);
-        if ($connexion instanceof ConnectionInterface) {
-            $connexion->send($frame);
-        } else {
-            $this->logger->warning("Not found connexion for $identifier");
+        $this->logger->debug("Sending to $identifier: ".$hexadecimal);
+        $frame = new Frame(hex2bin($hexadecimal), true, Frame::OP_BINARY);
+        $connection = $this->find($identifier);
+        if (!$connection instanceof ConnectionInterface) {
+            $this->logger->warning("No connection for $identifier");
+
+            return false;
         }
+
+        $connection->send($frame);
+
+        return true;
     }
 
     private function identified(IdentificationMessage $message, ConnectionInterface $connection): void
@@ -152,7 +161,7 @@ final class FeederCommunicator implements MessageDequeueInterface, MessageEnqueu
         $feeder = $this->feederRepository->findOrCreateFeeder($message->getIdentifier());
         $feeder->setLastSeen(new DateTimeImmutable());
 
-        $this->send(new TimeMessage(), $message->getIdentifier());
+        $this->sendInSocket((new TimeMessage())->hexadecimal(), $message->getIdentifier());
 
         $this->doctrine->getManager()->flush();
     }
@@ -168,7 +177,7 @@ final class FeederCommunicator implements MessageDequeueInterface, MessageEnqueu
         $meal = new AlnMeal();
         $meal->setDate($now);
         $meal->setTime($now);
-        $meal->setFeeder($feeder);
+        $feeder->addMeal($meal);
         $this->mealRepository->add($meal);
 
         $this->doctrine->getManager()->flush();

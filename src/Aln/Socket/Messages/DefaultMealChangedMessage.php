@@ -2,7 +2,7 @@
 
 namespace App\Aln\Socket\Messages;
 
-final class DefaultMealChangedMessage extends IdentifiedMessage
+final class DefaultMealChangedMessage extends ExpectationMessage
 {
     public static function decodeFrom(string $hexadecimal): self
     {

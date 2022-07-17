@@ -7,10 +7,12 @@ use App\Aln\Socket\Messages\ChangeDefaultMealMessage;
 use App\Aln\Socket\Messages\ChangePlanningMessage;
 use App\Aln\Socket\Messages\DefaultMealChangedMessage;
 use App\Aln\Socket\Messages\EmptyFeederMessage;
+use App\Aln\Socket\Messages\ExpectationMessage;
 use App\Aln\Socket\Messages\FeedNowMessage;
 use App\Aln\Socket\Messages\IdentificationMessage;
 use App\Aln\Socket\Messages\MealButtonPressedMessage;
 use App\Aln\Socket\Messages\MealDistributedMessage;
+use App\Aln\Socket\Messages\MessageInterface;
 use App\Aln\Socket\Messages\PlanningChangedMessage;
 use App\Aln\Socket\Messages\TimeMessage;
 use PHPUnit\Framework\TestCase;
@@ -217,5 +219,28 @@ final class MessagesTest extends TestCase
         yield ['9da12dc401030c0005', [$meal3]];
         yield ['9da12dc4020492000a0050000f', [$meal1, $meal2]];
         yield ['9da12dc4030492000a0050000f030c0005', [$meal1, $meal2, $meal3]];
+    }
+
+    /**
+     * @dataProvider provideResponseMessageDependingOnSentOneData
+     */
+    public function testResponseMessageDependingOnSentOne(string $identifier, MessageInterface $input, ?ExpectationMessage $expectationMessage): void
+    {
+        $response = MessageIdentification::findExpectedResponseMessage($input->hexadecimal(), $identifier);
+        if (is_null($expectationMessage)) {
+            $this->assertNull($response);
+        } else {
+            $this->assertNotNull($response);
+            $this->assertInstanceOf(get_class($expectationMessage), $response);
+            $this->assertEquals($expectationMessage->hexadecimal(), $response->hexadecimal());
+        }
+    }
+
+    public function provideResponseMessageDependingOnSentOneData(): \Generator
+    {
+        $identifier = 'ALE291382748';
+        yield [$identifier, new ChangeDefaultMealMessage(12), new DefaultMealChangedMessage($identifier)];
+        yield [$identifier, new ChangePlanningMessage([]), new PlanningChangedMessage($identifier)];
+        yield [$identifier, new FeedNowMessage(24), new MealDistributedMessage($identifier)];
     }
 }

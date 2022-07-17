@@ -72,7 +72,6 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/http-message" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/http-factory" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/cboden/ratchet" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/bunny/bunny" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/messenger" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/amqp-messenger" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/twig/twig" />
@@ -154,6 +153,11 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/willdurand/negotiation" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/http-client-contracts" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/http-client" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/paragonie/random_compat" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/paragonie/constant_time_encoding" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/phpseclib/phpseclib" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/php-amqplib/php-amqplib" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/gos/react-amqp" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -10,7 +10,7 @@ Because the original API is [not secure](https://www.thomasdurand.fr/security/io
 
 ### How?
 
-When the original (not-secured) API was still alive, I was able to use it to reverse engineer the whole set of communications between my pet feeding machine, and their server. Then, I could spoof their connexion to my server, and make my machine communicate with only my server
+When the original (not-secured) API was still alive, I was able to use it to reverse engineer the whole set of communications between my pet feeding machine, and their server. Then, I could spoof their connection to my server, and make my machine communicate with only my server
 
 ## Install, test and run
 

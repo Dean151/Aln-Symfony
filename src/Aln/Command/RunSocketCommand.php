@@ -3,14 +3,13 @@
 namespace App\Aln\Command;
 
 use App\Aln\Socket\MessageDequeueInterface;
-use Bunny\Async\Client;
-use Bunny\Channel;
-use Bunny\Message;
+use App\Aln\Socket\MessageQueue;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Message\AMQPMessage;
 use Ratchet\Http\HttpServer;
 use Ratchet\Server\IoServer;
 use Ratchet\WebSocket\WsServer;
 use React\EventLoop\Loop;
-use React\Promise\Promise;
 use React\Socket\SocketServer;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -46,37 +45,30 @@ final class RunSocketCommand extends Command
     {
         $loop = Loop::get();
 
-        $rabbitmqHost = $_ENV['RABBITMQ_HOST'] ?? '127.0.0.1';
-        $rabbitmqPort = $_ENV['RABBITMQ_PORT'] ?? 5672;
-        $output->writeln("Starting bunny rabbitmq client on {$rabbitmqHost}:{$rabbitmqPort}");
+        $amqpHost = $_ENV['RABBITMQ_HOST'] ?? '127.0.0.1';
+        $amqpPort = $_ENV['RABBITMQ_PORT'] ?? 5672;
+        $amqpUser = $_ENV['RABBITMQ_USERNAME'] ?? 'guest';
+        $amqpPassword = $_ENV['RABBITMQ_PASSWORD'] ?? 'guest';
+        $output->writeln("Starting rabbitmq client on {$amqpHost}:{$amqpPort}");
 
-        $queueClient = new Client($loop, [
-            'host' => $rabbitmqHost,
-            'port' => $rabbitmqPort,
-            'vhost' => $_ENV['RABBITMQ_VHOST'] ?? '/',
-            'user' => $_ENV['RABBITMQ_USERNAME'] ?? 'guest',
-            'password' => $_ENV['RABBITMQ_PASSWORD'] ?? 'guest',
-        ]);
-        $connect = $queueClient->connect();
-        $channel = $connect->then(function (Client $client) {
-            return $client->channel();
-        });
-        $qos = $channel->then(function (Channel $channel) {
-            $qos = $channel->qos(0, 5);
-            assert($qos instanceof Promise);
+        $connection = new AMQPStreamConnection($amqpHost, $amqpPort, $amqpUser, $amqpPassword);
+        $channel = $connection->channel();
 
-            return $qos->then(function () use ($channel) {
-                return $channel;
-            });
-        });
-        $qos->then(function (Channel $channel) {
-            $channel->consume(
-                function (Message $message, Channel $channel, Client $client) {
-                    $this->communicator->dequeueMessage($message);
-                    $channel->ack($message);
-                },
-                $_ENV['RABBITMQ_ALN_QUEUE'] ?? 'aln'
-            );
+        $channel->queue_declare(MessageQueue::QUEUE_SOCKET, false, false, false, false);
+
+        $callback = function (AMQPMessage $message) use ($loop, $output) {
+            $this->communicator->dequeueMessageAndWait($message, $loop)
+                ->then(function () use ($message, $output) {
+                    $output->writeln('Expectation fulfilled!');
+                    $message->ack();
+                }, function () use ($message, $output) {
+                    $output->writeln('Expectation NOT fulfilled!');
+                    $message->nack();
+                });
+        };
+        $channel->basic_consume(MessageQueue::QUEUE_SOCKET, '', false, false, false, false, $callback);
+        $loop->addPeriodicTimer(0.5, function () use ($channel) {
+            $channel->wait(null, true);
         });
 
         $wsHost = $_ENV['WEBSOCKET_HOST'] ?? '0.0.0.0';
@@ -84,11 +76,11 @@ final class RunSocketCommand extends Command
         $output->writeln("Starting Ratchet websocket server on {$wsHost}:{$wsPort}");
 
         $socketServer = new SocketServer($wsHost.':'.$wsPort, [], $loop);
-        $ioServer = new IoServer(new HttpServer(new WsServer($this->communicator)), $socketServer, $loop);
+        new IoServer(new HttpServer(new WsServer($this->communicator)), $socketServer, $loop);
         $output->writeln('Server is running');
 
         // Will run the underlying loop
-        $ioServer->run();
+        $loop->run();
 
         return Command::SUCCESS;
     }

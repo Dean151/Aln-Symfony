@@ -4,6 +4,7 @@ namespace App\Aln\Socket;
 
 use App\Aln\Socket\Messages\DefaultMealChangedMessage;
 use App\Aln\Socket\Messages\EmptyFeederMessage;
+use App\Aln\Socket\Messages\ExpectationMessage;
 use App\Aln\Socket\Messages\IdentificationMessage;
 use App\Aln\Socket\Messages\MealButtonPressedMessage;
 use App\Aln\Socket\Messages\MealDistributedMessage;
@@ -42,5 +43,20 @@ final class MessageIdentification
             return EmptyFeederMessage::decodeFrom($hexadecimal);
         }
         throw new \RuntimeException('Unknown incoming message: '.$hexadecimal);
+    }
+
+    public static function findExpectedResponseMessage(string $hexadecimal, string $identifier): ?ExpectationMessage
+    {
+        if (str_starts_with($hexadecimal, '9da106c3')) {
+            return new DefaultMealChangedMessage($identifier);
+        }
+        if (str_starts_with($hexadecimal, '9da106a2')) {
+            return new MealDistributedMessage($identifier);
+        }
+        if (str_starts_with($hexadecimal, '9da12dc4')) {
+            return new PlanningChangedMessage($identifier);
+        }
+
+        return null;
     }
 }
