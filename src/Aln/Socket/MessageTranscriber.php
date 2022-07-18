@@ -74,17 +74,20 @@ trait MessageTranscriber
     }
 
     /**
-     * @param array<MealInput> $meals
+     * @param MealInput[] $meals
      */
     protected function encodePlanning(array $meals): string
     {
-        $hexadecimalCount = str_pad(dechex(count($meals)), 2, '0', STR_PAD_LEFT);
+        $enabled = array_filter($meals, function (MealInput $meal) {
+            return $meal->isEnabled;
+        });
+        $hexadecimalCount = str_pad(dechex(count($enabled)), 2, '0', STR_PAD_LEFT);
         $hexadecimalMeals = implode(array_map(function (MealInput $meal) {
             $hexadecimalTime = $this->encodeTime($meal->time);
             $hexadecimalAmount = $this->encodeMealAmount($meal->amount);
 
             return $hexadecimalTime.$hexadecimalAmount;
-        }, $meals));
+        }, $enabled));
 
         return $hexadecimalCount.$hexadecimalMeals;
     }

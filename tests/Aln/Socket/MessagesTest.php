@@ -205,7 +205,7 @@ final class MessagesTest extends TestCase
     public function testChangePlanning(string $hexadecimal, array $meals): void
     {
         $this->assertEquals($hexadecimal, (new ChangePlanningMessage($meals))->hexadecimal());
-        $this->assertEquals($meals, ChangePlanningMessage::decodeFrom($hexadecimal)->getMeals());
+        $this->assertEquals(array_filter($meals, function ($meal) { return $meal->isEnabled; }), ChangePlanningMessage::decodeFrom($hexadecimal)->getMeals());
     }
 
     public function provideChangePlanningData(): \Generator
@@ -213,12 +213,14 @@ final class MessagesTest extends TestCase
         $meal1 = new MealInput(new TimeInput(11, 30), 10);
         $meal2 = new MealInput(new TimeInput(17, 20), 15);
         $meal3 = new MealInput(new TimeInput(5, 0), 5);
+        $meal4 = new MealInput(new TimeInput(5, 0), 5, false);
         yield ['9da12dc400', []];
         yield ['9da12dc4010492000a', [$meal1]];
         yield ['9da12dc4010050000f', [$meal2]];
         yield ['9da12dc401030c0005', [$meal3]];
         yield ['9da12dc4020492000a0050000f', [$meal1, $meal2]];
         yield ['9da12dc4030492000a0050000f030c0005', [$meal1, $meal2, $meal3]];
+        yield ['9da12dc4020492000a0050000f', [$meal1, $meal2, $meal4]];
     }
 
     /**

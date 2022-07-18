@@ -6,15 +6,16 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class MealInput
 {
+    #[Assert\Valid]
     public TimeInput $time;
 
     /**
      * @var int<5, 150>
      */
-    #[Assert\Range(min: 5, max: 150, groups: ['planning:validation'])]
+    #[Assert\Range(min: 5, max: 150)]
     public int $amount;
 
-    public bool $isEnabled;
+    public bool $isEnabled = true;
 
     /**
      * @param int<5, 150> $amount

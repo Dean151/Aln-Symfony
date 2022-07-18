@@ -19,7 +19,7 @@ final class GetFeederApiTest extends FeederApiTestCase
             'name' => $feeder->getName(),
             'lastSeen' => $feeder->getLastSeen()->format('c'),
             'defaultMealAmount' => $feeder->getDefaultMealAmount(),
-            'isAvailable' => true,
+            'available' => true,
         ]);
     }
 
@@ -32,7 +32,7 @@ final class GetFeederApiTest extends FeederApiTestCase
             'id' => $id,
             'identifier' => AlnFeederFactory::UNAVAILABLE_FEEDER_IDENTIFIER,
             'defaultMealAmount' => null,
-            'isAvailable' => false,
+            'available' => false,
         ]);
     }
 

@@ -4,8 +4,9 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Api\Dto\MealInput;
+use App\Api\Dto\PlanningInput;
 use App\Controller\ChangeDefaultMealController;
+use App\Controller\ChangePlanningController;
 use App\Controller\FeedNowController;
 use App\Repository\AlnFeederRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -15,7 +16,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Safe\DateTimeImmutable;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
@@ -91,6 +91,36 @@ use Symfony\Component\Validator\Constraints as Assert;
                 ],
             ],
         ],
+        'planning' => [
+            'method' => 'PUT',
+            'status' => Response::HTTP_OK,
+            'path' => '/feeders/{id}/planning',
+            'controller' => ChangePlanningController::class,
+            'input' => PlanningInput::class,
+            'denormalization_context' => ['groups' => []],
+            'validation_groups' => [],
+            'openapi_context' => [
+                'summary' => 'Replace the meal plan with a new one',
+                'description' => 'Replace the meal plan with a new one',
+                'responses' => [
+                    Response::HTTP_OK => [
+                        'description' => 'Planning replaced',
+                    ],
+                    Response::HTTP_NOT_FOUND => [
+                        'description' => 'Feeder not registered',
+                    ],
+                    Response::HTTP_CONFLICT => [
+                        'description' => 'Feeder not connected',
+                    ],
+                    Response::HTTP_UNPROCESSABLE_ENTITY => [
+                        'description' => 'Meal plan is not valid',
+                    ],
+                    Response::HTTP_SERVICE_UNAVAILABLE => [
+                        'description' => 'Feeder did not responded to request',
+                    ],
+                ],
+            ],
+        ],
     ],
     shortName: 'Feeder',
     denormalizationContext: ['groups' => ['feeder:input']],
@@ -140,6 +170,8 @@ class AlnFeeder
     #[Groups(['feeding:input'])]
     #[Assert\Range(min: 5, max: 150, groups: ['feeding:validation'])]
     public int $amount; // DTO used for feeding ; and changing default meal amount
+
+    public ?PlanningInput $planning = null; // DTO used for change planning
 
     public function __construct()
     {
@@ -263,7 +295,6 @@ class AlnFeeder
         return $this;
     }
 
-    #[SerializedName('isAvailable')]
     #[Groups(['feeder:output'])]
     public function isAvailable(): bool
     {

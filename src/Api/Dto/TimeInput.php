@@ -10,13 +10,13 @@ final class TimeInput
     /**
      * @var int<0, 23>
      */
-    #[Assert\Range(min: 0, max: 23, groups: ['planning:validation'])]
+    #[Assert\Range(min: 0, max: 23)]
     public int $hours;
 
     /**
      * @var int<0, 59>
      */
-    #[Assert\Range(min: 0, max: 59, groups: ['planning:validation'])]
+    #[Assert\Range(min: 0, max: 59)]
     public int $minutes;
 
     /**

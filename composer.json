@@ -104,6 +104,10 @@
         "stan": [
             "phpstan analyse --memory-limit 1G"
         ],
+        "lint": [
+            "@sniff",
+            "@stan"
+        ],
         "unit": [
             "@pause",
             "symfony console -e test doctrine:database:create --no-interaction --if-not-exists",
@@ -118,8 +122,7 @@
             "@start"
         ],
         "test": [
-            "@sniff",
-            "@stan",
+            "@lint",
             "@unit"
         ],
         "boot": [

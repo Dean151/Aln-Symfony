@@ -98,6 +98,14 @@ class AlnMeal
         return $this;
     }
 
+    public function setTimeFromInput(TimeInput $time): self
+    {
+        $datetime = new DateTimeImmutable('now', new \DateTimeZone('UTC'));
+        $datetime->setTime($time->hours, $time->minutes);
+
+        return $this->setTime($datetime);
+    }
+
     /**
      * @return int<5, 150>
      */
