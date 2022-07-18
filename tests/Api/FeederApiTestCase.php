@@ -6,7 +6,7 @@ use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
 use App\Entity\AlnFeeder;
 use App\Repository\AlnFeederRepository;
 
-abstract class FeederApiTest extends ApiTestCase
+abstract class FeederApiTestCase extends ApiTestCase
 {
     protected function findFeeder(string $identifier): AlnFeeder
     {

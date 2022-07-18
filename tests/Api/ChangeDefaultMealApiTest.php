@@ -4,87 +4,68 @@ namespace App\Tests\Api;
 
 use App\Factory\AlnFeederFactory;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
-class ChangeDefaultMealApiTest extends FeederApiTest
+final class ChangeDefaultMealApiTest extends FeederApiTestCase
 {
     public function testChangeDefaultMeal(): void
     {
+        $amount = random_int(5, 150);
         $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
-        $client = self::createClient();
-        $client->request('PUT', "/api/feeders/{$id}/amount", [
-            'headers' => [
-                'Accept' => 'application/json',
-            ],
-            'json' => [
-                'amount' => 12,
-            ],
-        ]);
+        $this->changeDefaultMealRequest($id, $amount);
         $this->assertResponseIsSuccessful();
         $this->assertJsonEquals([
-            'message' => '12g meal is now the default amount',
+            'message' => "{$amount}g meal is now the default amount",
         ]);
 
         $feeder = $this->findFeeder(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
-        $this->assertEquals(12, $feeder->getDefaultMealAmount());
+        $this->assertEquals($amount, $feeder->getDefaultMealAmount());
     }
 
-    public function testChangeDefaultMealWithTooSmallAmount(): void
+    /**
+     * @dataProvider provideNonValidInputData
+     */
+    public function testChangeDefaultMealWithNonValidInput(int $amount): void
     {
         $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
-        $client = self::createClient();
-        $client->request('PUT', "/api/feeders/{$id}/amount", [
-            'headers' => [
-                'Accept' => 'application/json',
-            ],
-            'json' => [
-                'amount' => 4,
-            ],
-        ]);
+        $this->changeDefaultMealRequest($id, $amount);
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function testChangeDefaultMealWithTooBigAmount(): void
+    public function provideNonValidInputData(): \Generator
     {
-        $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
-        $client = self::createClient();
-        $client->request('PUT', "/api/feeders/{$id}/amount", [
-            'headers' => [
-                'Accept' => 'application/json',
-            ],
-            'json' => [
-                'amount' => 151,
-            ],
-        ]);
-        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+        yield [4];
+        yield [151];
+        yield [random_int(151, PHP_INT_MAX)];
     }
 
     public function testChangeDefaultMealWithUnavailableFeeder(): void
     {
+        $amount = random_int(5, 150);
         $id = $this->findFeederId(AlnFeederFactory::UNAVAILABLE_FEEDER_IDENTIFIER);
-        $client = self::createClient();
-        $client->request('PUT', "/api/feeders/{$id}/amount", [
-            'headers' => [
-                'Accept' => 'application/json',
-            ],
-            'json' => [
-                'amount' => 75,
-            ],
-        ]);
+        $this->changeDefaultMealRequest($id, $amount);
         $this->assertResponseStatusCodeSame(Response::HTTP_CONFLICT);
     }
 
     public function testChangeDefaultMealWithUnknownFeederId(): void
     {
+        $amount = random_int(5, 150);
         $id = random_int(0, PHP_INT_MAX);
+        $this->changeDefaultMealRequest($id, $amount);
+        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+    }
+
+    private function changeDefaultMealRequest(int $feederId, int $amount): ResponseInterface
+    {
         $client = self::createClient();
-        $client->request('PUT', "/api/feeders/{$id}/amount", [
+
+        return $client->request('PUT', "/api/feeders/{$feederId}/amount", [
             'headers' => [
                 'Accept' => 'application/json',
             ],
             'json' => [
-                'amount' => 42,
+                'amount' => $amount,
             ],
         ]);
-        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 }

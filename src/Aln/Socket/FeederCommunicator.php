@@ -159,7 +159,7 @@ final class FeederCommunicator implements MessageDequeueInterface
         $this->persist($connection, $message->getIdentifier());
 
         $feeder = $this->feederRepository->findOrCreateFeeder($message->getIdentifier());
-        $feeder->setLastSeen(new DateTimeImmutable());
+        $feeder->setLastSeen(new DateTimeImmutable('now', new \DateTimeZone('UTC')));
 
         $this->sendInSocket((new TimeMessage())->hexadecimal(), $message->getIdentifier());
 
@@ -173,7 +173,7 @@ final class FeederCommunicator implements MessageDequeueInterface
         $feeder = $this->feederRepository->findOrCreateFeeder($message->getIdentifier());
         $feeder->setDefaultMealAmount($message->getMealAmount());
 
-        $now = new DateTimeImmutable();
+        $now = new DateTimeImmutable('now', new \DateTimeZone('UTC'));
         $meal = new AlnMeal();
         $meal->setDate($now);
         $meal->setTime($now);

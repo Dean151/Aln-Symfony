@@ -15,6 +15,8 @@ use App\Aln\Socket\Messages\MealDistributedMessage;
 use App\Aln\Socket\Messages\MessageInterface;
 use App\Aln\Socket\Messages\PlanningChangedMessage;
 use App\Aln\Socket\Messages\TimeMessage;
+use App\Api\Dto\MealInput;
+use App\Api\Dto\TimeInput;
 use PHPUnit\Framework\TestCase;
 
 final class MessagesTest extends TestCase
@@ -111,11 +113,10 @@ final class MessagesTest extends TestCase
     }
 
     /**
-     * @param array{hours: int<0, 23>, minutes: int<0, 59>} $time
-     * @param int<5, 150>                                   $mealAmount
+     * @param int<5, 150> $mealAmount
      * @dataProvider provideEmptyFeederData
      */
-    public function testEmptyFeeder(string $hexadecimal, string $identifier, array $time, int $mealAmount): void
+    public function testEmptyFeeder(string $hexadecimal, string $identifier, TimeInput $time, int $mealAmount): void
     {
         $message = MessageIdentification::identifyIncomingMessage($hexadecimal);
         $this->assertInstanceOf(EmptyFeederMessage::class, $message);
@@ -127,15 +128,14 @@ final class MessagesTest extends TestCase
 
     public function provideEmptyFeederData(): \Generator
     {
-        yield ['9da11441424331323334353637383921037d001e', 'ABC123456789', ['hours' => 6, 'minutes' => 53], 30];
-        yield ['9da1145a59583938373635343332312103850005', 'ZYX987654321', ['hours' => 7, 'minutes' => 1], 5];
+        yield ['9da11441424331323334353637383921037d001e', 'ABC123456789', new TimeInput(6, 53), 30];
+        yield ['9da1145a59583938373635343332312103850005', 'ZYX987654321', new TimeInput(7, 1), 5];
     }
 
     /**
-     * @param array{hours: int<0, 23>, minutes: int<0, 59>} $time
      * @dataProvider provideTimeData
      */
-    public function testTime(string $hexadecimal, array $time): void
+    public function testTime(string $hexadecimal, TimeInput $time): void
     {
         $this->assertEquals($hexadecimal, (new TimeMessage($time))->hexadecimal());
         $this->assertEquals($time, TimeMessage::decodeFrom($hexadecimal)->getTime());
@@ -143,18 +143,18 @@ final class MessagesTest extends TestCase
 
     public function provideTimeData(): \Generator
     {
-        yield ['9da106010000', ['hours' => 16, 'minutes' => 0]];
-        yield ['9da106010050', ['hours' => 17, 'minutes' => 20]];
-        yield ['9da10601030c', ['hours' => 5, 'minutes' => 0]];
-        yield ['9da106010492', ['hours' => 11, 'minutes' => 30]];
-        yield ['9da10601059f', ['hours' => 15, 'minutes' => 59]];
+        yield ['9da106010000', new TimeInput(16, 0)];
+        yield ['9da106010050', new TimeInput(17, 20)];
+        yield ['9da10601030c', new TimeInput(5, 0)];
+        yield ['9da106010492', new TimeInput(11, 30)];
+        yield ['9da10601059f', new TimeInput(15, 59)];
     }
 
     public function testAllTimes(): void
     {
         for ($hours = 0; $hours < 24; ++$hours) {
             for ($minutes = 0; $minutes < 60; ++$minutes) {
-                $time = ['hours' => $hours, 'minutes' => $minutes];
+                $time = new TimeInput($hours, $minutes);
                 $this->assertMatchesRegularExpression('/^9da106010(?:5\d[[:xdigit:]]|[0-4][[:xdigit:]]{2})$/', (new TimeMessage($time))->hexadecimal());
             }
         }
@@ -199,7 +199,7 @@ final class MessagesTest extends TestCase
     }
 
     /**
-     * @param array<array{time: array{hours: int<0, 23>, minutes: int<0, 59>}, amount: int<5, 150>}> $meals
+     * @param array<MealInput> $meals
      * @dataProvider provideChangePlanningData
      */
     public function testChangePlanning(string $hexadecimal, array $meals): void
@@ -210,9 +210,9 @@ final class MessagesTest extends TestCase
 
     public function provideChangePlanningData(): \Generator
     {
-        $meal1 = ['time' => ['hours' => 11, 'minutes' => 30], 'amount' => 10];
-        $meal2 = ['time' => ['hours' => 17, 'minutes' => 20], 'amount' => 15];
-        $meal3 = ['time' => ['hours' => 5, 'minutes' => 0], 'amount' => 5];
+        $meal1 = new MealInput(new TimeInput(11, 30), 10);
+        $meal2 = new MealInput(new TimeInput(17, 20), 15);
+        $meal3 = new MealInput(new TimeInput(5, 0), 5);
         yield ['9da12dc400', []];
         yield ['9da12dc4010492000a', [$meal1]];
         yield ['9da12dc4010050000f', [$meal2]];

@@ -16,8 +16,11 @@ final class ChangeDefaultMealController extends AbstractSocketController
     private ValidatorInterface $validator;
     private ManagerRegistry $doctrine;
 
-    public function __construct(MessageEnqueueInterface $queue, ValidatorInterface $validator, ManagerRegistry $doctrine)
-    {
+    public function __construct(
+        MessageEnqueueInterface $queue,
+        ValidatorInterface $validator,
+        ManagerRegistry $doctrine
+    ) {
         $this->validator = $validator;
         $this->doctrine = $doctrine;
         parent::__construct($queue);
@@ -29,15 +32,16 @@ final class ChangeDefaultMealController extends AbstractSocketController
 
         $amount = $data->amount;
         assert($amount >= 5 && $amount <= 150);
+        $feeder = $data;
 
         $message = new ChangeDefaultMealMessage($amount);
-        $this->sendSocketMessage($data, $message);
+        $this->sendSocketMessage($feeder, $message);
 
-        $data->setDefaultMealAmount($data->amount);
+        $feeder->setDefaultMealAmount($amount);
         $this->doctrine->getManager()->flush();
 
         return $this->json([
-            'message' => "{$data->amount}g meal is now the default amount",
+            'message' => "{$amount}g meal is now the default amount",
         ]);
     }
 }

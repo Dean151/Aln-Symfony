@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Api\Dto\TimeInput;
 use App\Repository\AlnMealRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -39,7 +40,7 @@ class AlnMeal
 
     public function __construct()
     {
-        $this->time = new DateTimeImmutable();
+        $this->time = new DateTimeImmutable('now', new \DateTimeZone('UTC'));
         $this->amount = 5;
         $this->isEnabled = true;
     }

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Api\Dto\MealInput;
 use App\Controller\ChangeDefaultMealController;
 use App\Controller\FeedNowController;
 use App\Repository\AlnFeederRepository;
@@ -42,6 +43,23 @@ use Symfony\Component\Validator\Constraints as Assert;
             'openapi_context' => [
                 'summary' => 'Trigger a meal immediately with specified amount in grams',
                 'description' => 'Trigger a meal immediately with specified amount in grams',
+                'responses' => [
+                    Response::HTTP_OK => [
+                        'description' => 'Meal distributed',
+                    ],
+                    Response::HTTP_NOT_FOUND => [
+                        'description' => 'Feeder not registered',
+                    ],
+                    Response::HTTP_CONFLICT => [
+                        'description' => 'Feeder not connected',
+                    ],
+                    Response::HTTP_UNPROCESSABLE_ENTITY => [
+                        'description' => 'Meal amount is not valid',
+                    ],
+                    Response::HTTP_SERVICE_UNAVAILABLE => [
+                        'description' => 'Feeder did not responded to request',
+                    ],
+                ],
             ],
         ],
         'amount' => [
@@ -54,6 +72,23 @@ use Symfony\Component\Validator\Constraints as Assert;
             'openapi_context' => [
                 'summary' => 'Update the amount distributed when the feeder button is pressed in grams',
                 'description' => 'Update the amount distributed when the feeder button is pressed in grams',
+                'responses' => [
+                    Response::HTTP_OK => [
+                        'description' => 'Default meal amount updated',
+                    ],
+                    Response::HTTP_NOT_FOUND => [
+                        'description' => 'Feeder not registered',
+                    ],
+                    Response::HTTP_CONFLICT => [
+                        'description' => 'Feeder not connected',
+                    ],
+                    Response::HTTP_UNPROCESSABLE_ENTITY => [
+                        'description' => 'Meal amount is not valid',
+                    ],
+                    Response::HTTP_SERVICE_UNAVAILABLE => [
+                        'description' => 'Feeder did not responded to request',
+                    ],
+                ],
             ],
         ],
     ],
@@ -110,7 +145,7 @@ class AlnFeeder
     {
         $this->identifier = '';
         $this->name = '';
-        $this->lastSeen = new DateTimeImmutable();
+        $this->lastSeen = new DateTimeImmutable('now', new \DateTimeZone('UTC'));
         $this->meals = new ArrayCollection();
         $this->plannings = new ArrayCollection();
     }
@@ -232,7 +267,7 @@ class AlnFeeder
     #[Groups(['feeder:output'])]
     public function isAvailable(): bool
     {
-        $now = new DateTimeImmutable();
+        $now = new DateTimeImmutable('now', new \DateTimeZone('UTC'));
 
         return ($now->getTimestamp() - $this->lastSeen->getTimestamp()) <= 30;
     }

@@ -3,13 +3,14 @@
 namespace App\Aln\Socket\Messages;
 
 use App\Aln\Socket\MessageTranscriber;
+use App\Api\Dto\MealInput;
 
 class ChangePlanningMessage implements MessageInterface
 {
     use MessageTranscriber;
 
     /**
-     * @var array<array{time: array{hours: int<0, 23>, minutes: int<0, 59>}, amount: int<5, 150>}>
+     * @var array<MealInput>
      */
     private array $meals;
 
@@ -22,7 +23,7 @@ class ChangePlanningMessage implements MessageInterface
     }
 
     /**
-     * @param array<array{time: array{hours: int<0, 23>, minutes: int<0, 59>}, amount: int<5, 150>}> $meals
+     * @param array<MealInput> $meals
      */
     public function __construct(array $meals)
     {
@@ -30,7 +31,7 @@ class ChangePlanningMessage implements MessageInterface
     }
 
     /**
-     * @return array<array{time: array{hours: int<0, 23>, minutes: int<0, 59>}, amount: int<5, 150>}>
+     * @return array<MealInput>
      */
     public function getMeals(): array
     {

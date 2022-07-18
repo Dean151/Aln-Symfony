@@ -4,18 +4,14 @@ namespace App\Tests\Api;
 
 use App\Factory\AlnFeederFactory;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
-final class GetFeederApiTest extends FeederApiTest
+final class GetFeederApiTest extends FeederApiTestCase
 {
     public function testAvailableFeederStatus(): void
     {
         $feeder = $this->findFeeder(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
-        $client = self::createClient();
-        $client->request('GET', "/api/feeders/{$feeder->getId()}", [
-            'headers' => [
-                'Accept' => 'application/json',
-            ],
-        ]);
+        $this->getFeederRequest($feeder->getId() ?? -1);
         $this->assertResponseIsSuccessful();
         $this->assertJsonContains([
             'id' => $feeder->getId(),
@@ -30,12 +26,7 @@ final class GetFeederApiTest extends FeederApiTest
     public function testUnavailableFeederStatus(): void
     {
         $id = $this->findFeederId(AlnFeederFactory::UNAVAILABLE_FEEDER_IDENTIFIER);
-        $client = self::createClient();
-        $client->request('GET', "/api/feeders/{$id}", [
-            'headers' => [
-                'Accept' => 'application/json',
-            ],
-        ]);
+        $this->getFeederRequest($id);
         $this->assertResponseIsSuccessful();
         $this->assertJsonContains([
             'id' => $id,
@@ -48,12 +39,18 @@ final class GetFeederApiTest extends FeederApiTest
     public function testUnknownFeederId(): void
     {
         $id = random_int(0, PHP_INT_MAX);
+        $this->getFeederRequest($id);
+        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+    }
+
+    private function getFeederRequest(int $feederId): ResponseInterface
+    {
         $client = self::createClient();
-        $client->request('GET', "/api/feeders/{$id}", [
+
+        return $client->request('GET', "/api/feeders/{$feederId}", [
             'headers' => [
                 'Accept' => 'application/json',
             ],
         ]);
-        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 }

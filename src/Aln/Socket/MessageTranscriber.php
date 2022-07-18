@@ -2,6 +2,9 @@
 
 namespace App\Aln\Socket;
 
+use App\Api\Dto\MealInput;
+use App\Api\Dto\TimeInput;
+
 use function Safe\hex2bin;
 use function Safe\preg_match;
 
@@ -31,7 +34,7 @@ trait MessageTranscriber
     }
 
     /**
-     * @return array<array{time: array{hours: int<0, 23>, minutes: int<0, 59>}, amount: int<5, 150>}>
+     * @return array<MealInput>
      */
     protected static function decodePlanning(string $hexadecimalMeals): array
     {
@@ -43,7 +46,7 @@ trait MessageTranscriber
             $hexadecimalAmount = substr($hexadecimalMeals, 4, 4);
             $time = self::decodeTime($hexadecimalTime);
             $amount = self::decodeMealAmount($hexadecimalAmount);
-            $meals[] = ['time' => $time, 'amount' => $amount];
+            $meals[] = new MealInput($time, $amount);
 
             $hexadecimalMeals = substr($hexadecimalMeals, 8);
         }
@@ -51,10 +54,7 @@ trait MessageTranscriber
         return $meals;
     }
 
-    /**
-     * @return array{hours: int<0, 23>, minutes: int<0, 59>}
-     */
-    protected static function decodeTime(string $hexadecimalTime): array
+    protected static function decodeTime(string $hexadecimalTime): TimeInput
     {
         $globalMinutes = (int) hexdec($hexadecimalTime);
         $hours = ((($globalMinutes - ($globalMinutes % 60)) / 60) + 16) % 24;
@@ -62,7 +62,7 @@ trait MessageTranscriber
         assert($hours >= 0);
         assert($minutes >= 0);
 
-        return ['hours' => $hours, 'minutes' => $minutes];
+        return new TimeInput($hours, $minutes);
     }
 
     /**
@@ -74,14 +74,14 @@ trait MessageTranscriber
     }
 
     /**
-     * @param array<array{time: array{hours: int<0, 23>, minutes: int<0, 59>}, amount: int<5, 150>}> $meals
+     * @param array<MealInput> $meals
      */
     protected function encodePlanning(array $meals): string
     {
         $hexadecimalCount = str_pad(dechex(count($meals)), 2, '0', STR_PAD_LEFT);
-        $hexadecimalMeals = implode(array_map(function ($meal) {
-            $hexadecimalTime = $this->encodeTime($meal['time']);
-            $hexadecimalAmount = $this->encodeMealAmount($meal['amount']);
+        $hexadecimalMeals = implode(array_map(function (MealInput $meal) {
+            $hexadecimalTime = $this->encodeTime($meal->time);
+            $hexadecimalAmount = $this->encodeMealAmount($meal->amount);
 
             return $hexadecimalTime.$hexadecimalAmount;
         }, $meals));
@@ -89,13 +89,10 @@ trait MessageTranscriber
         return $hexadecimalCount.$hexadecimalMeals;
     }
 
-    /**
-     * @param array{hours: int<0, 23>, minutes: int<0, 59>} $time
-     */
-    protected function encodeTime(array $time): string
+    protected function encodeTime(TimeInput $time): string
     {
-        $hoursWithOffset = ($time['hours'] + 8) % 24;
-        $numberOfMinutes = $hoursWithOffset * 60 + $time['minutes'];
+        $hoursWithOffset = ($time->hours + 8) % 24;
+        $numberOfMinutes = $hoursWithOffset * 60 + $time->minutes;
         $b2 = $numberOfMinutes % 256;
         $b1 = ($numberOfMinutes - $b2) / 256;
 

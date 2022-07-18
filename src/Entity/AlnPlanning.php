@@ -32,7 +32,7 @@ class AlnPlanning
     public function __construct()
     {
         $this->meals = new ArrayCollection();
-        $this->createdOn = new DateTimeImmutable();
+        $this->createdOn = new DateTimeImmutable('now', new \DateTimeZone('UTC'));
     }
 
     public function getId(): ?int

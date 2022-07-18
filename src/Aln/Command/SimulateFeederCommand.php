@@ -105,7 +105,7 @@ class SimulateFeederCommand extends Command
         if (str_starts_with($hexadecimal, '9da10601')) {
             $message = TimeMessage::decodeFrom($hexadecimal);
             $time = $message->getTime();
-            $output->writeln("Received time: {$time['hours']}h{$time['minutes']}");
+            $output->writeln("Received time: {$time->hours}h{$time->minutes}");
         } elseif (str_starts_with($hexadecimal, '9da106c3')) {
             $message = ChangeDefaultMealMessage::decodeFrom($hexadecimal);
             $output->writeln("Changed default meal to {$message->getMealAmount()}g");
@@ -120,7 +120,7 @@ class SimulateFeederCommand extends Command
             $message = ChangePlanningMessage::decodeFrom($hexadecimal);
             $output->writeln("Planning changed with {$message->getCount()} meal(s)");
             foreach ($message->getMeals() as $meal) {
-                $output->writeln(" - {$meal['time']['hours']}h{$meal['time']['minutes']} – {$meal['amount']}g");
+                $output->writeln(" - {$meal->time->hours}h{$meal->time->minutes} – {$meal->amount}g");
             }
             if ($simulateNotRespondingFeeder) {
                 return;

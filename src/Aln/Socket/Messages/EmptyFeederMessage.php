@@ -2,12 +2,11 @@
 
 namespace App\Aln\Socket\Messages;
 
+use App\Api\Dto\TimeInput;
+
 final class EmptyFeederMessage extends IdentifiedMessage
 {
-    /**
-     * @var array{hours: int<0, 23>, minutes: int<0, 59>}
-     */
-    private array $time;
+    private TimeInput $time;
 
     /**
      * @var int<5, 150>
@@ -27,20 +26,16 @@ final class EmptyFeederMessage extends IdentifiedMessage
     }
 
     /**
-     * @param ?array{hours: int<0, 23>, minutes: int<0, 59>} $time
-     * @param int<5, 150>                                    $mealAmount
+     * @param int<5, 150> $mealAmount
      */
-    public function __construct(string $identifier, int $mealAmount, ?array $time = null)
+    public function __construct(string $identifier, int $mealAmount, ?TimeInput $time = null)
     {
-        $this->time = $time ?? TimeMessage::now();
+        $this->time = $time ?? TimeInput::now();
         $this->mealAmount = $mealAmount;
         parent::__construct($identifier);
     }
 
-    /**
-     * @return array{hours: int<0, 23>, minutes: int<0, 59>}
-     */
-    public function getTime()
+    public function getTime(): TimeInput
     {
         return $this->time;
     }

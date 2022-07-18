@@ -20,8 +20,12 @@ final class FeedNowController extends AbstractSocketController
     private AlnMealRepository $repository;
     private ManagerRegistry $doctrine;
 
-    public function __construct(MessageEnqueueInterface $queue, ValidatorInterface $validator, AlnMealRepository $repository, ManagerRegistry $doctrine)
-    {
+    public function __construct(
+        MessageEnqueueInterface $queue,
+        ValidatorInterface $validator,
+        AlnMealRepository $repository,
+        ManagerRegistry $doctrine
+    ) {
         $this->validator = $validator;
         $this->repository = $repository;
         $this->doctrine = $doctrine;
@@ -34,20 +38,21 @@ final class FeedNowController extends AbstractSocketController
 
         $amount = $data->amount;
         assert($amount >= 5 && $amount <= 150);
+        $feeder = $data;
 
         $message = new FeedNowMessage($amount);
-        $this->sendSocketMessage($data, $message);
+        $this->sendSocketMessage($feeder, $message);
 
         $meal = new AlnMeal();
-        $meal->setDate(new DateTimeImmutable());
+        $meal->setDate(new DateTimeImmutable('now', new \DateTimeZone('UTC')));
         $meal->setAmount($amount);
-        $data->addMeal($meal);
+        $feeder->addMeal($meal);
         $this->repository->add($meal);
 
         $this->doctrine->getManager()->flush();
 
         return $this->json([
-            'message' => "{$data->amount}g meal has been distributed",
+            'message' => "{$amount}g meal has been distributed",
         ]);
     }
 }

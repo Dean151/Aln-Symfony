@@ -4,9 +4,10 @@ namespace App\Tests\Api;
 
 use App\Factory\AlnFeederFactory;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 use Zenstruck\Foundry\Test\Factories;
 
-final class PutFeederApiTest extends FeederApiTest
+final class PutFeederApiTest extends FeederApiTestCase
 {
     use Factories;
 
@@ -14,19 +15,7 @@ final class PutFeederApiTest extends FeederApiTest
     {
         $newName = AlnFeederFactory::faker()->name();
         $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
-        $client = self::createClient();
-        $client->request('PUT', "/api/feeders/{$id}", [
-            'headers' => [
-                'Accept' => 'application/json',
-            ],
-            'json' => [
-                'name' => $newName,
-            ],
-        ]);
-        $this->assertResponseIsSuccessful();
-        $this->assertJsonContains([
-            'name' => $newName,
-        ]);
+        $this->putFeederNameRequest($id, $newName);
 
         $feeder = $this->findFeeder(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
         $this->assertEquals($newName, $feeder->getName());
@@ -36,15 +25,7 @@ final class PutFeederApiTest extends FeederApiTest
     {
         $newName = AlnFeederFactory::faker()->paragraph(10);
         $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
-        $client = self::createClient();
-        $client->request('PUT', "/api/feeders/{$id}", [
-            'headers' => [
-                'Accept' => 'application/json',
-            ],
-            'json' => [
-                'name' => $newName,
-            ],
-        ]);
+        $this->putFeederNameRequest($id, $newName);
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
@@ -52,8 +33,15 @@ final class PutFeederApiTest extends FeederApiTest
     {
         $newName = AlnFeederFactory::faker()->firstName();
         $id = random_int(0, PHP_INT_MAX);
+        $this->putFeederNameRequest($id, $newName);
+        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+    }
+
+    private function putFeederNameRequest(int $feederId, string $newName): ResponseInterface
+    {
         $client = self::createClient();
-        $client->request('PUT', "/api/feeders/{$id}", [
+
+        return $client->request('PUT', "/api/feeders/{$feederId}", [
             'headers' => [
                 'Accept' => 'application/json',
             ],
@@ -61,6 +49,5 @@ final class PutFeederApiTest extends FeederApiTest
                 'name' => $newName,
             ],
         ]);
-        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 }

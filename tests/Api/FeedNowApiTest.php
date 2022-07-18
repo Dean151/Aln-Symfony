@@ -5,92 +5,73 @@ namespace App\Tests\Api;
 use App\Entity\AlnMeal;
 use App\Factory\AlnFeederFactory;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
-class FeedNowApiTest extends FeederApiTest
+final class FeedNowApiTest extends FeederApiTestCase
 {
     public function testFeedNow(): void
     {
+        $amount = random_int(5, 150);
         $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
-        $client = self::createClient();
-        $client->request('POST', "/api/feeders/{$id}/feed", [
-            'headers' => [
-                'Accept' => 'application/json',
-            ],
-            'json' => [
-                'amount' => 12,
-            ],
-        ]);
+        $this->feedNowRequest($id, $amount);
         $this->assertResponseIsSuccessful();
         $this->assertJsonEquals([
-            'message' => '12g meal has been distributed',
+            'message' => "{$amount}g meal has been distributed",
         ]);
 
         $feeder = $this->findFeeder(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
         $meal = $feeder->getMeals()->last();
         $this->assertInstanceOf(AlnMeal::class, $meal);
-        $this->assertEquals(12, $meal->getAmount());
+        $this->assertEquals($amount, $meal->getAmount());
         $this->assertNotNull($meal->getDate());
         $this->assertNotNull($meal->getTime());
         $this->assertNull($meal->getPlanning());
     }
 
-    public function testFeedNowWithTooSmallAmount(): void
+    /**
+     * @dataProvider provideNonValidInputData
+     */
+    public function testFeedNowWithNonValidInput(int $amount): void
     {
         $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
-        $client = self::createClient();
-        $client->request('POST', "/api/feeders/{$id}/feed", [
-            'headers' => [
-                'Accept' => 'application/json',
-            ],
-            'json' => [
-                'amount' => 4,
-            ],
-        ]);
+        $this->feedNowRequest($id, $amount);
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function testFeedNowWithTooBigAmount(): void
+    public function provideNonValidInputData(): \Generator
     {
-        $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
-        $client = self::createClient();
-        $client->request('POST', "/api/feeders/{$id}/feed", [
-            'headers' => [
-                'Accept' => 'application/json',
-            ],
-            'json' => [
-                'amount' => 151,
-            ],
-        ]);
-        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+        yield [4];
+        yield [151];
+        yield [random_int(151, PHP_INT_MAX)];
     }
 
     public function testFeedNowWithUnavailableFeeder(): void
     {
+        $amount = random_int(5, 150);
         $id = $this->findFeederId(AlnFeederFactory::UNAVAILABLE_FEEDER_IDENTIFIER);
-        $client = self::createClient();
-        $client->request('POST', "/api/feeders/{$id}/feed", [
-            'headers' => [
-                'Accept' => 'application/json',
-            ],
-            'json' => [
-                'amount' => 75,
-            ],
-        ]);
+        $this->feedNowRequest($id, $amount);
         $this->assertResponseStatusCodeSame(Response::HTTP_CONFLICT);
     }
 
     public function testFeedNowWithUnknownFeederId(): void
     {
+        $amount = random_int(5, 150);
         $id = random_int(0, PHP_INT_MAX);
+        $this->feedNowRequest($id, $amount);
+        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
+    }
+
+    private function feedNowRequest(int $feederId, int $amount): ResponseInterface
+    {
         $client = self::createClient();
-        $client->request('POST', "/api/feeders/{$id}/feed", [
+
+        return $client->request('POST', "/api/feeders/{$feederId}/feed", [
             'headers' => [
                 'Accept' => 'application/json',
             ],
             'json' => [
-                'amount' => 42,
+                'amount' => $amount,
             ],
         ]);
-        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 }
