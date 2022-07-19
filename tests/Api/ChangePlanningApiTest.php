@@ -21,14 +21,18 @@ final class ChangePlanningApiTest extends FeederApiTestCase
             'message' => 'Planning have been changed',
         ]);
 
-        // TODO: check that current planning is saved in database
+        $this->getFeederRequest($id);
+        $this->assertResponseIsSuccessful();
+        $this->assertJsonContains([
+            'currentPlanning' => ['meals' => $meals],
+        ]);
     }
 
     public function providePlanningChangeData(): \Generator
     {
         $meal1 = ['time' => ['hours' => 11, 'minutes' => 30], 'amount' => 10];
         $meal2 = ['time' => ['hours' => 17, 'minutes' => 20], 'amount' => 15];
-        $meal3 = ['time' => ['hours' => 5, 'minutes' => 0], 'amount' => 5, 'isAvailable' => false];
+        $meal3 = ['time' => ['hours' => 5, 'minutes' => 0], 'amount' => 5, 'enabled' => false];
         yield [[]];
         yield [[$meal1]];
         yield [[$meal1, $meal2]];
@@ -81,6 +85,17 @@ final class ChangePlanningApiTest extends FeederApiTestCase
             ],
             'json' => [
                 'meals' => $meals,
+            ],
+        ]);
+    }
+
+    private function getFeederRequest(int $feederId): ResponseInterface
+    {
+        $client = self::createClient();
+
+        return $client->request('GET', "/api/feeders/{$feederId}", [
+            'headers' => [
+                'Accept' => 'application/json',
             ],
         ]);
     }

@@ -48,7 +48,6 @@ final class ChangePlanningController extends AbstractSocketController
 
         $alnPlanning = new AlnPlanning();
         $feeder->addPlanning($alnPlanning);
-        $this->planningRepository->add($alnPlanning);
         foreach ($planning->meals as $meal) {
             $alnMeal = new AlnMeal();
             $alnMeal->setTimeFromInput($meal->time);
@@ -58,6 +57,7 @@ final class ChangePlanningController extends AbstractSocketController
             $alnPlanning->addMeal($alnMeal);
             $this->mealRepository->add($alnMeal);
         }
+        $this->planningRepository->add($alnPlanning);
         $this->doctrine->getManager()->flush();
 
         return $this->json([

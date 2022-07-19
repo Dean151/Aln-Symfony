@@ -44,7 +44,7 @@ final class FeedNowController extends AbstractSocketController
         $this->sendSocketMessage($feeder, $message);
 
         $meal = new AlnMeal();
-        $meal->setDate(new DateTimeImmutable('now', new \DateTimeZone('UTC')));
+        $meal->setDistributedOn(new DateTimeImmutable('now', new \DateTimeZone('UTC')));
         $meal->setAmount($amount);
         $feeder->addMeal($meal);
         $this->repository->add($meal);

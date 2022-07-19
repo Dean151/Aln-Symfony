@@ -302,4 +302,10 @@ class AlnFeeder
 
         return ($now->getTimestamp() - $this->lastSeen->getTimestamp()) <= 30;
     }
+
+    #[Groups(['feeder:output'])]
+    public function getCurrentPlanning(): ?AlnPlanning
+    {
+        return $this->plannings->last() ?: null;
+    }
 }

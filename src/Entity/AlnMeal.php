@@ -6,7 +6,8 @@ use App\Api\Dto\TimeInput;
 use App\Repository\AlnMealRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Safe\DateTimeImmutable;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
 #[ORM\Entity(repositoryClass: AlnMealRepository::class)]
 class AlnMeal
@@ -23,24 +24,30 @@ class AlnMeal
     #[ORM\ManyToOne(inversedBy: 'meals')]
     private ?AlnPlanning $planning = null;
 
-    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $date = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $distributedOn = null;
 
-    #[ORM\Column(type: Types::TIME_IMMUTABLE)]
-    private \DateTimeImmutable $time;
+    /**
+     * @var array{hours: int<0, 23>, minutes: int<0, 59>}
+     */
+    #[ORM\Column(nullable: true)]
+    #[Groups(['feeder:output'])]
+    private ?array $time = null;
 
     /**
      * @var int<5, 150>
      */
     #[ORM\Column(type: Types::SMALLINT)]
+    #[Groups(['feeder:output'])]
     private int $amount;
 
     #[ORM\Column(type: Types::BOOLEAN)]
+    #[SerializedName('enabled')]
+    #[Groups(['feeder:output'])]
     private bool $isEnabled;
 
     public function __construct()
     {
-        $this->time = new DateTimeImmutable('now', new \DateTimeZone('UTC'));
         $this->amount = 5;
         $this->isEnabled = true;
     }
@@ -74,36 +81,41 @@ class AlnMeal
         return $this;
     }
 
-    public function getDate(): ?\DateTimeImmutable
+    public function getDistributedOn(): ?\DateTimeImmutable
     {
-        return $this->date;
+        return $this->distributedOn;
     }
 
-    public function setDate(?\DateTimeImmutable $date): self
+    public function setDistributedOn(?\DateTimeImmutable $distributedOn): self
     {
-        $this->date = $date;
+        $this->distributedOn = $distributedOn;
 
         return $this;
     }
 
-    public function getTime(): \DateTimeImmutable
+    /**
+     * @return ?array{hours: int<0, 23>, minutes: int<0, 59>}
+     */
+    public function getTime(): ?array
     {
         return $this->time;
     }
 
-    public function setTime(\DateTimeImmutable $time): self
+    /**
+     * @param ?array{hours: int<0, 23>, minutes: int<0, 59>} $time
+     */
+    public function setTime(?array $time): self
     {
         $this->time = $time;
 
         return $this;
     }
 
-    public function setTimeFromInput(TimeInput $time): self
+    public function setTimeFromInput(TimeInput $input): self
     {
-        $datetime = new DateTimeImmutable('now', new \DateTimeZone('UTC'));
-        $datetime->setTime($time->hours, $time->minutes);
+        $this->setTime($input->toArray());
 
-        return $this->setTime($datetime);
+        return $this;
     }
 
     /**
@@ -124,7 +136,7 @@ class AlnMeal
         return $this;
     }
 
-    public function isIsEnabled(): bool
+    public function isEnabled(): bool
     {
         return $this->isEnabled;
     }

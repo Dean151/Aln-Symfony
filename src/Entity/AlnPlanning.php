@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Safe\DateTimeImmutable;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: AlnPlanningRepository::class)]
 class AlnPlanning
@@ -24,6 +25,7 @@ class AlnPlanning
      * @var Collection<int, AlnMeal>
      */
     #[ORM\OneToMany(mappedBy: 'planning', targetEntity: AlnMeal::class)]
+    #[Groups(['feeder:output'])]
     private Collection $meals;
 
     #[ORM\Column]

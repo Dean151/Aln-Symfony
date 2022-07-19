@@ -20,6 +20,12 @@ final class ChangeDefaultMealApiTest extends FeederApiTestCase
 
         $feeder = $this->findFeeder(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
         $this->assertEquals($amount, $feeder->getDefaultMealAmount());
+
+        $this->getFeederRequest($id);
+        $this->assertResponseIsSuccessful();
+        $this->assertJsonContains([
+            'defaultMealAmount' => $amount,
+        ]);
     }
 
     /**
@@ -65,6 +71,17 @@ final class ChangeDefaultMealApiTest extends FeederApiTestCase
             ],
             'json' => [
                 'amount' => $amount,
+            ],
+        ]);
+    }
+
+    private function getFeederRequest(int $feederId): ResponseInterface
+    {
+        $client = self::createClient();
+
+        return $client->request('GET', "/api/feeders/{$feederId}", [
+            'headers' => [
+                'Accept' => 'application/json',
             ],
         ]);
     }

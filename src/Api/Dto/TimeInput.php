@@ -38,4 +38,12 @@ final class TimeInput
 
         return new TimeInput($hours, $minutes);
     }
+
+    /**
+     * @return array{hours: int<0, 23>, minutes: int<0, 59>}
+     */
+    public function toArray(): array
+    {
+        return ['hours' => $this->hours, 'minutes' => $this->minutes];
+    }
 }

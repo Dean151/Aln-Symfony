@@ -2,6 +2,7 @@
 
 namespace App\Api\Dto;
 
+use Symfony\Component\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 
 final class MealInput
@@ -15,6 +16,7 @@ final class MealInput
     #[Assert\Range(min: 5, max: 150)]
     public int $amount;
 
+    #[SerializedName('enabled')]
     public bool $isEnabled = true;
 
     /**

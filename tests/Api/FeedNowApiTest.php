@@ -22,9 +22,11 @@ final class FeedNowApiTest extends FeederApiTestCase
         $feeder = $this->findFeeder(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
         $meal = $feeder->getMeals()->last();
         $this->assertInstanceOf(AlnMeal::class, $meal);
+        $this->assertNotNull($meal->getDistributedOn());
         $this->assertEquals($amount, $meal->getAmount());
-        $this->assertNotNull($meal->getDate());
-        $this->assertNotNull($meal->getTime());
+
+        // Planning reserved settings should be null
+        $this->assertNull($meal->getTime());
         $this->assertNull($meal->getPlanning());
     }
 

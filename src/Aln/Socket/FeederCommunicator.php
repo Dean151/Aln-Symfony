@@ -175,8 +175,7 @@ final class FeederCommunicator implements MessageDequeueInterface
 
         $now = new DateTimeImmutable('now', new \DateTimeZone('UTC'));
         $meal = new AlnMeal();
-        $meal->setDate($now);
-        $meal->setTime($now);
+        $meal->setDistributedOn($now);
         $feeder->addMeal($meal);
         $this->mealRepository->add($meal);
 
