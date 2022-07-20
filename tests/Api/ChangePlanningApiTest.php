@@ -68,6 +68,13 @@ final class ChangePlanningApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_CONFLICT);
     }
 
+    public function testChangeDefaultMealWithNonRespondingFeeder(): void
+    {
+        $id = $this->findFeederId(AlnFeederFactory::NOT_RESPONDING_FEEDER_IDENTIFIER);
+        $this->changePlanningRequest($id, []);
+        $this->assertResponseStatusCodeSame(Response::HTTP_SERVICE_UNAVAILABLE);
+    }
+
     public function testPlanningChangeWithUnknownFeederId(): void
     {
         $id = random_int(0, PHP_INT_MAX);

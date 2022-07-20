@@ -55,6 +55,14 @@ final class FeedNowApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_CONFLICT);
     }
 
+    public function testFeedNowWithNonRespondingFeeder(): void
+    {
+        $amount = random_int(5, 150);
+        $id = $this->findFeederId(AlnFeederFactory::NOT_RESPONDING_FEEDER_IDENTIFIER);
+        $this->feedNowRequest($id, $amount);
+        $this->assertResponseStatusCodeSame(Response::HTTP_SERVICE_UNAVAILABLE);
+    }
+
     public function testFeedNowWithUnknownFeederId(): void
     {
         $amount = random_int(5, 150);

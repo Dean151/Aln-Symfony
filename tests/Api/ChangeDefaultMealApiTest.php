@@ -53,6 +53,14 @@ final class ChangeDefaultMealApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_CONFLICT);
     }
 
+    public function testChangeDefaultMealWithNonRespondingFeeder(): void
+    {
+        $amount = random_int(5, 150);
+        $id = $this->findFeederId(AlnFeederFactory::NOT_RESPONDING_FEEDER_IDENTIFIER);
+        $this->changeDefaultMealRequest($id, $amount);
+        $this->assertResponseStatusCodeSame(Response::HTTP_SERVICE_UNAVAILABLE);
+    }
+
     public function testChangeDefaultMealWithUnknownFeederId(): void
     {
         $amount = random_int(5, 150);
