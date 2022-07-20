@@ -4,6 +4,7 @@ namespace App\Aln\Command;
 
 use App\Aln\Socket\MessageDequeueInterface;
 use App\Aln\Socket\MessageQueue;
+use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 use Ratchet\Http\HttpServer;
@@ -13,6 +14,7 @@ use React\EventLoop\Loop;
 use React\Socket\SocketServer;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Command\SignalableCommandInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -21,10 +23,14 @@ use Symfony\Component\Console\Output\OutputInterface;
     description: 'Run the rabbitmq client & websocket server',
     hidden: false
 )]
-final class RunSocketCommand extends Command
+final class RunSocketCommand extends Command implements SignalableCommandInterface
 {
     private MessageDequeueInterface $communicator;
     protected static $defaultName = 'aln:socket:run';
+
+    private ?AMQPStreamConnection $connection;
+    private ?AMQPChannel $channel;
+    private ?IoServer $server;
 
     public function __construct(MessageDequeueInterface $communicator)
     {
@@ -52,9 +58,11 @@ final class RunSocketCommand extends Command
         $output->writeln("Starting rabbitmq client on {$amqpHost}:{$amqpPort}");
 
         $connection = new AMQPStreamConnection($amqpHost, $amqpPort, $amqpUser, $amqpPassword);
+        $this->connection = $connection;
         $channel = $connection->channel();
+        $this->channel = $channel;
 
-        $channel->queue_declare(MessageQueue::QUEUE_SOCKET, false, false, false, false);
+        $channel->queue_declare(MessageQueue::QUEUE_SOCKET);
 
         $callback = function (AMQPMessage $message) use ($loop, $output) {
             $this->communicator->dequeueMessageAndWait($message, $loop)
@@ -76,11 +84,26 @@ final class RunSocketCommand extends Command
         $output->writeln("Starting Ratchet websocket server on {$wsHost}:{$wsPort}");
 
         $socketServer = new SocketServer($wsHost.':'.$wsPort, [], $loop);
-        new IoServer(new HttpServer(new WsServer($this->communicator)), $socketServer, $loop);
+        $this->server = new IoServer(new HttpServer(new WsServer($this->communicator)), $socketServer, $loop);
         $output->writeln('Server is running');
 
         $loop->run();
 
         return Command::SUCCESS;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getSubscribedSignals(): array
+    {
+        return [SIGINT, SIGTERM];
+    }
+
+    public function handleSignal(int $signal): void
+    {
+        $this->channel?->close();
+        $this->connection?->close();
+        $this->server?->socket->close();
     }
 }

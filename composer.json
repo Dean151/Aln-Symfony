@@ -8,6 +8,7 @@
         "ext-amqp": "*",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ext-pcntl": "*",
         "api-platform/core": "^2.6",
         "cboden/ratchet": "^0.4.4",
         "doctrine/annotations": "^1.0",
