@@ -4,7 +4,7 @@ namespace App\Aln\Socket\Messages;
 
 use App\Aln\Socket\MessageTranscriber;
 
-final class FeedNowMessage implements MessageInterface
+final class FeedNowMessage implements ExpectableMessageInterface
 {
     use MessageTranscriber;
 
@@ -43,5 +43,10 @@ final class FeedNowMessage implements MessageInterface
         $amount = $this->encodeMealAmount($this->mealAmount);
 
         return $prefix.$amount;
+    }
+
+    public function expectationMessage(string $identifier): ExpectationMessage
+    {
+        return new MealDistributedMessage($identifier);
     }
 }

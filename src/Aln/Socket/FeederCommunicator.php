@@ -2,6 +2,8 @@
 
 namespace App\Aln\Socket;
 
+use App\Aln\Queue\AbstractQueue;
+use App\Aln\Queue\MessageDequeueInterface;
 use App\Aln\Socket\Messages\EmptyFeederMessage;
 use App\Aln\Socket\Messages\ExpectationMessage;
 use App\Aln\Socket\Messages\IdentificationMessage;
@@ -15,17 +17,11 @@ use PhpAmqpLib\Message\AMQPMessage;
 use Psr\Log\LoggerInterface;
 use Ratchet\ConnectionInterface;
 use Ratchet\RFC6455\Messaging\Frame;
-use React\EventLoop\LoopInterface;
-use React\Promise\Promise;
-use React\Promise\PromiseInterface;
-
-use function React\Promise\Timer\timeout;
-
 use Safe\DateTimeImmutable;
 
 use function Safe\hex2bin;
 
-final class FeederCommunicator implements MessageDequeueInterface
+final class FeederCommunicator extends AbstractQueue implements MessageDequeueInterface
 {
     private AlnFeederRepository $feederRepository;
     private AlnMealRepository $mealRepository;
@@ -36,11 +32,6 @@ final class FeederCommunicator implements MessageDequeueInterface
      * @var array<string, ConnectionInterface>
      */
     private array $connections = [];
-
-    /**
-     * @var array<string, int>
-     */
-    private array $completedExpectations = [];
 
     public function __construct(
         AlnFeederRepository $feederRepository,
@@ -85,7 +76,7 @@ final class FeederCommunicator implements MessageDequeueInterface
             } elseif ($message instanceof EmptyFeederMessage) {
                 $this->recordEmptyFeeder($message);
             } elseif ($message instanceof ExpectationMessage) {
-                $this->completedExpectations[$message->hexadecimal()] = time();
+                $this->publishResponseInQueue($message);
             }
         } catch (\Exception $e) {
             $this->logger->warning($e->getMessage(), ['exception' => $e]);
@@ -93,38 +84,23 @@ final class FeederCommunicator implements MessageDequeueInterface
         }
     }
 
-    public function dequeueMessageAndWait(AMQPMessage $message, LoopInterface $loop, float $timeout = 5): PromiseInterface
+    public function dequeueMessage(AMQPMessage $amqpMessage): void
     {
-        [$identifier, $hexadecimal] = explode('|', $message->getBody());
-        $expectation = MessageIdentification::findExpectedResponseMessage($hexadecimal, $identifier);
-        if (!$this->sendInSocket($hexadecimal, $identifier)) {
-            return new Promise(function ($resolve, $reject) {
-                $reject();
-            });
-        }
-        if (null === $expectation) {
-            return new Promise(function ($resolve) {
-                $resolve();
-            });
-        }
+        [$identifier, $hexadecimal] = explode('|', $amqpMessage->getBody());
+        $this->sendInSocket($hexadecimal, $identifier);
+    }
 
-        $promise = new Promise(function ($resolve) use ($loop, $expectation, &$callback) {
-            $callback = function () use ($resolve, $loop, $expectation, &$callback) {
-                if (isset($this->completedExpectations[$expectation->hexadecimal()])) {
-                    $time = $this->completedExpectations[$expectation->hexadecimal()];
-                    if (time() - $time < 5) {
-                        unset($this->completedExpectations[$expectation->hexadecimal()]);
-                        $resolve();
-                    }
-                }
-                $loop->addTimer(0.5, $callback);
-            };
-            $loop->addTimer(0.5, $callback);
-        }, function () use (&$callback) {
-            $callback = function () {};
-        });
+    private function publishResponseInQueue(ExpectationMessage $message): void
+    {
+        $ampqMessage = new AMQPMessage($message->hexadecimal());
 
-        return timeout($promise, $timeout, $loop);
+        $connection = $this->getQueueConnection();
+        $channel = $connection->channel();
+
+        $this->publishInQueue($channel, self::QUEUE_RESPONSE, $ampqMessage);
+
+        $channel->close();
+        $connection->close();
     }
 
     private function persist(ConnectionInterface $connection, string $identifier): void

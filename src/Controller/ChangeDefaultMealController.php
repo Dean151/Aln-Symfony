@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use ApiPlatform\Core\Validator\ValidatorInterface;
-use App\Aln\Socket\MessageEnqueueInterface;
+use App\Aln\Queue\MessageEnqueueInterface;
 use App\Aln\Socket\Messages\ChangeDefaultMealMessage;
 use App\Entity\AlnFeeder;
 use Doctrine\Persistence\ManagerRegistry;

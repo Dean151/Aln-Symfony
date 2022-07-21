@@ -7,12 +7,12 @@ use App\Aln\Socket\Messages\ChangeDefaultMealMessage;
 use App\Aln\Socket\Messages\ChangePlanningMessage;
 use App\Aln\Socket\Messages\DefaultMealChangedMessage;
 use App\Aln\Socket\Messages\EmptyFeederMessage;
+use App\Aln\Socket\Messages\ExpectableMessageInterface;
 use App\Aln\Socket\Messages\ExpectationMessage;
 use App\Aln\Socket\Messages\FeedNowMessage;
 use App\Aln\Socket\Messages\IdentificationMessage;
 use App\Aln\Socket\Messages\MealButtonPressedMessage;
 use App\Aln\Socket\Messages\MealDistributedMessage;
-use App\Aln\Socket\Messages\MessageInterface;
 use App\Aln\Socket\Messages\PlanningChangedMessage;
 use App\Aln\Socket\Messages\TimeMessage;
 use App\Api\Dto\MealInput;
@@ -226,16 +226,11 @@ final class MessagesTest extends TestCase
     /**
      * @dataProvider provideResponseMessageDependingOnSentOneData
      */
-    public function testResponseMessageDependingOnSentOne(string $identifier, MessageInterface $input, ?ExpectationMessage $expectationMessage): void
+    public function testResponseMessageDependingOnSentOne(string $identifier, ExpectableMessageInterface $expectable, ExpectationMessage $expectation): void
     {
-        $response = MessageIdentification::findExpectedResponseMessage($input->hexadecimal(), $identifier);
-        if (is_null($expectationMessage)) {
-            $this->assertNull($response);
-        } else {
-            $this->assertNotNull($response);
-            $this->assertInstanceOf(get_class($expectationMessage), $response);
-            $this->assertEquals($expectationMessage->hexadecimal(), $response->hexadecimal());
-        }
+        $message = $expectable->expectationMessage($identifier);
+        $this->assertInstanceOf(get_class($expectation), $message);
+        $this->assertEquals($expectation->hexadecimal(), $message->hexadecimal());
     }
 
     public function provideResponseMessageDependingOnSentOneData(): \Generator

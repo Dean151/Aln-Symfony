@@ -2,8 +2,8 @@
 
 namespace App\Aln\Command;
 
-use App\Aln\Socket\MessageDequeueInterface;
-use App\Aln\Socket\MessageQueue;
+use App\Aln\Queue\AbstractQueue;
+use App\Aln\Queue\MessageDequeueInterface;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -62,19 +62,13 @@ final class RunSocketCommand extends Command implements SignalableCommandInterfa
         $channel = $connection->channel();
         $this->channel = $channel;
 
-        $channel->queue_declare(MessageQueue::QUEUE_SOCKET);
+        $channel->queue_declare(AbstractQueue::QUEUE_SOCKET, false, false, false, false);
 
-        $callback = function (AMQPMessage $message) use ($loop, $output) {
-            $this->communicator->dequeueMessageAndWait($message, $loop)
-                ->then(function () use ($message, $output) {
-                    $output->writeln('Expectation fulfilled!');
-                    $message->ack();
-                }, function () use ($message, $output) {
-                    $output->writeln('Expectation NOT fulfilled!');
-                    $message->nack();
-                });
+        $callback = function (AMQPMessage $message) {
+            $this->communicator->dequeueMessage($message);
         };
-        $channel->basic_consume(MessageQueue::QUEUE_SOCKET, '', false, false, false, false, $callback);
+
+        $channel->basic_consume(AbstractQueue::QUEUE_SOCKET, '', false, true, false, false, $callback);
         $loop->addPeriodicTimer(0.5, function () use ($channel) {
             $channel->wait(null, true);
         });

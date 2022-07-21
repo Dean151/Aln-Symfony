@@ -4,7 +4,7 @@ namespace App\Aln\Socket\Messages;
 
 use App\Aln\Socket\MessageTranscriber;
 
-final class ChangeDefaultMealMessage implements MessageInterface
+final class ChangeDefaultMealMessage implements ExpectableMessageInterface
 {
     use MessageTranscriber;
 
@@ -43,5 +43,10 @@ final class ChangeDefaultMealMessage implements MessageInterface
         $amount = $this->encodeMealAmount($this->mealAmount);
 
         return $prefix.$amount;
+    }
+
+    public function expectationMessage(string $identifier): ExpectationMessage
+    {
+        return new DefaultMealChangedMessage($identifier);
     }
 }

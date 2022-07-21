@@ -5,7 +5,7 @@ namespace App\Aln\Socket\Messages;
 use App\Aln\Socket\MessageTranscriber;
 use App\Api\Dto\MealInput;
 
-class ChangePlanningMessage implements MessageInterface
+class ChangePlanningMessage implements ExpectableMessageInterface
 {
     use MessageTranscriber;
 
@@ -49,5 +49,10 @@ class ChangePlanningMessage implements MessageInterface
         $planning = $this->encodePlanning($this->meals);
 
         return $prefix.$planning;
+    }
+
+    public function expectationMessage(string $identifier): ExpectationMessage
+    {
+        return new PlanningChangedMessage($identifier);
     }
 }

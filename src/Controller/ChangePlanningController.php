@@ -2,17 +2,15 @@
 
 namespace App\Controller;
 
-use App\Aln\Socket\MessageEnqueueInterface;
+use App\Aln\Queue\MessageEnqueueInterface;
 use App\Aln\Socket\Messages\ChangePlanningMessage;
+use App\Api\Dto\PlanningInput;
 use App\Entity\AlnFeeder;
 use App\Entity\AlnMeal;
 use App\Entity\AlnPlanning;
 use App\Repository\AlnMealRepository;
 use App\Repository\AlnPlanningRepository;
 use Doctrine\Persistence\ManagerRegistry;
-
-use function PHPUnit\Framework\assertNotNull;
-
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 
@@ -40,7 +38,7 @@ final class ChangePlanningController extends AbstractSocketController
         // Validation is made by DTO
 
         $planning = $data->planning;
-        assertNotNull($planning);
+        assert($planning instanceof PlanningInput);
         $feeder = $data;
 
         $message = new ChangePlanningMessage($planning->meals);
