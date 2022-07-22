@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Api\Dto\TimeInput;
+use App\Doctrine\Types\AlnTimeType;
 use App\Repository\AlnMealRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -28,9 +29,9 @@ class AlnMeal
     private ?\DateTimeImmutable $distributedOn = null;
 
     /**
-     * @var array{hours: int<0, 23>, minutes: int<0, 59>}
+     * @var ?array{hours: int<0, 23>, minutes: int<0, 59>}
      */
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(type: AlnTimeType::ALN_TIME_TYPE, nullable: true)]
     #[Groups(['feeder:output'])]
     private ?array $time = null;
 
