@@ -2,14 +2,14 @@
 
 namespace App\Controller;
 
-use App\Aln\Queue\MessageEnqueueInterface;
-use App\Aln\Socket\Messages\ChangePlanningMessage;
-use App\Api\Dto\PlanningInput;
+use App\ApiPlatform\Dto\PlanningInput;
 use App\Entity\AlnFeeder;
 use App\Entity\AlnMeal;
 use App\Entity\AlnPlanning;
+use App\Queue\MessageEnqueueInterface;
 use App\Repository\AlnMealRepository;
 use App\Repository\AlnPlanningRepository;
+use App\Socket\Messages\ChangePlanningMessage;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;

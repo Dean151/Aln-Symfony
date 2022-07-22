@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Api\Dto\TimeInput;
+use App\ApiPlatform\Dto\TimeInput;
 use App\Doctrine\Types\AlnTimeType;
 use App\Repository\AlnMealRepository;
 use Doctrine\DBAL\Types\Types;

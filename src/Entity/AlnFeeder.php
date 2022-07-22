@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Api\Dto\PlanningInput;
+use App\ApiPlatform\Dto\PlanningInput;
 use App\Controller\ChangeDefaultMealController;
 use App\Controller\ChangePlanningController;
 use App\Controller\FeedNowController;

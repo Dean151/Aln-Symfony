@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
-use App\Aln\Queue\MessageEnqueueInterface;
-use App\Aln\Socket\Messages\ExpectableMessageInterface;
 use App\Entity\AlnFeeder;
+use App\Queue\MessageEnqueueInterface;
+use App\Socket\Messages\ExpectableMessageInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;

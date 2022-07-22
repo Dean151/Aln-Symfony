@@ -3,11 +3,11 @@
 namespace App\Controller;
 
 use ApiPlatform\Core\Validator\ValidatorInterface;
-use App\Aln\Queue\MessageEnqueueInterface;
-use App\Aln\Socket\Messages\FeedNowMessage;
 use App\Entity\AlnFeeder;
 use App\Entity\AlnMeal;
+use App\Queue\MessageEnqueueInterface;
 use App\Repository\AlnMealRepository;
+use App\Socket\Messages\FeedNowMessage;
 use Doctrine\Persistence\ManagerRegistry;
 use Safe\DateTimeImmutable;
 use Symfony\Component\HttpFoundation\Response;

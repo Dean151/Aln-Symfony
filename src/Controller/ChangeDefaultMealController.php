@@ -3,9 +3,9 @@
 namespace App\Controller;
 
 use ApiPlatform\Core\Validator\ValidatorInterface;
-use App\Aln\Queue\MessageEnqueueInterface;
-use App\Aln\Socket\Messages\ChangeDefaultMealMessage;
 use App\Entity\AlnFeeder;
+use App\Queue\MessageEnqueueInterface;
+use App\Socket\Messages\ChangeDefaultMealMessage;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
