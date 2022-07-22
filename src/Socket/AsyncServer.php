@@ -9,23 +9,25 @@ use Ratchet\Server\IoServer;
 use Ratchet\WebSocket\WsServer;
 use React\EventLoop\LoopInterface;
 use React\Socket\SocketServer;
+use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 
 final class AsyncServer
 {
+    private ContainerBagInterface $params;
     private LoggerInterface $logger;
 
     private ?IoServer $server = null;
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct(ContainerBagInterface $params, LoggerInterface $logger)
     {
+        $this->params = $params;
         $this->logger = $logger;
     }
 
     public function start(LoopInterface $loop, MessageComponentInterface $component): void
     {
-        // FIXME: clean this with parameters
-        $host = $_ENV['WEBSOCKET_HOST'] ?? '0.0.0.0';
-        $port = $_ENV['WEBSOCKET_PORT'] ?? 9999;
+        $host = $this->params->get('websocket.host');
+        $port = $this->params->get('websocket.port');
 
         $wsServer = new WsServer($component);
         $httpServer = new HttpServer($wsServer);

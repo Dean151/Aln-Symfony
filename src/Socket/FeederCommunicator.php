@@ -22,6 +22,8 @@ use Safe\DateTimeImmutable;
 
 use function Safe\hex2bin;
 
+use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
+
 final class FeederCommunicator extends AbstractQueue implements MessageDequeueInterface, MessageComponentInterface
 {
     private AlnFeederRepository $feederRepository;
@@ -35,6 +37,7 @@ final class FeederCommunicator extends AbstractQueue implements MessageDequeueIn
     private array $connections = [];
 
     public function __construct(
+        ContainerBagInterface $params,
         AlnFeederRepository $feederRepository,
         AlnMealRepository $mealRepository,
         ManagerRegistry $doctrine,
@@ -44,6 +47,7 @@ final class FeederCommunicator extends AbstractQueue implements MessageDequeueIn
         $this->mealRepository = $mealRepository;
         $this->doctrine = $doctrine;
         $this->logger = $logger;
+        parent::__construct($params);
     }
 
     public function onOpen(ConnectionInterface $conn): void
@@ -132,7 +136,7 @@ final class FeederCommunicator extends AbstractQueue implements MessageDequeueIn
 
     private function identified(IdentificationMessage $message, ConnectionInterface $connection): void
     {
-        $this->logger->debug("Feeder identified with {$message->getIdentifier()}");
+        $this->logger->info("Feeder identified with {$message->getIdentifier()}");
         $this->persist($connection, $message->getIdentifier());
 
         $feeder = $this->feederRepository->findOrCreateFeeder($message->getIdentifier());

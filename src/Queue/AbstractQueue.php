@@ -5,28 +5,36 @@ namespace App\Queue;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
+use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 
 abstract class AbstractQueue
 {
     public const QUEUE_SOCKET = 'aln_socket.queue';
     public const QUEUE_RESPONSE = 'aln_response.queue';
 
+    private ContainerBagInterface $params;
+
+    public function __construct(ContainerBagInterface $params)
+    {
+        $this->params = $params;
+    }
+
     protected function getHost(): string
     {
-        return $_ENV['RABBITMQ_HOST'] ?? '127.0.0.1';
+        return $this->params->get('rabbitmq.host');
     }
 
     protected function getPort(): int
     {
-        return $_ENV['RABBITMQ_PORT'] ?? 5672;
+        return $this->params->get('rabbitmq.port');
     }
 
     protected function getQueueConnection(): AMQPStreamConnection
     {
-        $user = $_ENV['RABBITMQ_USERNAME'] ?? 'guest';
-        $password = $_ENV['RABBITMQ_PASSWORD'] ?? 'guest';
+        $username = $this->params->get('rabbitmq.username');
+        $password = $this->params->get('rabbitmq.password');
 
-        return new AMQPStreamConnection($this->getHost(), $this->getPort(), $user, $password);
+        return new AMQPStreamConnection($this->getHost(), $this->getPort(), $username, $password);
     }
 
     /**

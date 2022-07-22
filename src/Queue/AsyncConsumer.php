@@ -7,6 +7,7 @@ use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 use Psr\Log\LoggerInterface;
 use React\EventLoop\LoopInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 
 final class AsyncConsumer extends AbstractQueue
 {
@@ -15,9 +16,10 @@ final class AsyncConsumer extends AbstractQueue
     private ?AMQPStreamConnection $connection = null;
     private ?AMQPChannel $channel = null;
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct(ContainerBagInterface $params, LoggerInterface $logger)
     {
         $this->logger = $logger;
+        parent::__construct($params);
     }
 
     public function start(LoopInterface $loop, MessageDequeueInterface $messageDequeue): void

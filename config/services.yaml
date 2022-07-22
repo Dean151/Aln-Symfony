@@ -5,6 +5,14 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     feeder.response_timeout: '%env(float:FEEDER_RESPONSE_TIMEOUT)%'
+    rabbitmq.host: '%env(string:RABBITMQ_HOST)%'
+    rabbitmq.port: '%env(int:RABBITMQ_PORT)%'
+    rabbitmq.username: '%env(string:RABBITMQ_USERNAME)%'
+    rabbitmq.password: '%env(string:RABBITMQ_PASSWORD)%'
+    simulator.host: '%env(string:SIMULATOR_HOST)%'
+    simulator.port: '%env(int:SIMULATOR_PORT)%'
+    websocket.host: '%env(string:WEBSOCKET_HOST)%'
+    websocket.port: '%env(int:WEBSOCKET_PORT)%'
 
 services:
     # default configuration for services in *this* file

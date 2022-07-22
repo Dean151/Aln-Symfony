@@ -23,6 +23,7 @@ use React\EventLoop\LoopInterface;
 use function Safe\hex2bin;
 
 use Symfony\Component\Console\Exception\InvalidArgumentException;
+use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 
 final class FeederSimulator
 {
@@ -31,6 +32,7 @@ final class FeederSimulator
     public const OPTION_UNRESPONSIVE = 0b010;
     public const OPTION_FAST_RESPONSE = 0b100;
 
+    private ContainerBagInterface $params;
     private LoggerInterface $logger;
 
     private string $identifier = '';
@@ -39,8 +41,9 @@ final class FeederSimulator
     private ?LoopInterface $loop = null;
     private ?WebSocket $connection = null;
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct(ContainerBagInterface $params, LoggerInterface $logger)
     {
+        $this->params = $params;
         $this->logger = $logger;
     }
 
@@ -56,9 +59,8 @@ final class FeederSimulator
         $this->identifier = $identifier;
         $this->options = $options;
 
-        // FIXME: clean that with parameters
-        $host = $_ENV['FEEDER_SOCKET_HOST'] ?? '127.0.0.1';
-        $port = $_ENV['FEEDER_SOCKET_PORT'] ?? 9999;
+        $host = $this->params->get('simulator.host');
+        $port = $this->params->get('simulator.port');
 
         $url = "ws://{$host}:{$port}";
         $this->logger->info("Starting feeder simulator on {$host}:{$port}");
@@ -186,7 +188,8 @@ final class FeederSimulator
     {
         $this->logger->debug("Received raw: {$message->hexadecimal()}");
         if ($message instanceof TimeMessage) {
-            $this->logger->info("Received time: {$message->getTime()->hours}h{$message->getTime()->minutes}");
+            $minutes = str_pad((string) $message->getTime()->minutes, 2, '0', STR_PAD_LEFT);
+            $this->logger->info("Received time: {$message->getTime()->hours}h{$minutes}");
         } elseif ($message instanceof ChangeDefaultMealMessage) {
             $this->logger->info("Changed default meal to {$message->getMealAmount()}g");
         } elseif ($message instanceof FeedNowMessage) {
@@ -194,7 +197,8 @@ final class FeederSimulator
         } elseif ($message instanceof ChangePlanningMessage) {
             $this->logger->info("Planning changed with {$message->getCount()} meal(s)");
             foreach ($message->getMeals() as $meal) {
-                $this->logger->info(" - {$meal->time->hours}h{$meal->time->minutes} – {$meal->amount}g");
+                $minutes = str_pad((string) $meal->time->minutes, 2, '0', STR_PAD_LEFT);
+                $this->logger->info(" - {$meal->time->hours}h{$minutes} – {$meal->amount}g");
             }
         } else {
             $this->logger->warning("Other message received: {$message->hexadecimal()}");
