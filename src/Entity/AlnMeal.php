@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\ApiPlatform\Dto\TimeInput;
 use App\Doctrine\Types\AlnTimeType;
 use App\Repository\AlnMealRepository;
 use Doctrine\DBAL\Types\Types;
@@ -108,13 +107,6 @@ class AlnMeal
     public function setTime(?array $time): self
     {
         $this->time = $time;
-
-        return $this;
-    }
-
-    public function setTimeFromInput(TimeInput $input): self
-    {
-        $this->setTime($input->toArray());
 
         return $this;
     }

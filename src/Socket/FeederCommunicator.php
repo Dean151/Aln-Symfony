@@ -2,9 +2,11 @@
 
 namespace App\Socket;
 
+use App\Entity\AlnAlert;
 use App\Entity\AlnMeal;
 use App\Queue\AbstractQueue;
 use App\Queue\MessageDequeueInterface;
+use App\Repository\AlnAlertRepository;
 use App\Repository\AlnFeederRepository;
 use App\Repository\AlnMealRepository;
 use App\Socket\Messages\EmptyFeederMessage;
@@ -28,6 +30,7 @@ final class FeederCommunicator extends AbstractQueue implements MessageDequeueIn
 {
     private AlnFeederRepository $feederRepository;
     private AlnMealRepository $mealRepository;
+    private AlnAlertRepository $alertRepository;
     private ManagerRegistry $doctrine;
     private LoggerInterface $logger;
 
@@ -40,11 +43,13 @@ final class FeederCommunicator extends AbstractQueue implements MessageDequeueIn
         ContainerBagInterface $params,
         AlnFeederRepository $feederRepository,
         AlnMealRepository $mealRepository,
+        AlnAlertRepository $alertRepository,
         ManagerRegistry $doctrine,
         LoggerInterface $logger
     ) {
         $this->feederRepository = $feederRepository;
         $this->mealRepository = $mealRepository;
+        $this->alertRepository = $alertRepository;
         $this->doctrine = $doctrine;
         $this->logger = $logger;
         parent::__construct($params);
@@ -86,6 +91,9 @@ final class FeederCommunicator extends AbstractQueue implements MessageDequeueIn
         } catch (\Exception $e) {
             $this->logger->warning($e->getMessage(), ['exception' => $e]);
             $from->close();
+            $alert = new AlnAlert();
+            $alert->setMessage($e->getMessage());
+            $this->alertRepository->add($alert);
         }
     }
 
@@ -168,6 +176,12 @@ final class FeederCommunicator extends AbstractQueue implements MessageDequeueIn
     {
         $this->logger->info("Feeder {$message->getIdentifier()} is empty");
 
-        // TODO: Register information, send push?
+        $alert = new AlnAlert();
+        $alert->setType('empty_feeder');
+        $feeder = $this->feederRepository->findOneByIdentifier($message->getIdentifier());
+        $alert->setFeeder($feeder);
+        $alert->setTime($message->getTime()->toArray());
+        $alert->setAmount($message->getMealAmount());
+        $this->alertRepository->add($alert, true);
     }
 }

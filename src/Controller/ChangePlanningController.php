@@ -48,7 +48,7 @@ final class ChangePlanningController extends AbstractSocketController
         $feeder->addPlanning($alnPlanning);
         foreach ($planning->meals as $meal) {
             $alnMeal = new AlnMeal();
-            $alnMeal->setTimeFromInput($meal->time);
+            $alnMeal->setTime($meal->time->toArray());
             $alnMeal->setAmount($meal->amount);
             $alnMeal->setIsEnabled($meal->isEnabled);
             $feeder->addMeal($alnMeal);
