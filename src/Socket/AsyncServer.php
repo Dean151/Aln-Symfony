@@ -23,15 +23,15 @@ final class AsyncServer
 
     public function start(LoopInterface $loop, MessageComponentInterface $component): void
     {
-        // FIXME: clean this
-        $wsHost = $_ENV['WEBSOCKET_HOST'] ?? '0.0.0.0';
-        $wsPort = $_ENV['WEBSOCKET_PORT'] ?? 9999;
+        // FIXME: clean this with parameters
+        $host = $_ENV['WEBSOCKET_HOST'] ?? '0.0.0.0';
+        $port = $_ENV['WEBSOCKET_PORT'] ?? 9999;
 
         $wsServer = new WsServer($component);
         $httpServer = new HttpServer($wsServer);
-        $socketServer = new SocketServer($wsHost.':'.$wsPort, [], $loop);
+        $socketServer = new SocketServer($host.':'.$port, [], $loop);
         $this->server = new IoServer($httpServer, $socketServer, $loop);
-        $this->logger->info("Started websocket server on {$wsHost}:{$wsPort}");
+        $this->logger->info("Started websocket server on {$host}:{$port}");
     }
 
     public function shutdown(): void

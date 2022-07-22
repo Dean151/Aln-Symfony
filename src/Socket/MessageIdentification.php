@@ -2,13 +2,17 @@
 
 namespace App\Socket;
 
+use App\Socket\Messages\ChangeDefaultMealMessage;
+use App\Socket\Messages\ChangePlanningMessage;
 use App\Socket\Messages\DefaultMealChangedMessage;
 use App\Socket\Messages\EmptyFeederMessage;
+use App\Socket\Messages\FeedNowMessage;
 use App\Socket\Messages\IdentificationMessage;
 use App\Socket\Messages\MealButtonPressedMessage;
 use App\Socket\Messages\MealDistributedMessage;
 use App\Socket\Messages\MessageInterface;
 use App\Socket\Messages\PlanningChangedMessage;
+use App\Socket\Messages\TimeMessage;
 use Safe\Exceptions\PcreException;
 
 use function Safe\preg_match;
@@ -42,5 +46,22 @@ final class MessageIdentification
             return EmptyFeederMessage::decodeFrom($hexadecimal);
         }
         throw new \RuntimeException('Unknown incoming message: '.$hexadecimal);
+    }
+
+    public static function identifyOutgoingMessage(string $hexadecimal): MessageInterface
+    {
+        if (\str_starts_with($hexadecimal, '9da10601')) {
+            return TimeMessage::decodeFrom($hexadecimal);
+        }
+        if (\str_starts_with($hexadecimal, '9da106c3')) {
+            return ChangeDefaultMealMessage::decodeFrom($hexadecimal);
+        }
+        if (\str_starts_with($hexadecimal, '9da106a2')) {
+            return FeedNowMessage::decodeFrom($hexadecimal);
+        }
+        if (\str_starts_with($hexadecimal, '9da12dc4')) {
+            return ChangePlanningMessage::decodeFrom($hexadecimal);
+        }
+        throw new \RuntimeException('Unknown outgoing message: '.$hexadecimal);
     }
 }

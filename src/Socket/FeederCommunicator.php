@@ -132,7 +132,7 @@ final class FeederCommunicator extends AbstractQueue implements MessageDequeueIn
 
     private function identified(IdentificationMessage $message, ConnectionInterface $connection): void
     {
-        $this->logger->info("Feeder identified with {$message->getIdentifier()}");
+        $this->logger->debug("Feeder identified with {$message->getIdentifier()}");
         $this->persist($connection, $message->getIdentifier());
 
         $feeder = $this->feederRepository->findOrCreateFeeder($message->getIdentifier());

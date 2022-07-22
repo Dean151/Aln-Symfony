@@ -117,12 +117,12 @@
             "symfony console -e test doctrine:database:create --no-interaction --if-not-exists",
             "symfony console -e test doctrine:migration:migrate --no-interaction --all-or-nothing --allow-no-migration",
             "symfony console -e test doctrine:fixtures:load --no-interaction",
-            "symfony run -d symfony console -e test aln:socket:run &> /dev/null || true",
-            "symfony run -d symfony console -e test aln:feeder:simulate ABC123456789 &> /dev/null || true",
-            "symfony run -d symfony console -e test aln:feeder:simulate --not-responding OBU293827463 &> /dev/null || true",
-            "symfony run -d symfony console -e test aln:feeder:simulate --empty-feeder ABE382749283 &> /dev/null || true",
+            "symfony run -d symfony console -e test aln:socket:run",
+            "symfony run -d symfony console -e test aln:feeder:simulate --fast ABC123456789",
+            "symfony run -d symfony console -e test aln:feeder:simulate --not-responding --fast OBU293827463",
             "sleep 2",
-            "bin/phpunit"
+            "bin/phpunit",
+            "@pause"
         ],
         "test": [
             "@lint",
