@@ -11,14 +11,22 @@ abstract class AbstractQueue
     public const QUEUE_SOCKET = 'aln_socket.queue';
     public const QUEUE_RESPONSE = 'aln_response.queue';
 
+    protected function getHost(): string
+    {
+        return $_ENV['RABBITMQ_HOST'] ?? '127.0.0.1';
+    }
+
+    protected function getPort(): int
+    {
+        return $_ENV['RABBITMQ_PORT'] ?? 5672;
+    }
+
     protected function getQueueConnection(): AMQPStreamConnection
     {
-        $host = $_ENV['RABBITMQ_HOST'] ?? '127.0.0.1';
-        $port = $_ENV['RABBITMQ_PORT'] ?? 5672;
         $user = $_ENV['RABBITMQ_USERNAME'] ?? 'guest';
         $password = $_ENV['RABBITMQ_PASSWORD'] ?? 'guest';
 
-        return new AMQPStreamConnection($host, $port, $user, $password);
+        return new AMQPStreamConnection($this->getHost(), $this->getPort(), $user, $password);
     }
 
     /**

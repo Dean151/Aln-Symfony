@@ -22,13 +22,7 @@ final class AsyncConsumer extends AbstractQueue
 
     public function start(LoopInterface $loop, MessageDequeueInterface $messageDequeue): void
     {
-        // FIXME: clean this with parameters
-        $host = $_ENV['RABBITMQ_HOST'] ?? '127.0.0.1';
-        $port = $_ENV['RABBITMQ_PORT'] ?? 5672;
-        $username = $_ENV['RABBITMQ_USERNAME'] ?? 'guest';
-        $password = $_ENV['RABBITMQ_PASSWORD'] ?? 'guest';
-
-        $this->connection = new AMQPStreamConnection($host, $port, $username, $password);
+        $this->connection = $this->getQueueConnection();
         $this->channel = $this->connection->channel();
 
         $this->channel->queue_declare(AbstractQueue::QUEUE_SOCKET, false, false, false, false);
@@ -42,7 +36,7 @@ final class AsyncConsumer extends AbstractQueue
             $this->channel?->wait(null, true);
         });
 
-        $this->logger->info("Started rabbitmq consumer on {$host}:{$port}");
+        $this->logger->info("Started rabbitmq consumer on {$this->getHost()}:{$this->getPort()}");
     }
 
     public function shutdown(): void
