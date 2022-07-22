@@ -31,11 +31,15 @@ final class AsyncServer
         $httpServer = new HttpServer($wsServer);
         $socketServer = new SocketServer($wsHost.':'.$wsPort, [], $loop);
         $this->server = new IoServer($httpServer, $socketServer, $loop);
-        $this->logger->info("Started Ratchet websocket server on {$wsHost}:{$wsPort}");
+        $this->logger->info("Started websocket server on {$wsHost}:{$wsPort}");
     }
 
     public function shutdown(): void
     {
-        $this->server?->socket->close();
+        if ($this->server) {
+            $this->server->socket->close();
+            $this->server = null;
+            $this->logger->info('Stopped websocket consumer');
+        }
     }
 }

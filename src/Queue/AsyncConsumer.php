@@ -47,7 +47,14 @@ final class AsyncConsumer extends AbstractQueue
 
     public function shutdown(): void
     {
-        $this->channel?->close();
-        $this->connection?->close();
+        if ($this->channel) {
+            $this->channel->close();
+            $this->channel = null;
+        }
+        if ($this->connection) {
+            $this->connection->close();
+            $this->connection = null;
+            $this->logger->info('Stopped rabbitmq consumer');
+        }
     }
 }

@@ -6,6 +6,7 @@ use App\Queue\AsyncConsumer;
 use App\Socket\AsyncServer;
 use App\Socket\FeederCommunicator;
 use React\EventLoop\Loop;
+use React\EventLoop\LoopInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\SignalableCommandInterface;
@@ -24,6 +25,8 @@ final class RunSocketCommand extends Command implements SignalableCommandInterfa
     private AsyncConsumer $queueConsumer;
     private AsyncServer $socketServer;
     private FeederCommunicator $communicator;
+
+    private ?LoopInterface $loop = null;
 
     public function __construct(AsyncConsumer $queueConsumer, AsyncServer $socketServer, FeederCommunicator $communicator)
     {
@@ -44,12 +47,12 @@ final class RunSocketCommand extends Command implements SignalableCommandInterfa
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $loop = Loop::get();
+        $this->loop = Loop::get();
 
-        $this->queueConsumer->start($loop, $this->communicator);
-        $this->socketServer->start($loop, $this->communicator);
+        $this->queueConsumer->start($this->loop, $this->communicator);
+        $this->socketServer->start($this->loop, $this->communicator);
 
-        $loop->run();
+        $this->loop->run();
 
         return Command::SUCCESS;
     }
@@ -64,6 +67,7 @@ final class RunSocketCommand extends Command implements SignalableCommandInterfa
 
     public function handleSignal(int $signal): void
     {
+        $this->loop?->stop();
         $this->queueConsumer->shutdown();
         $this->socketServer->shutdown();
     }
