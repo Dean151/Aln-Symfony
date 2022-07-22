@@ -16,12 +16,13 @@ use Doctrine\Persistence\ManagerRegistry;
 use PhpAmqpLib\Message\AMQPMessage;
 use Psr\Log\LoggerInterface;
 use Ratchet\ConnectionInterface;
+use Ratchet\MessageComponentInterface;
 use Ratchet\RFC6455\Messaging\Frame;
 use Safe\DateTimeImmutable;
 
 use function Safe\hex2bin;
 
-final class FeederCommunicator extends AbstractQueue implements MessageDequeueInterface
+final class FeederCommunicator extends AbstractQueue implements MessageDequeueInterface, MessageComponentInterface
 {
     private AlnFeederRepository $feederRepository;
     private AlnMealRepository $mealRepository;

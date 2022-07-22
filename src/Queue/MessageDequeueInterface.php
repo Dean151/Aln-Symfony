@@ -3,9 +3,8 @@
 namespace App\Queue;
 
 use PhpAmqpLib\Message\AMQPMessage;
-use Ratchet\MessageComponentInterface;
 
-interface MessageDequeueInterface extends MessageComponentInterface
+interface MessageDequeueInterface
 {
     public function dequeueMessage(AMQPMessage $amqpMessage): void;
 }

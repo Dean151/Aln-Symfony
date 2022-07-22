@@ -122,8 +122,7 @@
             "symfony run -d symfony console -e test aln:feeder:simulate --not-responding OBU293827463 &> /dev/null || true",
             "symfony run -d symfony console -e test aln:feeder:simulate --empty-feeder ABE382749283 &> /dev/null || true",
             "sleep 2",
-            "bin/phpunit",
-            "@start"
+            "bin/phpunit"
         ],
         "test": [
             "@lint",
