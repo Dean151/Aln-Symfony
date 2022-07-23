@@ -1,13 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Socket\Messages;
 
-interface MessageInterface
+use App\Socket\MessageTranscriber;
+
+abstract class MessageInterface
 {
+    use MessageTranscriber;
+
     /**
      * @throws \RuntimeException
      */
-    public static function decodeFrom(string $hexadecimal): self;
+    abstract public static function decodeFrom(string $hexadecimal): self;
 
-    public function hexadecimal(): string;
+    abstract public function hexadecimal(): string;
 }

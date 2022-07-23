@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Queue;
 
 use App\Entity\AlnFeeder;
@@ -42,7 +44,7 @@ final class SocketMessageQueue extends AbstractQueue implements MessageEnqueueIn
                 return;
             }
             $fulfilled = true;
-            $channel->basic_cancel($consumerTag); // @phpstan-ignore-line
+            $channel->basic_cancel($consumerTag); // @phpstan-ignore-line here it suppose it's always null...
         };
 
         $consumerTag = $channel->basic_consume(self::QUEUE_RESPONSE, '', false, true, false, false, $callback);

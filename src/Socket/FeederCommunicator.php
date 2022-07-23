@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Socket;
 
 use App\Entity\AlnAlert;
@@ -137,7 +139,7 @@ final class FeederCommunicator extends AbstractQueue implements MessageDequeueIn
             return false;
         }
 
-        $connection->send($frame);
+        $connection->send($frame); // @phpstan-ignore-line send expect string ; but allows Frame in implementation
 
         return true;
     }

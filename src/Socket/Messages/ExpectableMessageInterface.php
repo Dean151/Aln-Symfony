@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Socket\Messages;
 
-interface ExpectableMessageInterface extends MessageInterface
+abstract class ExpectableMessageInterface extends MessageInterface
 {
-    public function expectationMessage(string $identifier): ExpectationMessage;
+    abstract public function expectationMessage(string $identifier): ExpectationMessage;
 }

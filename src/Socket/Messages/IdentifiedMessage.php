@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Socket\Messages;
 
 use App\Socket\MessageTranscriber;
 
-abstract class IdentifiedMessage implements MessageInterface
+abstract class IdentifiedMessage extends MessageInterface
 {
     use MessageTranscriber;
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Queue;
 
 use PhpAmqpLib\Channel\AMQPChannel;

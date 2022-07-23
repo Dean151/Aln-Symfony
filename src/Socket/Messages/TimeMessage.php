@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Socket\Messages;
 
 use App\ApiPlatform\Dto\TimeInput;
 use App\Socket\MessageTranscriber;
 
-final class TimeMessage implements MessageInterface
+final class TimeMessage extends MessageInterface
 {
     use MessageTranscriber;
 

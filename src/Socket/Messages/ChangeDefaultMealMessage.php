@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Socket\Messages;
 
 use App\Socket\MessageTranscriber;
 
-final class ChangeDefaultMealMessage implements ExpectableMessageInterface
+final class ChangeDefaultMealMessage extends ExpectableMessageInterface
 {
     use MessageTranscriber;
 

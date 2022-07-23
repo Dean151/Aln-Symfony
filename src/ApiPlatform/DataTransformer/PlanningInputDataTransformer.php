@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\ApiPlatform\DataTransformer;
 
 use ApiPlatform\Core\DataTransformer\DataTransformerInterface;

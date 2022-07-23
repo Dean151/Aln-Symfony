@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Socket\Messages;
 
 use App\Socket\MessageTranscriber;
 
-final class FeedNowMessage implements ExpectableMessageInterface
+final class FeedNowMessage extends ExpectableMessageInterface
 {
     use MessageTranscriber;
 

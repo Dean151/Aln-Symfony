@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\AlnAlert;
@@ -14,7 +16,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method AlnAlert[]    findAll()
  * @method AlnAlert[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class AlnAlertRepository extends ServiceEntityRepository
+final class AlnAlertRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {

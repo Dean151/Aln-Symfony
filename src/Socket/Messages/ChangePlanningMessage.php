@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Socket\Messages;
 
 use App\ApiPlatform\Dto\MealInput;
 use App\Socket\MessageTranscriber;
 
-class ChangePlanningMessage implements ExpectableMessageInterface
+final class ChangePlanningMessage extends ExpectableMessageInterface
 {
     use MessageTranscriber;
 

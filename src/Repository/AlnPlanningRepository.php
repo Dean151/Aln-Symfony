@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\AlnPlanning;
@@ -14,7 +16,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method AlnPlanning[]    findAll()
  * @method AlnPlanning[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class AlnPlanningRepository extends ServiceEntityRepository
+final class AlnPlanningRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
