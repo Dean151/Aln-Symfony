@@ -164,8 +164,10 @@
     },
     "extra": {
         "hooks": {
-            "pre-commit": "composer validate --strict",
-            "pre-push": "composer test",
+            "pre-commit": [
+                "composer validate --strict",
+                "composer lint"
+            ],
             "post-merge": "composer update"
         },
         "symfony": {
