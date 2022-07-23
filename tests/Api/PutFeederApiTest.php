@@ -41,7 +41,7 @@ final class PutFeederApiTest extends FeederApiTestCase
     {
         $client = self::createClient();
 
-        return $client->request('PUT', "/api/feeders/{$feederId}", [
+        return $client->request('PUT', "/feeders/{$feederId}", [
             'headers' => [
                 'Accept' => 'application/json',
             ],

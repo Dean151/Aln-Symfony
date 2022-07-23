@@ -47,7 +47,7 @@ final class GetFeederApiTest extends FeederApiTestCase
     {
         $client = self::createClient();
 
-        return $client->request('GET', "/api/feeders/{$feederId}", [
+        return $client->request('GET', "/feeders/{$feederId}", [
             'headers' => [
                 'Accept' => 'application/json',
             ],

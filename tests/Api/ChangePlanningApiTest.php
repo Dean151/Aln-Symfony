@@ -86,7 +86,7 @@ final class ChangePlanningApiTest extends FeederApiTestCase
     {
         $client = self::createClient();
 
-        return $client->request('PUT', "/api/feeders/{$feederId}/planning", [
+        return $client->request('PUT', "/feeders/{$feederId}/planning", [
             'headers' => [
                 'Accept' => 'application/json',
             ],
@@ -100,7 +100,7 @@ final class ChangePlanningApiTest extends FeederApiTestCase
     {
         $client = self::createClient();
 
-        return $client->request('GET', "/api/feeders/{$feederId}", [
+        return $client->request('GET', "/feeders/{$feederId}", [
             'headers' => [
                 'Accept' => 'application/json',
             ],

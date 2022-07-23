@@ -75,7 +75,7 @@ final class FeedNowApiTest extends FeederApiTestCase
     {
         $client = self::createClient();
 
-        return $client->request('POST', "/api/feeders/{$feederId}/feed", [
+        return $client->request('POST', "/feeders/{$feederId}/feed", [
             'headers' => [
                 'Accept' => 'application/json',
             ],
