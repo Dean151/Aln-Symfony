@@ -95,44 +95,6 @@
         "symfony/polyfill-php81": "*"
     },
     "scripts": {
-        "auto-scripts": {
-            "cache:clear": "symfony-cmd",
-            "assets:install %PUBLIC_DIR%": "symfony-cmd"
-        },
-        "post-install-cmd": [
-            "cghooks add --ignore-lock",
-            "@auto-scripts"
-        ],
-        "post-update-cmd": [
-            "cghooks update",
-            "@auto-scripts"
-        ],
-        "sniff": [
-            "php-cs-fixer fix --allow-risky=yes"
-        ],
-        "stan": [
-            "phpstan analyse --memory-limit 1G"
-        ],
-        "lint": [
-            "@sniff",
-            "@stan"
-        ],
-        "unit": [
-            "@pause",
-            "symfony console -e test doctrine:database:create --no-interaction --if-not-exists",
-            "symfony console -e test doctrine:migration:migrate --no-interaction --all-or-nothing --allow-no-migration",
-            "symfony console -e test doctrine:fixtures:load --no-interaction",
-            "symfony run -d symfony console -e test aln:socket:run",
-            "symfony run -d symfony console -e test aln:feeder:simulate --fast ABC123456789",
-            "symfony run -d symfony console -e test aln:feeder:simulate --not-responding --fast OBU293827463",
-            "sleep 2",
-            "bin/phpunit",
-            "@pause"
-        ],
-        "test": [
-            "@lint",
-            "@unit"
-        ],
         "boot": [
             "docker-compose up -d",
             "@start"
@@ -147,6 +109,49 @@
         "stop": [
             "@pause",
             "docker-compose stop"
+        ],
+        "test": [
+            "@lint",
+            "@unit"
+        ],
+        "lint": [
+            "@sniff",
+            "@stan"
+        ],
+        "sniff": [
+            "php-cs-fixer fix --allow-risky=yes"
+        ],
+        "stan": [
+            "phpstan analyse --memory-limit 1G"
+        ],
+        "unit": [
+            "@pre-unit",
+            "@run-unit-socket",
+            "sleep 2",
+            "bin/phpunit",
+            "symfony server:stop"
+        ],
+        "pre-unit": [
+            "bin/console -e test doctrine:database:create --no-interaction --if-not-exists",
+            "bin/console -e test doctrine:migration:migrate --no-interaction --all-or-nothing --allow-no-migration",
+            "bin/console -e test doctrine:fixtures:load --no-interaction"
+        ],
+        "run-unit-socket": [
+            "symfony run -d symfony console -e test aln:socket:run",
+            "symfony run -d symfony console -e test aln:feeder:simulate --fast ABC123456789",
+            "symfony run -d symfony console -e test aln:feeder:simulate --not-responding --fast OBU293827463"
+        ],
+        "auto-scripts": {
+            "cache:clear": "symfony-cmd",
+            "assets:install %PUBLIC_DIR%": "symfony-cmd"
+        },
+        "post-install-cmd": [
+            "cghooks add --ignore-lock",
+            "@auto-scripts"
+        ],
+        "post-update-cmd": [
+            "cghooks update",
+            "@auto-scripts"
         ]
     },
     "scripts-descriptions": {

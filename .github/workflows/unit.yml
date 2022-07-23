@@ -1,0 +1,52 @@
+name: Unit Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['8.1']
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer
+
+      - name: Build the stack
+        run: docker-compose up -d
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Run linter & PhpStan
+        run: composer run-script lint
+
+      - name: Pre-unit script
+        run: composer run-script pre-unit
+
+      - name: Boot socket
+        run: ./bin/console -e test aln:socket:run &
+
+      - name: Boot feeder simulator
+        run: ./bin/console -e test aln:feeder:simulate --fast ABC123456789 &
+
+      - name: Boot unresponsive feeder simulator
+        run: ./bin/console -e test aln:feeder:simulate --not-responding --fast OBU293827463 &
+
+      - name: Wait
+        run: sleep 2
+
+      - name: Run PhpUnit
+        run: ./bin/phpunit
