@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\ApiPlatform\Dto\LoginInput;
+use App\Controller\GetCurrentUserController;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -13,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(
     collectionOperations: [
@@ -35,7 +37,20 @@ use Symfony\Component\Security\Core\User\UserInterface;
             ],
         ],
     ],
-    itemOperations: [],
+    itemOperations: [
+        'get' => [
+            'path' => 'user/me',
+            'controller' => GetCurrentUserController::class,
+            'openapi_context' => [
+                'summary' => 'Get current user information',
+                'description' => '#withoutIdentifier Get current user information',
+                'parameters' => [],
+            ],
+            'read' => false,
+        ],
+    ],
+    denormalizationContext: ['groups' => ['user:input']],
+    normalizationContext: ['groups' => ['user:output']],
 )]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -43,9 +58,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column()]
+    #[Groups(['user:output'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Groups(['user:input', 'user:output'])]
     private string $email = '';
 
     /**
@@ -55,12 +72,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     #[ORM\Column]
+    #[Groups(['user:input'])]
     private string $password = '';
 
     /**
      * @var Collection<int, AlnFeeder>
      */
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: AlnFeeder::class)]
+    #[Groups(['user:output'])]
     private Collection $feeders;
 
     public function __construct()

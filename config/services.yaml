@@ -32,6 +32,11 @@ services:
 
     App\Api\DataTransformer\PlanningInputDataTransformer: ~
 
+    App\OpenApi\OpenApiFactory:
+        decorates: 'api_platform.openapi.factory'
+        arguments: [ '@App\OpenApi\OpenApiFactory.inner' ]
+        autoconfigure: false
+
     App\Security\Voter\FeederVoter:
         arguments:
             - '%authentication.enabled%'

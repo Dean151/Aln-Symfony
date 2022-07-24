@@ -5,14 +5,18 @@ declare(strict_types=1);
 namespace App\Tests\Api;
 
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
 final class UserApiTest extends AuthenticatedApiTestCase
 {
     public function testAuthentication(): void
     {
-        $this->authenticateRequest('user.feeder@example.com', 'password');
+        $response = $this->authenticateRequest('user.feeder@example.com', 'password');
         $this->assertResponseIsSuccessful();
+        $json = $response->toArray();
+        $this->assertArrayHasKey('token', $json);
+        $this->assertIsString($json['token']);
     }
 
     /**
@@ -33,6 +37,24 @@ final class UserApiTest extends AuthenticatedApiTestCase
         yield ['unkwown_email@example.com', 'password', Response::HTTP_UNAUTHORIZED];
     }
 
+    public function testCurrentUserFetch(): void
+    {
+        $user = $this->getUserByEmail('user.nofeeder@example.com');
+        $this->fetchCurrentUserRequest($user);
+        $this->assertResponseIsSuccessful();
+        $this->assertJsonEquals([
+            'id' => $user->getId(),
+            'email' => $user->getEmail(),
+            'feeders' => [],
+        ]);
+    }
+
+    public function testCurrentUserUnauthenticatedFetch(): void
+    {
+        $this->fetchCurrentUserRequest();
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+    }
+
     private function authenticateRequest(string $email, string $password): ResponseInterface
     {
         $client = self::createClient();
@@ -45,6 +67,17 @@ final class UserApiTest extends AuthenticatedApiTestCase
                 'email' => $email,
                 'password' => $password,
             ],
+        ]);
+    }
+
+    private function fetchCurrentUserRequest(?UserInterface $authenticatedAs = null): ResponseInterface
+    {
+        $client = self::createClient();
+
+        return $client->request('GET', '/user/me', [
+            'headers' => [
+                'Accept' => 'application/json',
+            ] + $this->getHeadersIfAuthenticated($authenticatedAs),
         ]);
     }
 }
