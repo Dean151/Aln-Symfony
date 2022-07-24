@@ -131,6 +131,7 @@
             "symfony server:stop"
         ],
         "pre-unit": [
+            "bin/console lexik:jwt:generate-keypair --skip-if-exists",
             "bin/console -e test doctrine:database:create --no-interaction --if-not-exists",
             "bin/console -e test doctrine:migration:migrate --no-interaction --all-or-nothing --allow-no-migration",
             "bin/console -e test doctrine:fixtures:load --no-interaction"
