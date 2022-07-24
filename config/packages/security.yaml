@@ -17,8 +17,12 @@ security:
             security: false
         main:
             stateless: true
-            lazy: true
             provider: app_user_provider
+            json_login:
+                check_path: /user/login
+                username_path: email
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
             jwt: ~
 
             # activate different ways to authenticate
