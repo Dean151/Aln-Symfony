@@ -26,11 +26,9 @@ class AppFixtures extends Fixture
         ]);
         $unavailableFeeder = AlnFeederFactory::createOne([
             'identifier' => AlnFeederFactory::UNAVAILABLE_FEEDER_IDENTIFIER,
-            'owner' => $userWithFeeders,
         ]);
         $notRespondingFeeder = AlnFeederFactory::createOne([
             'identifier' => AlnFeederFactory::NOT_RESPONDING_FEEDER_IDENTIFIER,
-            'owner' => $userWithFeeders,
         ]);
 
         $manager->flush();

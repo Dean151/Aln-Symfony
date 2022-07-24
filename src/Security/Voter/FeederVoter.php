@@ -11,8 +11,8 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 final class FeederVoter extends Voter
 {
-    public const VIEW = 'view';
-    public const MANAGE = 'manage';
+    public const VIEW = 'VIEW';
+    public const MANAGE = 'MANAGE';
 
     private bool $authenticationEnabled;
 
