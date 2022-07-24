@@ -44,6 +44,11 @@ final class UserRepository extends ServiceEntityRepository implements PasswordUp
         }
     }
 
+    public function findOneByEmail(string $email): ?User
+    {
+        return $this->findOneBy(['email' => $email]);
+    }
+
     /**
      * Used to upgrade (rehash) the user's password automatically over time.
      */

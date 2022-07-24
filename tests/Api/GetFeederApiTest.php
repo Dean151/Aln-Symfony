@@ -6,6 +6,7 @@ namespace App\Tests\Api;
 
 use App\Factory\AlnFeederFactory;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
 final class GetFeederApiTest extends FeederApiTestCase
@@ -48,21 +49,44 @@ final class GetFeederApiTest extends FeederApiTestCase
     /**
      * @env AUTHENTICATION_ENABLED=true
      */
-    public function testPlanningChangeUnauthenticated(): void
+    public function testFeederStatusOwnedFeeder(): void
+    {
+        $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
+        $this->getFeederRequest($id, $this->getUserByEmail('user.feeder@example.com'));
+        $this->assertResponseIsSuccessful();
+        $this->assertJsonContains([
+            'id' => $id,
+        ]);
+    }
+
+    /**
+     * @env AUTHENTICATION_ENABLED=true
+     */
+    public function testFeederStatusUnownedFeeder(): void
+    {
+        $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
+        $this->getFeederRequest($id, $this->getUserByEmail('user.nofeeder@example.com'));
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    /**
+     * @env AUTHENTICATION_ENABLED=true
+     */
+    public function testFeederStatusUnauthenticated(): void
     {
         $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
         $this->getFeederRequest($id);
         $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
 
-    private function getFeederRequest(int $feederId): ResponseInterface
+    private function getFeederRequest(int $feederId, ?UserInterface $authenticatedAs = null): ResponseInterface
     {
         $client = self::createClient();
 
         return $client->request('GET', "/feeders/{$feederId}", [
             'headers' => [
                 'Accept' => 'application/json',
-            ],
+                ] + $this->getHeadersIfAuthenticated($authenticatedAs),
         ]);
     }
 }

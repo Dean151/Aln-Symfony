@@ -149,6 +149,9 @@ class AlnFeeder
     #[Assert\Length(max: 255, groups: ['feeder:validation'])]
     private string $name;
 
+    #[ORM\ManyToOne(inversedBy: 'feeders')]
+    private ?User $owner = null;
+
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['feeder:output'])]
     private \DateTimeImmutable $lastSeen;
@@ -211,6 +214,18 @@ class AlnFeeder
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): self
+    {
+        $this->owner = $owner;
 
         return $this;
     }

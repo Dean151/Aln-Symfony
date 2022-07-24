@@ -50,7 +50,9 @@ final class FeederVoter extends Voter
             return false;
         }
 
-        // TODO: check that feeded is associated with us
+        if ($subject->getOwner() !== $user) {
+            return false;
+        }
 
         return true;
     }

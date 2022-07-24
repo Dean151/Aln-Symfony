@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -28,6 +30,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private string $password = '';
+
+    /**
+     * @var Collection<int, AlnFeeder>
+     */
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: AlnFeeder::class)]
+    private Collection $feeders;
+
+    public function __construct()
+    {
+        $this->feeders = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -93,5 +106,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
+    }
+
+    /**
+     * @return Collection<int, AlnFeeder>
+     */
+    public function getFeeders(): Collection
+    {
+        return $this->feeders;
+    }
+
+    public function addFeeder(AlnFeeder $feeder): self
+    {
+        if (!$this->feeders->contains($feeder)) {
+            $this->feeders[] = $feeder;
+            $feeder->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFeeder(AlnFeeder $feeder): self
+    {
+        if ($this->feeders->removeElement($feeder)) {
+            // set the owning side to null (unless already changed)
+            if ($feeder->getOwner() === $this) {
+                $feeder->setOwner(null);
+            }
+        }
+
+        return $this;
     }
 }
