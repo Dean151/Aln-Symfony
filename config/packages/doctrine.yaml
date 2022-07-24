@@ -11,7 +11,7 @@ doctrine:
         server_version: 'mariadb-10.8.3'
 
         types:
-            aln_time:  App\Doctrine\Types\AlnTimeType
+            aln_time:  App\Dbal\Types\AlnTimeType
     orm:
         auto_generate_proxy_classes: true
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware

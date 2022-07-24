@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Doctrine\Types\AlnTimeType;
+use App\Dbal\Types\AlnTimeType;
 use App\Repository\AlnMealRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
