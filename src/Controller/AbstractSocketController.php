@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\AlnFeeder;
 use App\Queue\MessageEnqueueInterface;
+use App\Security\Voter\FeederVoter;
 use App\Socket\Messages\ExpectableMessageInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
@@ -22,6 +23,8 @@ abstract class AbstractSocketController extends AbstractController
 
     protected function sendSocketMessage(AlnFeeder $feeder, ExpectableMessageInterface $message): void
     {
+        $this->denyAccessUnlessGranted(FeederVoter::MANAGE, $feeder);
+
         $identifier = $feeder->getIdentifier();
         if (!$feeder->isAvailable() || !is_string($identifier)) {
             throw new ConflictHttpException('Feeder is not available');

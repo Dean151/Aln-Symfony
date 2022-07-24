@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f016e52ce31e1fd97b250221fc81320e",
+    "content-hash": "413382a688f1865a199ab9723740d406",
     "packages": [
         {
             "name": "api-platform/core",
@@ -11516,6 +11516,61 @@
                 }
             ],
             "time": "2022-05-17T05:48:52+00:00"
+        },
+        {
+            "name": "zalas/phpunit-globals",
+            "version": "v2.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jakzal/phpunit-globals.git",
+                "reference": "ca6fcf6441138865fba9582dddb4b769f714c899"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jakzal/phpunit-globals/zipball/ca6fcf6441138865fba9582dddb4b769f714c899",
+                "reference": "ca6fcf6441138865fba9582dddb4b769f714c899",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.3 || ~8.0.0 || ~8.1.0",
+                "phpunit/phpunit": "^9.0"
+            },
+            "conflict": {
+                "phpunit/phpunit": "9.5.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Zalas\\PHPUnit\\Globals\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jakub Zalas",
+                    "email": "jakub@zalas.pl"
+                }
+            ],
+            "description": "Allows to use annotations to define global variables in PHPUnit test cases.",
+            "support": {
+                "issues": "https://github.com/jakzal/phpunit-globals/issues",
+                "source": "https://github.com/jakzal/phpunit-globals/tree/v2.2.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/jakzal",
+                    "type": "github"
+                }
+            ],
+            "time": "2021-11-18T21:25:42+00:00"
         },
         {
             "name": "zenstruck/assert",

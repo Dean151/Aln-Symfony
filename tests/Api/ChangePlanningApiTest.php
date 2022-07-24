@@ -84,6 +84,16 @@ final class ChangePlanningApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
+    /**
+     * @env AUTHENTICATION_ENABLED=true
+     */
+    public function testPlanningChangeUnauthenticated(): void
+    {
+        $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
+        $this->changePlanningRequest($id, []);
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+    }
+
     private function changePlanningRequest(int $feederId, mixed $meals): ResponseInterface
     {
         $client = self::createClient();

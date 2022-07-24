@@ -39,6 +39,17 @@ final class PutFeederApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
+    /**
+     * @env AUTHENTICATION_ENABLED=true
+     */
+    public function testPlanningChangeUnauthenticated(): void
+    {
+        $newName = AlnFeederFactory::faker()->firstName();
+        $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
+        $this->putFeederNameRequest($id, $newName);
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+    }
+
     private function putFeederNameRequest(int $feederId, string $newName): ResponseInterface
     {
         $client = self::createClient();

@@ -73,6 +73,17 @@ final class FeedNowApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
+    /**
+     * @env AUTHENTICATION_ENABLED=true
+     */
+    public function testPlanningChangeUnauthenticated(): void
+    {
+        $amount = random_int(5, 150);
+        $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
+        $this->feedNowRequest($id, $amount);
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+    }
+
     private function feedNowRequest(int $feederId, int $amount): ResponseInterface
     {
         $client = self::createClient();

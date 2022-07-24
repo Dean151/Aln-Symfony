@@ -71,6 +71,17 @@ final class ChangeDefaultMealApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
+    /**
+     * @env AUTHENTICATION_ENABLED=true
+     */
+    public function testChangeDefaultMealUnauthenticated(): void
+    {
+        $amount = random_int(5, 150);
+        $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
+        $this->changeDefaultMealRequest($id, $amount);
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+    }
+
     private function changeDefaultMealRequest(int $feederId, int $amount): ResponseInterface
     {
         $client = self::createClient();

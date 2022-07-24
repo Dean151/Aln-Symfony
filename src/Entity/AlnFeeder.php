@@ -28,12 +28,14 @@ use Symfony\Component\Validator\Constraints as Assert;
                 'summary' => 'Retrieve feeder status and settings',
                 'description' => 'Retrieve feeder status and settings',
             ],
+            'security' => "is_granted('view', object)",
         ],
         'put' => [
             'openapi_context' => [
                 'summary' => 'Update feeder name',
                 'description' => 'Update feeder name',
             ],
+            'security' => "is_granted('manage', object)",
         ],
         'feed' => [
             'method' => 'POST',

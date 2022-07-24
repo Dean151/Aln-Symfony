@@ -45,6 +45,16 @@ final class GetFeederApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
+    /**
+     * @env AUTHENTICATION_ENABLED=true
+     */
+    public function testPlanningChangeUnauthenticated(): void
+    {
+        $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
+        $this->getFeederRequest($id);
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+    }
+
     private function getFeederRequest(int $feederId): ResponseInterface
     {
         $client = self::createClient();
