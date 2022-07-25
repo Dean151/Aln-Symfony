@@ -11,6 +11,7 @@ use App\ApiPlatform\Dto\PlanningInput;
 use App\Controller\AssociateFeederController;
 use App\Controller\ChangeDefaultMealController;
 use App\Controller\ChangePlanningController;
+use App\Controller\DissociateFeederController;
 use App\Controller\FeedNowController;
 use App\Repository\AlnFeederRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -66,6 +67,33 @@ use Symfony\Component\Validator\Constraints as Assert;
             'openapi_context' => [
                 'summary' => 'Update feeder name',
                 'description' => 'Update feeder name',
+            ],
+        ],
+        'dissociate' => [
+            'method' => 'DELETE',
+            'status' => Response::HTTP_OK,
+            'path' => '/feeders/{id}/association',
+            'controller' => DissociateFeederController::class,
+            'denormalization_context' => ['groups' => []],
+            'validation_groups' => [],
+            'security' => "is_granted('MANAGE', object)",
+            'openapi_context' => [
+                'summary' => 'Dissociate an associated feeder from your account',
+                'description' => 'Dissociate an associated feeder from your account',
+                'responses' => [
+                    Response::HTTP_OK => [
+                        'description' => 'Feeder dissociated',
+                    ],
+                    Response::HTTP_UNAUTHORIZED => [
+                        'description' => 'Not logged in',
+                    ],
+                    Response::HTTP_FORBIDDEN => [
+                        'description' => 'Feeder not associated to current account',
+                    ],
+                    Response::HTTP_NOT_FOUND => [
+                        'description' => 'Feeder not registered',
+                    ],
+                ],
             ],
         ],
         'feed' => [
