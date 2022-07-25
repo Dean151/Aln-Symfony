@@ -43,7 +43,6 @@ final class UserApiTest extends AuthenticatedApiTestCase
         $this->fetchCurrentUserRequest($user);
         $this->assertResponseIsSuccessful();
         $this->assertJsonEquals([
-            'id' => $user->getId(),
             'email' => $user->getEmail(),
             'feeders' => [],
         ]);

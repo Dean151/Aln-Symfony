@@ -36,7 +36,8 @@ final class UserFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'email' => self::faker()->email(),
+            'identifier' => self::faker()->unique()->uuid(),
+            'email' => self::faker()->unique()->email(),
             'roles' => [],
             'password' => '$2y$13$NhZZh8rS5HoDvO4U4V4mpOE2B6kfzNr5G4rN0CXb.txbX7pI6zIhS', // Pre-hashed text "password"
         ];

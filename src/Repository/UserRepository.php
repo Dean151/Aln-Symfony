@@ -44,6 +44,11 @@ final class UserRepository extends ServiceEntityRepository implements PasswordUp
         }
     }
 
+    public function findOneByIdentifier(string $identifier): ?User
+    {
+        return $this->findOneBy(['identifier' => $identifier]);
+    }
+
     public function findOneByEmail(string $email): ?User
     {
         return $this->findOneBy(['email' => $email]);

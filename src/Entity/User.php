@@ -58,8 +58,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column()]
-    #[Groups(['user:output'])]
     private ?int $id = null;
+
+    #[ORM\Column(length: 64, unique: true)]
+    private string $identifier = '';
 
     #[ORM\Column(length: 180, unique: true)]
     #[Groups(['user:input', 'user:output'])]
@@ -90,6 +92,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getIdentifier(): string
+    {
+        return $this->identifier;
+    }
+
+    public function setIdentifier(string $identifier): self
+    {
+        $this->identifier = $identifier;
+
+        return $this;
     }
 
     public function getEmail(): string
