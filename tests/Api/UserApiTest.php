@@ -43,6 +43,7 @@ final class UserApiTest extends AuthenticatedApiTestCase
         $this->fetchCurrentUserRequest($user);
         $this->assertResponseIsSuccessful();
         $this->assertJsonEquals([
+            'id' => $user->getId(),
             'email' => $user->getEmail(),
             'feeders' => [],
         ]);
@@ -52,6 +53,18 @@ final class UserApiTest extends AuthenticatedApiTestCase
     {
         $this->fetchCurrentUserRequest();
         $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function testUpdatePassword(): void
+    {
+        $user = $this->getUserByEmail('user.nofeeder@example.com');
+        $oldHash = $user->getPassword();
+        $userId = $user->getId();
+        $this->assertNotNull($userId);
+        $this->updateUserRequest($userId, ['password' => 'HelloWorld!'], $user);
+        $this->assertResponseIsSuccessful();
+        $user = $this->getUserByEmail('user.nofeeder@example.com');
+        $this->assertNotEquals($oldHash, $user->getPassword());
     }
 
     private function authenticateRequest(string $email, string $password): ResponseInterface
@@ -77,6 +90,21 @@ final class UserApiTest extends AuthenticatedApiTestCase
             'headers' => [
                 'Accept' => 'application/json',
             ] + $this->getHeadersIfAuthenticated($authenticatedAs),
+        ]);
+    }
+
+    /**
+     * @param array<string, string> $json
+     */
+    private function updateUserRequest(int $userId, array $json, ?UserInterface $authenticatedAs = null): ResponseInterface
+    {
+        $client = self::createClient();
+
+        return $client->request('PUT', "/user/{$userId}", [
+            'headers' => [
+                'Accept' => 'application/json',
+            ] + $this->getHeadersIfAuthenticated($authenticatedAs),
+            'json' => $json,
         ]);
     }
 }

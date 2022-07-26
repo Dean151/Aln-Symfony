@@ -28,14 +28,18 @@
         "symfony/expression-language": "^6.1.0",
         "symfony/flex": "^2",
         "symfony/framework-bundle": "^6.1.0",
+        "symfony/mailer": "^6.1.0",
         "symfony/property-access": "^6.1.0",
         "symfony/property-info": "^6.1.0",
         "symfony/proxy-manager-bridge": "^6.1.0",
         "symfony/runtime": "^6.1.0",
         "symfony/security-bundle": "^6.1.0",
         "symfony/serializer": "^6.1.0",
+        "symfony/translation": "^6.1.0",
+        "symfony/uid": "^6.1.0",
         "symfony/validator": "^6.1.0",
         "symfony/yaml": "^6.1.0",
+        "symfonycasts/reset-password-bundle": "^1.14",
         "thecodingmachine/safe": "^2.2"
     },
     "require-dev": {

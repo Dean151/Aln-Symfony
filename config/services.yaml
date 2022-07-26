@@ -5,6 +5,7 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     authentication.enabled: '%env(bool:AUTHENTICATION_ENABLED)%'
+    email.sender: '%env(string:EMAIL_SENDER)%'
     feeder.response_timeout: '%env(float:FEEDER_RESPONSE_TIMEOUT)%'
     rabbitmq.host: '%env(string:RABBITMQ_HOST)%'
     rabbitmq.port: '%env(int:RABBITMQ_PORT)%'
@@ -12,6 +13,8 @@ parameters:
     rabbitmq.password: '%env(string:RABBITMQ_PASSWORD)%'
     simulator.host: '%env(string:SIMULATOR_HOST)%'
     simulator.port: '%env(int:SIMULATOR_PORT)%'
+    site.base_url: '%env(string:SITE_BASE_URL)%'
+    site.name: '%env(string:SITE_NAME)%'
     websocket.host: '%env(string:WEBSOCKET_HOST)%'
     websocket.port: '%env(int:WEBSOCKET_PORT)%'
 

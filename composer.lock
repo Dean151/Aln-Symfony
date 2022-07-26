@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9ff6f443f15d97e0409bad97e889de2d",
+    "content-hash": "fb23324927251cd459cee8114d38ca96",
     "packages": [
         {
             "name": "api-platform/core",
@@ -1599,6 +1599,74 @@
                 "source": "https://github.com/doctrine/sql-formatter/tree/1.1.3"
             },
             "time": "2022-05-23T21:33:49+00:00"
+        },
+        {
+            "name": "egulias/email-validator",
+            "version": "3.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/egulias/EmailValidator.git",
+                "reference": "f88dcf4b14af14a98ad96b14b2b317969eab6715"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/egulias/EmailValidator/zipball/f88dcf4b14af14a98ad96b14b2b317969eab6715",
+                "reference": "f88dcf4b14af14a98ad96b14b2b317969eab6715",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/lexer": "^1.2",
+                "php": ">=7.2",
+                "symfony/polyfill-intl-idn": "^1.15"
+            },
+            "require-dev": {
+                "php-coveralls/php-coveralls": "^2.2",
+                "phpunit/phpunit": "^8.5.8|^9.3.3",
+                "vimeo/psalm": "^4"
+            },
+            "suggest": {
+                "ext-intl": "PHP Internationalization Libraries are required to use the SpoofChecking validation"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Egulias\\EmailValidator\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Eduardo Gulias Davis"
+                }
+            ],
+            "description": "A library for validating emails against several RFCs",
+            "homepage": "https://github.com/egulias/EmailValidator",
+            "keywords": [
+                "email",
+                "emailvalidation",
+                "emailvalidator",
+                "validation",
+                "validator"
+            ],
+            "support": {
+                "issues": "https://github.com/egulias/EmailValidator/issues",
+                "source": "https://github.com/egulias/EmailValidator/tree/3.2.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/egulias",
+                    "type": "github"
+                }
+            ],
+            "time": "2022-06-18T20:57:19+00:00"
         },
         {
             "name": "evenement/evenement",
@@ -5523,6 +5591,161 @@
             "time": "2022-06-26T17:06:14+00:00"
         },
         {
+            "name": "symfony/mailer",
+            "version": "v6.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/mailer.git",
+                "reference": "8fa150355115ea09238858ae3cfaf249fd1fd5ed"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/mailer/zipball/8fa150355115ea09238858ae3cfaf249fd1fd5ed",
+                "reference": "8fa150355115ea09238858ae3cfaf249fd1fd5ed",
+                "shasum": ""
+            },
+            "require": {
+                "egulias/email-validator": "^2.1.10|^3",
+                "php": ">=8.1",
+                "psr/event-dispatcher": "^1",
+                "psr/log": "^1|^2|^3",
+                "symfony/event-dispatcher": "^5.4|^6.0",
+                "symfony/mime": "^5.4|^6.0",
+                "symfony/service-contracts": "^1.1|^2|^3"
+            },
+            "conflict": {
+                "symfony/http-kernel": "<5.4"
+            },
+            "require-dev": {
+                "symfony/http-client-contracts": "^1.1|^2|^3",
+                "symfony/messenger": "^5.4|^6.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Mailer\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Helps sending emails",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/mailer/tree/v6.1.2"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-06-19T13:21:48+00:00"
+        },
+        {
+            "name": "symfony/mime",
+            "version": "v6.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/mime.git",
+                "reference": "56508865dd883dce3c863af11b3e8053adab30d7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/mime/zipball/56508865dd883dce3c863af11b3e8053adab30d7",
+                "reference": "56508865dd883dce3c863af11b3e8053adab30d7",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1",
+                "symfony/polyfill-intl-idn": "^1.10",
+                "symfony/polyfill-mbstring": "^1.0"
+            },
+            "conflict": {
+                "egulias/email-validator": "~3.0.0",
+                "phpdocumentor/reflection-docblock": "<3.2.2",
+                "phpdocumentor/type-resolver": "<1.4.0",
+                "symfony/mailer": "<5.4"
+            },
+            "require-dev": {
+                "egulias/email-validator": "^2.1.10|^3.1",
+                "phpdocumentor/reflection-docblock": "^3.0|^4.0|^5.0",
+                "symfony/dependency-injection": "^5.4|^6.0",
+                "symfony/property-access": "^5.4|^6.0",
+                "symfony/property-info": "^5.4|^6.0",
+                "symfony/serializer": "^5.4|^6.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Mime\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Allows manipulating MIME messages",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "mime",
+                "mime-type"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/mime/tree/v6.1.1"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-06-09T12:51:38+00:00"
+        },
+        {
             "name": "symfony/password-hasher",
             "version": "v6.1.0",
             "source": {
@@ -5658,6 +5881,93 @@
             ],
             "support": {
                 "source": "https://github.com/symfony/polyfill-intl-grapheme/tree/v1.26.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-05-24T11:49:31+00:00"
+        },
+        {
+            "name": "symfony/polyfill-intl-idn",
+            "version": "v1.26.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-intl-idn.git",
+                "reference": "59a8d271f00dd0e4c2e518104cc7963f655a1aa8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-intl-idn/zipball/59a8d271f00dd0e4c2e518104cc7963f655a1aa8",
+                "reference": "59a8d271f00dd0e4c2e518104cc7963f655a1aa8",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1",
+                "symfony/polyfill-intl-normalizer": "^1.10",
+                "symfony/polyfill-php72": "^1.10"
+            },
+            "suggest": {
+                "ext-intl": "For best performance"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.26-dev"
+                },
+                "thanks": {
+                    "name": "symfony/polyfill",
+                    "url": "https://github.com/symfony/polyfill"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Intl\\Idn\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Laurent Bassin",
+                    "email": "laurent@bassin.info"
+                },
+                {
+                    "name": "Trevor Rowbotham",
+                    "email": "trevor.rowbotham@pm.me"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill for intl's idn_to_ascii and idn_to_utf8 functions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "idn",
+                "intl",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/polyfill-intl-idn/tree/v1.26.0"
             },
             "funding": [
                 {
@@ -5909,6 +6219,88 @@
                 }
             ],
             "time": "2020-10-23T14:02:19+00:00"
+        },
+        {
+            "name": "symfony/polyfill-uuid",
+            "version": "v1.26.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-uuid.git",
+                "reference": "a41886c1c81dc075a09c71fe6db5b9d68c79de23"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-uuid/zipball/a41886c1c81dc075a09c71fe6db5b9d68c79de23",
+                "reference": "a41886c1c81dc075a09c71fe6db5b9d68c79de23",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "provide": {
+                "ext-uuid": "*"
+            },
+            "suggest": {
+                "ext-uuid": "For best performance"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.26-dev"
+                },
+                "thanks": {
+                    "name": "symfony/polyfill",
+                    "url": "https://github.com/symfony/polyfill"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Uuid\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Grégoire Pineau",
+                    "email": "lyrixx@lyrixx.info"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill for uuid functions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "polyfill",
+                "portable",
+                "uuid"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/polyfill-uuid/tree/v1.26.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-05-24T11:49:31+00:00"
         },
         {
             "name": "symfony/property-access",
@@ -6987,6 +7379,102 @@
             "time": "2022-06-26T16:35:04+00:00"
         },
         {
+            "name": "symfony/translation",
+            "version": "v6.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/translation.git",
+                "reference": "b254416631615bc6fe49b0a67f18658827288147"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/translation/zipball/b254416631615bc6fe49b0a67f18658827288147",
+                "reference": "b254416631615bc6fe49b0a67f18658827288147",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1",
+                "symfony/polyfill-mbstring": "~1.0",
+                "symfony/translation-contracts": "^2.3|^3.0"
+            },
+            "conflict": {
+                "symfony/config": "<5.4",
+                "symfony/console": "<5.4",
+                "symfony/dependency-injection": "<5.4",
+                "symfony/http-kernel": "<5.4",
+                "symfony/twig-bundle": "<5.4",
+                "symfony/yaml": "<5.4"
+            },
+            "provide": {
+                "symfony/translation-implementation": "2.3|3.0"
+            },
+            "require-dev": {
+                "psr/log": "^1|^2|^3",
+                "symfony/config": "^5.4|^6.0",
+                "symfony/console": "^5.4|^6.0",
+                "symfony/dependency-injection": "^5.4|^6.0",
+                "symfony/finder": "^5.4|^6.0",
+                "symfony/http-client-contracts": "^1.1|^2.0|^3.0",
+                "symfony/http-kernel": "^5.4|^6.0",
+                "symfony/intl": "^5.4|^6.0",
+                "symfony/polyfill-intl-icu": "^1.21",
+                "symfony/routing": "^5.4|^6.0",
+                "symfony/service-contracts": "^1.1.2|^2|^3",
+                "symfony/yaml": "^5.4|^6.0"
+            },
+            "suggest": {
+                "psr/log-implementation": "To use logging capability in translator",
+                "symfony/config": "",
+                "symfony/yaml": ""
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "Resources/functions.php"
+                ],
+                "psr-4": {
+                    "Symfony\\Component\\Translation\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Provides tools to internationalize your application",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/translation/tree/v6.1.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-05-11T12:12:29+00:00"
+        },
+        {
             "name": "symfony/translation-contracts",
             "version": "v3.1.1",
             "source": {
@@ -7066,6 +7554,80 @@
                 }
             ],
             "time": "2022-06-27T17:24:16+00:00"
+        },
+        {
+            "name": "symfony/uid",
+            "version": "v6.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/uid.git",
+                "reference": "5d1bba611fcd5d7ccc6435fd4ea8580f9ed75406"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/uid/zipball/5d1bba611fcd5d7ccc6435fd4ea8580f9ed75406",
+                "reference": "5d1bba611fcd5d7ccc6435fd4ea8580f9ed75406",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1",
+                "symfony/polyfill-uuid": "^1.15"
+            },
+            "require-dev": {
+                "symfony/console": "^5.4|^6.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Uid\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Grégoire Pineau",
+                    "email": "lyrixx@lyrixx.info"
+                },
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Provides an object-oriented API to generate and represent UIDs",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "UID",
+                "ulid",
+                "uuid"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/uid/tree/v6.1.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-04-15T14:25:02+00:00"
         },
         {
             "name": "symfony/validator",
@@ -7494,6 +8056,56 @@
                 }
             ],
             "time": "2022-06-20T12:01:07+00:00"
+        },
+        {
+            "name": "symfonycasts/reset-password-bundle",
+            "version": "v1.14.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SymfonyCasts/reset-password-bundle.git",
+                "reference": "b8f59b335deb102ed50bbe49a208ed211e80c0f7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SymfonyCasts/reset-password-bundle/zipball/b8f59b335deb102ed50bbe49a208ed211e80c0f7",
+                "reference": "b8f59b335deb102ed50bbe49a208ed211e80c0f7",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2.5",
+                "symfony/config": "^4.4 | ^5.0 | ^6.0",
+                "symfony/dependency-injection": "^4.4 | ^5.0 | ^6.0",
+                "symfony/deprecation-contracts": "^2.2 | ^3.0",
+                "symfony/http-kernel": "^4.4 | ^5.0 | ^6.0"
+            },
+            "conflict": {
+                "doctrine/orm": "<2.7",
+                "symfony/framework-bundle": "<4.4",
+                "symfony/http-foundation": "<4.4"
+            },
+            "require-dev": {
+                "doctrine/doctrine-bundle": "^2.0.3",
+                "doctrine/orm": "^2.7",
+                "symfony/framework-bundle": "^4.4 | ^5.0 | ^6.0",
+                "symfony/phpunit-bridge": "^5.0 | ^6.0",
+                "vimeo/psalm": "^4.3"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "SymfonyCasts\\Bundle\\ResetPassword\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Symfony bundle that adds password reset functionality.",
+            "support": {
+                "issues": "https://github.com/SymfonyCasts/reset-password-bundle/issues",
+                "source": "https://github.com/SymfonyCasts/reset-password-bundle/tree/v1.14.0"
+            },
+            "time": "2022-07-12T16:54:15+00:00"
         },
         {
             "name": "thecodingmachine/safe",

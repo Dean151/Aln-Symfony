@@ -39,7 +39,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ],
     itemOperations: [
         'get' => [
-            'path' => 'user/me',
+            'path' => '/user/me',
             'controller' => GetCurrentUserController::class,
             'openapi_context' => [
                 'summary' => 'Get current user information',
@@ -47,6 +47,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
                 'parameters' => [],
             ],
             'read' => false,
+        ],
+        'put' => [
+            'path' => '/user/{id}',
+            'security' => 'object == user',
         ],
     ],
     denormalizationContext: ['groups' => ['user:input']],
@@ -58,13 +62,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column()]
+    #[Groups(['user:output'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 64, unique: true)]
     private string $identifier = '';
 
     #[ORM\Column(length: 180, unique: true)]
-    #[Groups(['user:input', 'user:output'])]
+    #[Groups(['user:output', 'register:input'])]
     private string $email = '';
 
     /**

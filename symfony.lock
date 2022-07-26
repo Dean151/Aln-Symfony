@@ -178,6 +178,18 @@
             "src/Kernel.php"
         ]
     },
+    "symfony/mailer": {
+        "version": "6.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "4.3",
+            "ref": "97a61eabb351d7f6cb7702039bcfe07fe9d7e03c"
+        },
+        "files": [
+            "config/packages/mailer.yaml"
+        ]
+    },
     "symfony/maker-bundle": {
         "version": "1.44",
         "recipe": {
@@ -239,6 +251,19 @@
             "config/packages/security.yaml"
         ]
     },
+    "symfony/translation": {
+        "version": "6.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "5.3",
+            "ref": "da64f5a2b6d96f5dc24914517c0350a5f91dee43"
+        },
+        "files": [
+            "config/packages/translation.yaml",
+            "translations/.gitignore"
+        ]
+    },
     "symfony/twig-bundle": {
         "version": "6.0",
         "recipe": {
@@ -275,6 +300,18 @@
         "files": [
             "config/packages/web_profiler.yaml",
             "config/routes/web_profiler.yaml"
+        ]
+    },
+    "symfonycasts/reset-password-bundle": {
+        "version": "1.14",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "1.0",
+            "ref": "97c1627c0384534997ae1047b93be517ca16de43"
+        },
+        "files": [
+            "config/packages/reset_password.yaml"
         ]
     },
     "zenstruck/foundry": {
