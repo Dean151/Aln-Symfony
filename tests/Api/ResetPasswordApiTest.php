@@ -9,13 +9,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\DataCollector\MessageDataCollector;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
-final class RegisterApiTest extends ApiTestCase
+final class ResetPasswordApiTest extends ApiTestCase
 {
-    public function testRegisterWithEmail(): void
+    public function testResetPasswordWithEmail(): void
     {
-        $this->registerEmailRequestWithProfiler('new_user@example.com', $mailer);
+        $this->resetPasswordRequestWithProfiler('user.feeder@example.com', $mailer);
         $this->assertResponseIsSuccessful();
-        $this->assertJsonEquals(['message' => 'Register mail sent']);
+        $this->assertJsonEquals(['message' => 'Reset password instruction mail sent']);
 
         $this->assertInstanceOf(MessageDataCollector::class, $mailer);
         $events = $mailer->getEvents()->getEvents();
@@ -25,34 +25,31 @@ final class RegisterApiTest extends ApiTestCase
         $this->assertEquals('no-reply@example.com', $event->getEnvelope()->getSender()->getAddress());
         $recipients = $event->getEnvelope()->getRecipients();
         $this->assertCount(1, $recipients);
-        $this->assertEquals('new_user@example.com', $recipients[0]->getAddress());
+        $this->assertEquals('user.feeder@example.com', $recipients[0]->getAddress());
     }
 
-    public function testRegisterWithInvalidEmail(): void
+    public function testResetPasswordWithInvalidEmail(): void
     {
-        $this->registerEmailRequest('not_an_email');
+        $this->resetPasswordRequest('not_an_email');
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    /**
-     * @depends testRegisterWithEmail
-     */
-    public function testRegisterWithUsedEmail(): void
+    public function testResetPasswordWithUnusedEmail(): void
     {
-        $this->registerEmailRequestWithProfiler('new_user@example.com', $mailer);
+        $this->resetPasswordRequestWithProfiler('unused_email@example.com', $mailer);
         $this->assertResponseIsSuccessful();
-        $this->assertJsonEquals(['message' => 'Register mail sent']);
+        $this->assertJsonEquals(['message' => 'Reset password instruction mail sent']);
 
         $this->assertInstanceOf(MessageDataCollector::class, $mailer);
         $events = $mailer->getEvents()->getEvents();
         $this->assertCount(0, $events);
     }
 
-    private function registerEmailRequest(string $email): ResponseInterface
+    private function resetPasswordRequest(string $email): ResponseInterface
     {
         $client = self::createClient();
 
-        return $client->request('POST', 'user/register', [
+        return $client->request('POST', 'user/reset', [
             'headers' => [
                 'Accept' => 'application/json',
             ],
@@ -62,12 +59,12 @@ final class RegisterApiTest extends ApiTestCase
         ]);
     }
 
-    private function registerEmailRequestWithProfiler(string $email, ?MessageDataCollector &$mailer): ResponseInterface
+    private function resetPasswordRequestWithProfiler(string $email, ?MessageDataCollector &$mailer): ResponseInterface
     {
         $client = self::createClient();
         $client->enableProfiler();
 
-        $response = $client->request('POST', 'user/register', [
+        $response = $client->request('POST', 'user/reset', [
             'headers' => [
                 'Accept' => 'application/json',
             ],

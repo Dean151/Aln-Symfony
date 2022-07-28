@@ -10,7 +10,7 @@ use Symfony\Component\Mime\Email;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\ResetPassword\Model\ResetPasswordToken;
 
-final class RegisterEmailFactory
+final class NewPasswordEmailFactory
 {
     private TranslatorInterface $translator;
     private string $senderEmail;
@@ -25,20 +25,24 @@ final class RegisterEmailFactory
         $this->siteName = $params->get('site.name');
     }
 
-    public function create(string $recipientAddress, ResetPasswordToken $token): Email
+    public function create(string $type, string $recipientAddress, ResetPasswordToken $token): Email
     {
-        $locale = 'en';
+        if (!in_array($type, ['register', 'reset_password'])) {
+            throw new \InvalidArgumentException('$type is invalid');
+        }
+
+        $locale = $this->translator->getLocale();
 
         $email = new TemplatedEmail();
         $email->from($this->senderEmail);
         $email->to($recipientAddress);
 
-        $email->subject($this->translator->trans('register.subject', ['%site_name%' => $this->siteName]));
-        $email->htmlTemplate(sprintf('emails/register_%s.html.twig', $locale));
+        $email->subject($this->translator->trans(sprintf('%s.subject', $type), ['%site_name%' => $this->siteName]));
+        $email->htmlTemplate(sprintf('emails/%s_%s.html.twig', $type, $locale));
         $email->context([
             'url' => $this->buildUrl($token, $locale),
             'recipient_email' => $recipientAddress,
-            'site_name' => 'Cat Feeder Initiative',
+            'site_name' => $this->siteName,
         ]);
 
         return $email;

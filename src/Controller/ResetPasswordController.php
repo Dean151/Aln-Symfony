@@ -7,16 +7,14 @@ namespace App\Controller;
 use ApiPlatform\Core\Validator\ValidatorInterface;
 use App\ApiPlatform\Dto\EmailInput;
 use App\Email\NewPasswordEmailFactory;
-use App\Entity\User;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Uid\Uuid;
 use SymfonyCasts\Bundle\ResetPassword\ResetPasswordHelperInterface;
 
 #[AsController]
-final class RegisterUserController extends AbstractNewPasswordController
+final class ResetPasswordController extends AbstractNewPasswordController
 {
     private ValidatorInterface $validator;
     private UserRepository $userRepository;
@@ -38,15 +36,10 @@ final class RegisterUserController extends AbstractNewPasswordController
         $this->validator->validate($data);
 
         $user = $this->userRepository->findOneByEmail($data->email);
-        if (null === $user) {
-            $user = new User();
-            $user->setIdentifier(Uuid::v4()->toRfc4122());
-            $user->setEmail($data->email);
-            $this->userRepository->add($user, true);
-
-            $this->sendNewPasswordEmail($user, 'register');
+        if (null !== $user) {
+            $this->sendNewPasswordEmail($user, 'reset_password');
         }
 
-        return $this->json(['message' => 'Register mail sent']);
+        return $this->json(['message' => 'Reset password instruction mail sent']);
     }
 }
