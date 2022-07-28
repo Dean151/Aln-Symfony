@@ -7,6 +7,7 @@ namespace App\Tests\Api;
 use App\Entity\AlnMeal;
 use App\Factory\AlnFeederFactory;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
 final class FeedNowApiTest extends FeederApiTestCase
@@ -73,14 +74,50 @@ final class FeedNowApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
-    private function feedNowRequest(int $feederId, int $amount): ResponseInterface
+    /**
+     * @env AUTHENTICATION_ENABLED=true
+     */
+    public function testFeedNowOwnedFeeder(): void
+    {
+        $amount = random_int(5, 150);
+        $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
+        $this->feedNowRequest($id, $amount, $this->getUserByEmail('user.feeder@example.com'));
+        $this->assertResponseIsSuccessful();
+        $this->assertJsonEquals([
+            'message' => "{$amount}g meal has been distributed",
+        ]);
+    }
+
+    /**
+     * @env AUTHENTICATION_ENABLED=true
+     */
+    public function testFeedNowUnownedFeeder(): void
+    {
+        $amount = random_int(5, 150);
+        $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
+        $this->feedNowRequest($id, $amount, $this->getUserByEmail('user.nofeeder@example.com'));
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    /**
+     * @env AUTHENTICATION_ENABLED=true
+     */
+    public function testFeedNowUnauthenticated(): void
+    {
+        $amount = random_int(5, 150);
+        $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
+        $this->feedNowRequest($id, $amount);
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+    }
+
+    private function feedNowRequest(int $feederId, int $amount, ?UserInterface $authenticatedAs = null): ResponseInterface
     {
         $client = self::createClient();
 
         return $client->request('POST', "/feeders/{$feederId}/feed", [
             'headers' => [
                 'Accept' => 'application/json',
-            ],
+                ] + $this->getHeadersIfAuthenticated($authenticatedAs),
             'json' => [
                 'amount' => $amount,
             ],

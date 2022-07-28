@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace App\Tests\Api;
 
-use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
 use App\Entity\AlnFeeder;
 use App\Repository\AlnFeederRepository;
 
-abstract class FeederApiTestCase extends ApiTestCase
+abstract class FeederApiTestCase extends AuthenticatedApiTestCase
 {
     protected function findFeeder(string $identifier): AlnFeeder
     {

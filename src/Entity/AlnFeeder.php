@@ -6,9 +6,12 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\ApiPlatform\Dto\IdentifierInput;
 use App\ApiPlatform\Dto\PlanningInput;
+use App\Controller\AssociateFeederController;
 use App\Controller\ChangeDefaultMealController;
 use App\Controller\ChangePlanningController;
+use App\Controller\DissociateFeederController;
 use App\Controller\FeedNowController;
 use App\Repository\AlnFeederRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -21,18 +24,76 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
-    collectionOperations: [],
+    collectionOperations: [
+        'associate' => [
+            'method' => 'POST',
+            'status' => Response::HTTP_OK,
+            'path' => '/feeders/associate',
+            'controller' => AssociateFeederController::class,
+            'input' => IdentifierInput::class,
+            'denormalization_context' => ['groups' => []],
+            'validation_groups' => [],
+            'security' => "is_granted('IS_AUTHENTICATED')",
+            'openapi_context' => [
+                'summary' => 'Associate an unassociated feeder to your account',
+                'description' => 'Associate an unassociated feeder to your account',
+                'responses' => [
+                    Response::HTTP_OK => [
+                        'description' => 'Feeder associated',
+                    ],
+                    Response::HTTP_UNAUTHORIZED => [
+                        'description' => 'Not logged in',
+                    ],
+                    Response::HTTP_FORBIDDEN => [
+                        'description' => 'Feeder already associated',
+                    ],
+                    Response::HTTP_NOT_FOUND => [
+                        'description' => 'Feeder not registered',
+                    ],
+                ],
+            ],
+        ],
+    ],
     itemOperations: [
         'get' => [
+            'security' => "is_granted('VIEW', object)",
             'openapi_context' => [
                 'summary' => 'Retrieve feeder status and settings',
                 'description' => 'Retrieve feeder status and settings',
             ],
         ],
         'put' => [
+            'security' => "is_granted('MANAGE', object)",
             'openapi_context' => [
                 'summary' => 'Update feeder name',
                 'description' => 'Update feeder name',
+            ],
+        ],
+        'dissociate' => [
+            'method' => 'DELETE',
+            'status' => Response::HTTP_OK,
+            'path' => '/feeders/{id}/association',
+            'controller' => DissociateFeederController::class,
+            'denormalization_context' => ['groups' => []],
+            'validation_groups' => [],
+            'security' => "is_granted('MANAGE', object)",
+            'openapi_context' => [
+                'summary' => 'Dissociate an associated feeder from your account',
+                'description' => 'Dissociate an associated feeder from your account',
+                'responses' => [
+                    Response::HTTP_OK => [
+                        'description' => 'Feeder dissociated',
+                    ],
+                    Response::HTTP_UNAUTHORIZED => [
+                        'description' => 'Not logged in',
+                    ],
+                    Response::HTTP_FORBIDDEN => [
+                        'description' => 'Feeder not associated to current account',
+                    ],
+                    Response::HTTP_NOT_FOUND => [
+                        'description' => 'Feeder not registered',
+                    ],
+                ],
             ],
         ],
         'feed' => [
@@ -42,6 +103,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             'controller' => FeedNowController::class,
             'denormalization_context' => ['groups' => ['feeding:input']],
             'validation_groups' => ['feeding:validation'],
+            'security' => "is_granted('MANAGE', object)",
             'openapi_context' => [
                 'summary' => 'Trigger a meal immediately with specified amount in grams',
                 'description' => 'Trigger a meal immediately with specified amount in grams',
@@ -71,6 +133,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             'controller' => ChangeDefaultMealController::class,
             'denormalization_context' => ['groups' => ['feeding:input']],
             'validation_groups' => ['feeding:validation'],
+            'security' => "is_granted('MANAGE', object)",
             'openapi_context' => [
                 'summary' => 'Update the amount distributed when the feeder button is pressed in grams',
                 'description' => 'Update the amount distributed when the feeder button is pressed in grams',
@@ -101,6 +164,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             'input' => PlanningInput::class,
             'denormalization_context' => ['groups' => []],
             'validation_groups' => [],
+            'security' => "is_granted('MANAGE', object)",
             'openapi_context' => [
                 'summary' => 'Replace the meal plan with a new one',
                 'description' => 'Replace the meal plan with a new one',
@@ -146,6 +210,9 @@ class AlnFeeder
     #[Groups(['feeder:input', 'feeder:output'])]
     #[Assert\Length(max: 255, groups: ['feeder:validation'])]
     private string $name;
+
+    #[ORM\ManyToOne(inversedBy: 'feeders')]
+    private ?User $owner = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['feeder:output'])]
@@ -209,6 +276,18 @@ class AlnFeeder
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): self
+    {
+        $this->owner = $owner;
 
         return $this;
     }

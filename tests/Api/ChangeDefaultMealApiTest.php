@@ -6,6 +6,7 @@ namespace App\Tests\Api;
 
 use App\Factory\AlnFeederFactory;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
 final class ChangeDefaultMealApiTest extends FeederApiTestCase
@@ -71,14 +72,50 @@ final class ChangeDefaultMealApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
-    private function changeDefaultMealRequest(int $feederId, int $amount): ResponseInterface
+    /**
+     * @env AUTHENTICATION_ENABLED=true
+     */
+    public function testChangeDefaultMealOwnedFeeder(): void
+    {
+        $amount = random_int(5, 150);
+        $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
+        $this->changeDefaultMealRequest($id, $amount, $this->getUserByEmail('user.feeder@example.com'));
+        $this->assertResponseIsSuccessful();
+        $this->assertJsonEquals([
+            'message' => "{$amount}g meal is now the default amount",
+        ]);
+    }
+
+    /**
+     * @env AUTHENTICATION_ENABLED=true
+     */
+    public function testChangeDefaultMealUnownedFeeder(): void
+    {
+        $amount = random_int(5, 150);
+        $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
+        $this->changeDefaultMealRequest($id, $amount, $this->getUserByEmail('user.nofeeder@example.com'));
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    /**
+     * @env AUTHENTICATION_ENABLED=true
+     */
+    public function testChangeDefaultMealUnauthenticated(): void
+    {
+        $amount = random_int(5, 150);
+        $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
+        $this->changeDefaultMealRequest($id, $amount);
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+    }
+
+    private function changeDefaultMealRequest(int $feederId, int $amount, ?UserInterface $authenticatedAs = null): ResponseInterface
     {
         $client = self::createClient();
 
         return $client->request('PUT', "/feeders/{$feederId}/amount", [
             'headers' => [
                 'Accept' => 'application/json',
-            ],
+            ] + $this->getHeadersIfAuthenticated($authenticatedAs),
             'json' => [
                 'amount' => $amount,
             ],

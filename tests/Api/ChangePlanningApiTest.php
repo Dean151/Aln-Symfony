@@ -6,6 +6,7 @@ namespace App\Tests\Api;
 
 use App\Factory\AlnFeederFactory;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
 final class ChangePlanningApiTest extends FeederApiTestCase
@@ -84,14 +85,47 @@ final class ChangePlanningApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
-    private function changePlanningRequest(int $feederId, mixed $meals): ResponseInterface
+    /**
+     * @env AUTHENTICATION_ENABLED=true
+     */
+    public function testPlanningChangeOwnedFeeder(): void
+    {
+        $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
+        $this->changePlanningRequest($id, [], $this->getUserByEmail('user.feeder@example.com'));
+        $this->assertResponseIsSuccessful();
+        $this->assertJsonEquals([
+            'message' => 'Planning have been changed',
+        ]);
+    }
+
+    /**
+     * @env AUTHENTICATION_ENABLED=true
+     */
+    public function testPlanningChangeUnownedFeeder(): void
+    {
+        $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
+        $this->changePlanningRequest($id, [], $this->getUserByEmail('user.nofeeder@example.com'));
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
+    /**
+     * @env AUTHENTICATION_ENABLED=true
+     */
+    public function testPlanningChangeUnauthenticated(): void
+    {
+        $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
+        $this->changePlanningRequest($id, []);
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+    }
+
+    private function changePlanningRequest(int $feederId, mixed $meals, ?UserInterface $authenticatedAs = null): ResponseInterface
     {
         $client = self::createClient();
 
         return $client->request('PUT', "/feeders/{$feederId}/planning", [
             'headers' => [
                 'Accept' => 'application/json',
-            ],
+                ] + $this->getHeadersIfAuthenticated($authenticatedAs),
             'json' => [
                 'meals' => $meals,
             ],

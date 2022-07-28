@@ -45,6 +45,6 @@ final class PlanningInputDataTransformer implements DataTransformerInterface
             return false;
         }
 
-        return AlnFeeder::class === $to && null !== ($context['input']['class'] ?? null);
+        return AlnFeeder::class === $to && PlanningInput::class === ($context['input']['class'] ?? null);
     }
 }

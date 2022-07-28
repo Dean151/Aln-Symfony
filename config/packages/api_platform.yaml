@@ -2,11 +2,15 @@ api_platform:
     title: 'Aln-Symfony'
     show_webby: false
     mapping:
-        paths: ['%kernel.project_dir%/src/Entity']
+        paths: ['%kernel.project_dir%/src/Entity', '%kernel.project_dir%/src/ApiPlatform/Dto']
     formats:
         json: [ 'application/json' ]
         html:     ['text/html']
     patch_formats:
         json: ['application/merge-patch+json']
     swagger:
+        api_keys:
+            JWT:
+                name: Authorization
+                type: header
         versions: [3]
