@@ -25,6 +25,9 @@ security:
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
             jwt: ~
 
+            custom_authenticators:
+                - App\Security\Authenticator\ResetPasswordTokenAuthenticator
+
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 

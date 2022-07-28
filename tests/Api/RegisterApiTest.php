@@ -52,7 +52,7 @@ final class RegisterApiTest extends ApiTestCase
     {
         $client = self::createClient();
 
-        return $client->request('POST', 'user/register', [
+        return $client->request('POST', '/user/register', [
             'headers' => [
                 'Accept' => 'application/json',
             ],
@@ -67,7 +67,7 @@ final class RegisterApiTest extends ApiTestCase
         $client = self::createClient();
         $client->enableProfiler();
 
-        $response = $client->request('POST', 'user/register', [
+        $response = $client->request('POST', '/user/register', [
             'headers' => [
                 'Accept' => 'application/json',
             ],

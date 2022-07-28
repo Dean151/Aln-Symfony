@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\ApiPlatform\Dto\LoginInput;
+use App\ApiPlatform\Dto\ResetPassTokenInput;
 use App\Controller\GetCurrentUserController;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -26,6 +27,24 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'openapi_context' => [
                 'summary' => 'Request an authentication token using email/password',
                 'description' => 'Request an authentication token using email/password',
+                'responses' => [
+                    Response::HTTP_OK => [
+                        'description' => 'Authenticated successfully',
+                    ],
+                    Response::HTTP_UNAUTHORIZED => [
+                        'description' => 'Wrong credentials',
+                    ],
+                ],
+            ],
+        ],
+        'reset_pass_token_consume' => [
+            'method' => 'POST',
+            'status' => Response::HTTP_OK,
+            'path' => '/user/reset/consume',
+            'input' => ResetPassTokenInput::class,
+            'openapi_context' => [
+                'summary' => 'Request an authentication token using a reset password token',
+                'description' => 'Request an authentication token using a reset password token',
                 'responses' => [
                     Response::HTTP_OK => [
                         'description' => 'Authenticated successfully',

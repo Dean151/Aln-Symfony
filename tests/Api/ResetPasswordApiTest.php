@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Tests\Api;
 
-use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\DataCollector\MessageDataCollector;
 use Symfony\Contracts\HttpClient\ResponseInterface;
+use SymfonyCasts\Bundle\ResetPassword\ResetPasswordHelperInterface;
 
-final class ResetPasswordApiTest extends ApiTestCase
+final class ResetPasswordApiTest extends AuthenticatedApiTestCase
 {
     public function testResetPasswordWithEmail(): void
     {
@@ -45,11 +45,32 @@ final class ResetPasswordApiTest extends ApiTestCase
         $this->assertCount(0, $events);
     }
 
+    public function testResetPasswordTokenConsume(): void
+    {
+        $user = $this->getUserByEmail('user.nofeeder@example.com');
+        $token = $this->getResetPasswordHelper()->generateResetToken($user)->getToken();
+        $response = $this->resetPasswordConsumeTokenRequest($token);
+        $this->assertResponseIsSuccessful();
+        $json = $response->toArray();
+        $this->assertArrayHasKey('token', $json);
+        $this->assertIsString($json['token']);
+
+        // Try to reuse a one-time use token
+        $this->resetPasswordConsumeTokenRequest($token);
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function testNonValidResetPasswordToken(): void
+    {
+        $this->resetPasswordConsumeTokenRequest('not_a_valid_token');
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+    }
+
     private function resetPasswordRequest(string $email): ResponseInterface
     {
         $client = self::createClient();
 
-        return $client->request('POST', 'user/reset', [
+        return $client->request('POST', '/user/reset', [
             'headers' => [
                 'Accept' => 'application/json',
             ],
@@ -64,7 +85,7 @@ final class ResetPasswordApiTest extends ApiTestCase
         $client = self::createClient();
         $client->enableProfiler();
 
-        $response = $client->request('POST', 'user/reset', [
+        $response = $client->request('POST', '/user/reset', [
             'headers' => [
                 'Accept' => 'application/json',
             ],
@@ -80,5 +101,27 @@ final class ResetPasswordApiTest extends ApiTestCase
         }
 
         return $response;
+    }
+
+    private function resetPasswordConsumeTokenRequest(string $token): ResponseInterface
+    {
+        $client = self::createClient();
+
+        return $client->request('POST', '/user/reset/consume', [
+            'headers' => [
+                'Accept' => 'application/json',
+            ],
+            'json' => [
+                'token' => $token,
+            ],
+        ]);
+    }
+
+    private function getResetPasswordHelper(): ResetPasswordHelperInterface
+    {
+        $helper = self::getContainer()->get(ResetPasswordHelperInterface::class);
+        $this->assertInstanceOf(ResetPasswordHelperInterface::class, $helper);
+
+        return $helper;
     }
 }

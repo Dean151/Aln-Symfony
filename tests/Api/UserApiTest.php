@@ -71,7 +71,7 @@ final class UserApiTest extends AuthenticatedApiTestCase
     {
         $client = self::createClient();
 
-        return $client->request('POST', 'user/login', [
+        return $client->request('POST', '/user/login', [
             'headers' => [
                 'Accept' => 'application/json',
             ],
