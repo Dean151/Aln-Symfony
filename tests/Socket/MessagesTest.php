@@ -10,7 +10,6 @@ use App\Socket\MessageIdentification;
 use App\Socket\Messages\ChangeDefaultMealMessage;
 use App\Socket\Messages\ChangePlanningMessage;
 use App\Socket\Messages\DefaultMealChangedMessage;
-use App\Socket\Messages\EmptyFeederMessage;
 use App\Socket\Messages\ExpectableMessageInterface;
 use App\Socket\Messages\ExpectationMessage;
 use App\Socket\Messages\FeedNowMessage;
@@ -99,36 +98,17 @@ final class MessagesTest extends TestCase
      * @param int<5, 150> $mealAmount
      * @dataProvider provideMealButtonPressedData
      */
-    public function testMealButtonPressed(string $hexadecimal, string $identifier, int $mealAmount): void
+    public function testMealButtonPressed(string $hexadecimal, string $identifier, TimeInput $time, int $mealAmount): void
     {
         $message = MessageIdentification::identifyIncomingMessage($hexadecimal);
         $this->assertInstanceOf(MealButtonPressedMessage::class, $message);
         $this->assertEquals($identifier, $message->getIdentifier());
+        $this->assertEquals($time, $message->getTime());
         $this->assertEquals($mealAmount, $message->getMealAmount());
-        $this->assertEquals($hexadecimal, (new MealButtonPressedMessage($identifier, $mealAmount))->hexadecimal());
+        $this->assertEquals($hexadecimal, (new MealButtonPressedMessage($identifier, $mealAmount, $time))->hexadecimal());
     }
 
     public function provideMealButtonPressedData(): \Generator
-    {
-        yield ['9da1144142433132333435363738392103840005', 'ABC123456789', 5];
-        yield ['9da1145a59583938373635343332312103840018', 'ZYX987654321', 24];
-    }
-
-    /**
-     * @param int<5, 150> $mealAmount
-     * @dataProvider provideEmptyFeederData
-     */
-    public function testEmptyFeeder(string $hexadecimal, string $identifier, TimeInput $time, int $mealAmount): void
-    {
-        $message = MessageIdentification::identifyIncomingMessage($hexadecimal);
-        $this->assertInstanceOf(EmptyFeederMessage::class, $message);
-        $this->assertEquals($identifier, $message->getIdentifier());
-        $this->assertEquals($time, $message->getTime());
-        $this->assertEquals($mealAmount, $message->getMealAmount());
-        $this->assertEquals($hexadecimal, (new EmptyFeederMessage($identifier, $mealAmount, $time))->hexadecimal());
-    }
-
-    public function provideEmptyFeederData(): \Generator
     {
         yield ['9da11441424331323334353637383921037d001e', 'ABC123456789', new TimeInput(6, 53), 30];
         yield ['9da1145a59583938373635343332312103850005', 'ZYX987654321', new TimeInput(7, 1), 5];

@@ -11,7 +11,6 @@ use App\Queue\MessageDequeueInterface;
 use App\Repository\AlnAlertRepository;
 use App\Repository\AlnFeederRepository;
 use App\Repository\AlnMealRepository;
-use App\Socket\Messages\EmptyFeederMessage;
 use App\Socket\Messages\ExpectationMessage;
 use App\Socket\Messages\IdentificationMessage;
 use App\Socket\Messages\MealButtonPressedMessage;
@@ -83,8 +82,6 @@ final class FeederCommunicator extends AbstractQueue implements MessageDequeueIn
                 $this->identified($message, $from);
             } elseif ($message instanceof MealButtonPressedMessage) {
                 $this->recordManualMeal($message);
-            } elseif ($message instanceof EmptyFeederMessage) {
-                $this->recordEmptyFeeder($message);
             } elseif ($message instanceof ExpectationMessage) {
                 $this->publishResponseInQueue($message);
             }
@@ -164,23 +161,11 @@ final class FeederCommunicator extends AbstractQueue implements MessageDequeueIn
         $now = new DateTimeImmutable('now', new \DateTimeZone('UTC'));
         $meal = new AlnMeal();
         $meal->setDistributedOn($now);
+        $meal->setTime($message->getTime()->toArray());
         $feeder->addMeal($meal);
         $this->mealRepository->add($meal);
 
         $this->doctrine->getManager()->flush();
         // TODO: send push?
-    }
-
-    private function recordEmptyFeeder(EmptyFeederMessage $message): void
-    {
-        $this->logger->info("Feeder {$message->getIdentifier()} is empty");
-
-        $alert = new AlnAlert();
-        $alert->setType('empty_feeder');
-        $feeder = $this->feederRepository->findOneByIdentifier($message->getIdentifier());
-        $alert->setFeeder($feeder);
-        $alert->setTime($message->getTime()->toArray());
-        $alert->setAmount($message->getMealAmount());
-        $this->alertRepository->add($alert, true);
     }
 }

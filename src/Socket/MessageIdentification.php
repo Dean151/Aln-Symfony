@@ -7,7 +7,6 @@ namespace App\Socket;
 use App\Socket\Messages\ChangeDefaultMealMessage;
 use App\Socket\Messages\ChangePlanningMessage;
 use App\Socket\Messages\DefaultMealChangedMessage;
-use App\Socket\Messages\EmptyFeederMessage;
 use App\Socket\Messages\FeedNowMessage;
 use App\Socket\Messages\IdentificationMessage;
 use App\Socket\Messages\MealButtonPressedMessage;
@@ -41,11 +40,8 @@ final class MessageIdentification
         if (\str_ends_with($hexadecimal, 'a2d0a10000')) {
             return MealDistributedMessage::decodeFrom($hexadecimal);
         }
-        if (preg_match('/21038400([0-9a-f]{2})$/', $hexadecimal, $matches)) {
-            return MealButtonPressedMessage::decodeFrom($hexadecimal);
-        }
         if (preg_match('/210(?:5\d[[:xdigit:]]|[0-4][[:xdigit:]]{2})(00[0-9][0-9a-f])$/', $hexadecimal, $matches)) {
-            return EmptyFeederMessage::decodeFrom($hexadecimal);
+            return MealButtonPressedMessage::decodeFrom($hexadecimal);
         }
         throw new \RuntimeException('Unknown incoming message: '.$hexadecimal);
     }

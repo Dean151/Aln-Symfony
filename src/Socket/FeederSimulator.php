@@ -6,7 +6,6 @@ namespace App\Socket;
 
 use App\Socket\Messages\ChangeDefaultMealMessage;
 use App\Socket\Messages\ChangePlanningMessage;
-use App\Socket\Messages\EmptyFeederMessage;
 use App\Socket\Messages\ExpectableMessageInterface;
 use App\Socket\Messages\ExpectationMessage;
 use App\Socket\Messages\FeedNowMessage;
@@ -26,9 +25,8 @@ use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 final class FeederSimulator
 {
     public const OPTION_NONE = 0b000;
-    public const OPTION_EMPTY = 0b001;
-    public const OPTION_UNRESPONSIVE = 0b010;
-    public const OPTION_FAST_RESPONSE = 0b100;
+    public const OPTION_UNRESPONSIVE = 0b001;
+    public const OPTION_FAST_RESPONSE = 0b010;
 
     private ContainerBagInterface $params;
     private LoggerInterface $logger;
@@ -107,9 +105,6 @@ final class FeederSimulator
             if ($message instanceof ExpectableMessageInterface) {
                 $this->sendExpectationIfResponsive($message->expectationMessage($this->identifier));
             }
-            if ($message instanceof FeedNowMessage) {
-                $this->sendAlertIfEmpty($message->getMealAmount());
-            }
         } catch (\RuntimeException $e) {
             $this->logger->warning($e->getMessage(), ['exception' => $e]);
         }
@@ -156,18 +151,6 @@ final class FeederSimulator
     private function sendIdentification(): void
     {
         $this->sendMessage(new IdentificationMessage($this->identifier));
-    }
-
-    /**
-     * @param int<5, 150> $mealAmount
-     */
-    private function sendAlertIfEmpty(int $mealAmount): void
-    {
-        if (!$this->hasOption(self::OPTION_EMPTY)) {
-            return;
-        }
-        $interval = $this->hasOption(self::OPTION_FAST_RESPONSE) ? 0.1 : 5;
-        $this->sendDelayedMessage($interval, new EmptyFeederMessage($this->identifier, $mealAmount));
     }
 
     private function sendExpectationIfResponsive(ExpectationMessage $message): void

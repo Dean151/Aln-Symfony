@@ -38,17 +38,15 @@ class SimulateFeederCommand extends Command implements SignalableCommandInterfac
         $this->setDescription('Run a fake feeder that behave just like a real feeder, and that will help to debug APIs.');
         $this->addArgument('identifier', InputArgument::OPTIONAL, 'The feeder identifier to simulate', AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
         $this->addOption('not-responding', null, InputOption::VALUE_NONE, 'Simulate when feeder won\'t send responses');
-        $this->addOption('empty-feeder', null, InputOption::VALUE_NONE, 'Simulate when feeder is empty');
         $this->addOption('fast', null, InputOption::VALUE_NONE, 'Accelerate response time for test');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $identifier = $input->getArgument('identifier');
-        $emptyFeeder = $input->getOption('empty-feeder') ? FeederSimulator::OPTION_EMPTY : FeederSimulator::OPTION_NONE;
         $unresponsiveFeeder = $input->getOption('not-responding') ? FeederSimulator::OPTION_UNRESPONSIVE : FeederSimulator::OPTION_NONE;
         $fastResponse = $input->getOption('fast') ? FeederSimulator::OPTION_FAST_RESPONSE : FeederSimulator::OPTION_NONE;
-        $options = $emptyFeeder | $unresponsiveFeeder | $fastResponse;
+        $options = $unresponsiveFeeder | $fastResponse;
 
         $loop = Loop::get();
         $this->simulator->start($loop, $identifier, $options);
