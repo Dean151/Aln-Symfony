@@ -100,7 +100,7 @@
     "scripts": {
         "boot": [
             "docker-compose up -d",
-            "symfony console lexik:jwt:check-config || lexik:jwt:generate-keypair",
+            "symfony console lexik:jwt:generate-keypair --skip-if-exists",
             "@start"
         ],
         "start": [
