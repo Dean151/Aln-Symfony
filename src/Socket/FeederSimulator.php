@@ -14,13 +14,9 @@ use App\Socket\Messages\IdentificationMessage;
 use App\Socket\Messages\MessageInterface;
 use App\Socket\Messages\TimeMessage;
 use Psr\Log\LoggerInterface;
-
-use function Ratchet\Client\connect;
-
-use Ratchet\Client\WebSocket;
-use Ratchet\RFC6455\Messaging\Frame;
-use Ratchet\RFC6455\Messaging\MessageInterface as RatchetMessageInterface;
 use React\EventLoop\LoopInterface;
+use React\Socket\ConnectionInterface;
+use React\Socket\Connector;
 
 use function Safe\hex2bin;
 
@@ -41,7 +37,7 @@ final class FeederSimulator
     private int $options = self::OPTION_NONE;
 
     private ?LoopInterface $loop = null;
-    private ?WebSocket $connection = null;
+    private ?ConnectionInterface $connection = null;
 
     public function __construct(ContainerBagInterface $params, LoggerInterface $logger)
     {
@@ -64,10 +60,11 @@ final class FeederSimulator
         $host = $this->params->get('simulator.host');
         $port = $this->params->get('simulator.port');
 
-        $url = "ws://{$host}:{$port}";
+        $uri = "{$host}:{$port}";
         $this->logger->info("Starting feeder simulator on {$host}:{$port}");
-        connect($url, [], [], $loop)
-            ->then($this->onConnected(...), $this->onConnectionError(...));
+
+        $connector = new Connector([], $loop);
+        $connector->connect($uri)->then($this->onConnected(...), $this->onConnectionError(...));
     }
 
     public function shutdown(): void
@@ -90,23 +87,20 @@ final class FeederSimulator
         return ($this->options & $option) === $option;
     }
 
-    private function onConnected(WebSocket $connection): void
+    private function onConnected(ConnectionInterface $connection): void
     {
         $this->logger->info('Connected to websocket server');
         $this->connection = $connection;
         $connection->on('close', $this->onConnectionClosed(...));
-        $connection->on('message', $this->onMessage(...));
+        $connection->on('data', $this->onData(...));
 
         $this->sendIdentification(); // Send right away
         $this->loop?->addPeriodicTimer(10, $this->sendIdentification(...)); // Simulate identification call every 10s
     }
 
-    /**
-     * @param RatchetMessageInterface<int, mixed> $message
-     */
-    private function onMessage(RatchetMessageInterface $message): void
+    private function onData(string $data): void
     {
-        $hexadecimal = bin2hex($message->getPayload());
+        $hexadecimal = bin2hex($data);
         try {
             $message = MessageIdentification::identifyOutgoingMessage($hexadecimal);
             $this->logIncoming($message);
@@ -140,8 +134,7 @@ final class FeederSimulator
 
             return;
         }
-        $frame = new Frame(hex2bin($message->hexadecimal()), true, Frame::OP_BINARY);
-        if ($this->connection->send($frame)) {
+        if ($this->connection->write(hex2bin($message->hexadecimal()))) {
             $this->logger->info("Sent data {$message->hexadecimal()}");
         } else {
             $this->logger->warning("Failed sending data {$message->hexadecimal()}");

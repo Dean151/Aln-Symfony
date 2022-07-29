@@ -19,16 +19,14 @@ use App\Socket\Messages\TimeMessage;
 use Doctrine\Persistence\ManagerRegistry;
 use PhpAmqpLib\Message\AMQPMessage;
 use Psr\Log\LoggerInterface;
-use Ratchet\ConnectionInterface;
-use Ratchet\MessageComponentInterface;
-use Ratchet\RFC6455\Messaging\Frame;
+use React\Socket\ConnectionInterface;
 use Safe\DateTimeImmutable;
 
 use function Safe\hex2bin;
 
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 
-final class FeederCommunicator extends AbstractQueue implements MessageDequeueInterface, MessageComponentInterface
+final class FeederCommunicator extends AbstractQueue implements MessageDequeueInterface, SocketMessageInterface
 {
     private AlnFeederRepository $feederRepository;
     private AlnMealRepository $mealRepository;
@@ -75,9 +73,9 @@ final class FeederCommunicator extends AbstractQueue implements MessageDequeueIn
         $conn->close();
     }
 
-    public function onMessage(ConnectionInterface $from, $msg): void
+    public function onData(ConnectionInterface $from, string $data): void
     {
-        $hexadecimalMessage = bin2hex($msg);
+        $hexadecimalMessage = bin2hex($data);
         $this->logger->debug("Data received: {$hexadecimalMessage}");
         try {
             $message = MessageIdentification::identifyIncomingMessage($hexadecimalMessage);
@@ -131,7 +129,6 @@ final class FeederCommunicator extends AbstractQueue implements MessageDequeueIn
     private function sendInSocket(string $hexadecimal, string $identifier): bool
     {
         $this->logger->debug("Sending to $identifier: ".$hexadecimal);
-        $frame = new Frame(hex2bin($hexadecimal), true, Frame::OP_BINARY);
         $connection = $this->find($identifier);
         if (!$connection instanceof ConnectionInterface) {
             $this->logger->warning("No connection for $identifier");
@@ -139,7 +136,7 @@ final class FeederCommunicator extends AbstractQueue implements MessageDequeueIn
             return false;
         }
 
-        $connection->send($frame); // @phpstan-ignore-line send expect string ; but allows Frame in implementation
+        $connection->write(hex2bin($hexadecimal));
 
         return true;
     }

@@ -41,7 +41,7 @@ final class RunSocketCommand extends Command implements SignalableCommandInterfa
     protected function configure(): void
     {
         $this->setHelp('Run the rabbitmq client & websocket server');
-        $this->setDescription('Run a bunny rabbitmq client ; and a ratchet websocket server to communicate with the feeders');
+        $this->setDescription('Run a bunny rabbitmq client ; and a websocket server to communicate with the feeders');
     }
 
     /**

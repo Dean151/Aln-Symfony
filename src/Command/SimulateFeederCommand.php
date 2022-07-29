@@ -6,7 +6,6 @@ namespace App\Command;
 
 use App\Factory\AlnFeederFactory;
 use App\Socket\FeederSimulator;
-use Ratchet\Client\WebSocket;
 use React\EventLoop\Loop;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -45,10 +44,6 @@ class SimulateFeederCommand extends Command implements SignalableCommandInterfac
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if (!class_exists(WebSocket::class)) {
-            throw new \RuntimeException('Simulate feeder is only available when --dev dependencies are installed with composer.');
-        }
-
         $identifier = $input->getArgument('identifier');
         $emptyFeeder = $input->getOption('empty-feeder') ? FeederSimulator::OPTION_EMPTY : FeederSimulator::OPTION_NONE;
         $unresponsiveFeeder = $input->getOption('not-responding') ? FeederSimulator::OPTION_UNRESPONSIVE : FeederSimulator::OPTION_NONE;
