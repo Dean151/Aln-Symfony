@@ -6,17 +6,17 @@ namespace App\ApiPlatform\DataPersister;
 
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
 use App\Entity\User;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\UserRepository;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 final class UserDataPersister implements DataPersisterInterface
 {
-    private EntityManagerInterface $entityManager;
+    private UserRepository $repository;
     private UserPasswordHasherInterface $userPasswordHasher;
 
-    public function __construct(EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher)
+    public function __construct(UserRepository $repository, UserPasswordHasherInterface $userPasswordHasher)
     {
-        $this->entityManager = $entityManager;
+        $this->repository = $repository;
         $this->userPasswordHasher = $userPasswordHasher;
     }
 
@@ -35,15 +35,13 @@ final class UserDataPersister implements DataPersisterInterface
             $data->setPassword($hash);
             $data->eraseCredentials();
         }
-        $this->entityManager->persist($data);
-        $this->entityManager->flush();
+        $this->repository->add($data, true);
 
         return $data;
     }
 
     public function remove($data): void
     {
-        $this->entityManager->remove($data);
-        $this->entityManager->flush();
+        $this->repository->remove($data);
     }
 }
