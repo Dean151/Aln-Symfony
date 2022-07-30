@@ -249,7 +249,7 @@ class AlnFeeder
     {
         $this->identifier = '';
         $this->name = '';
-        $this->lastSeen = new DateTimeImmutable('now', new \DateTimeZone('UTC'));
+        $this->lastSeen = new DateTimeImmutable('now');
         $this->meals = new ArrayCollection();
         $this->plannings = new ArrayCollection();
     }
@@ -394,7 +394,7 @@ class AlnFeeder
     #[Groups(['feeder:output'])]
     public function isAvailable(): bool
     {
-        $now = new DateTimeImmutable('now', new \DateTimeZone('UTC'));
+        $now = new DateTimeImmutable('now');
 
         return ($now->getTimestamp() - $this->lastSeen->getTimestamp()) <= 30;
     }

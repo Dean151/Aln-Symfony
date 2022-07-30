@@ -152,7 +152,7 @@ final class FeederCommunicator extends AbstractQueue implements MessageDequeueIn
         $this->persist($connection, $message->getIdentifier());
 
         $feeder = $this->feederRepository->findOrCreateFeeder($message->getIdentifier());
-        $feeder->setLastSeen(new DateTimeImmutable('now', new \DateTimeZone('UTC')));
+        $feeder->setLastSeen(new DateTimeImmutable('now'));
 
         if ($address = $connection->getRemoteAddress()) {
             $host = parse_url($address, PHP_URL_HOST);
@@ -173,7 +173,7 @@ final class FeederCommunicator extends AbstractQueue implements MessageDequeueIn
         $feeder = $this->feederRepository->findOrCreateFeeder($message->getIdentifier());
         $feeder->setDefaultMealAmount($message->getMealAmount());
 
-        $now = new DateTimeImmutable('now', new \DateTimeZone('UTC'));
+        $now = new DateTimeImmutable('now');
         $meal = new AlnMeal();
         $meal->setDistributedOn($now);
         $meal->setTime($message->getTime()->toArray());

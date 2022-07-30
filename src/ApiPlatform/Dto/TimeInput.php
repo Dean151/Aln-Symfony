@@ -33,7 +33,7 @@ final class TimeInput
 
     public static function now(): TimeInput
     {
-        $currentDatetime = new DateTimeImmutable('now', new \DateTimeZone('UTC'));
+        $currentDatetime = new DateTimeImmutable('now');
         $hours = (int) $currentDatetime->format('H');
         $minutes = (int) $currentDatetime->format('i');
         assert($minutes >= 0 && $minutes < 60);
