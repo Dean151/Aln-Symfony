@@ -90,6 +90,9 @@ final class FeederCommunicator extends AbstractQueue implements MessageDequeueIn
             $this->logger->warning($e->getMessage(), ['exception' => $e]);
 
             $alert = new AlnAlert();
+            if ($ip = $this->getIpFrom($from)) {
+                $alert->setIp($ip);
+            }
             $alert->setMessage($e->getMessage());
             if ($identifier = array_search($from, $this->connections, true)) {
                 $feeder = $this->feederRepository->findOneByIdentifier($identifier);
@@ -153,11 +156,7 @@ final class FeederCommunicator extends AbstractQueue implements MessageDequeueIn
 
         $feeder = $this->feederRepository->findOrCreateFeeder($message->getIdentifier());
         $feeder->setLastSeen(new DateTimeImmutable('now'));
-
-        if ($address = $connection->getRemoteAddress()) {
-            $host = parse_url($address, PHP_URL_HOST);
-            assert(is_string($host));
-            $ip = trim($host, '[]');
+        if ($ip = $this->getIpFrom($connection)) {
             $feeder->setIp($ip);
         }
 
@@ -182,5 +181,18 @@ final class FeederCommunicator extends AbstractQueue implements MessageDequeueIn
 
         $this->doctrine->getManager()->flush();
         // TODO: send push?
+    }
+
+    private function getIpFrom(ConnectionInterface $connection): ?string
+    {
+        if (!$address = $connection->getRemoteAddress()) {
+            return null;
+        }
+        $host = parse_url($address, PHP_URL_HOST);
+        if (!is_string($host)) {
+            return null;
+        }
+
+        return trim($host, '[]');
     }
 }

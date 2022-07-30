@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Dbal\Types\AlnTimeType;
 use App\Repository\AlnAlertRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -30,14 +29,8 @@ class AlnAlert
     #[ORM\ManyToOne]
     private ?AlnFeeder $feeder = null;
 
-    /**
-     * @var ?array{hours: int<0, 23>, minutes: int<0, 59>}
-     */
-    #[ORM\Column(type: AlnTimeType::ALN_TIME_TYPE, nullable: true)]
-    private ?array $time = null;
-
-    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
-    private ?int $amount = null;
+    #[ORM\Column(length: 64, nullable: true)]
+    private ?string $ip = null;
 
     public function __construct()
     {
@@ -98,32 +91,14 @@ class AlnAlert
         return $this;
     }
 
-    /**
-     * @return ?array{hours: int<0, 23>, minutes: int<0, 59>}
-     */
-    public function getTime(): ?array
+    public function getIp(): ?string
     {
-        return $this->time;
+        return $this->ip;
     }
 
-    /**
-     * @param ?array{hours: int<0, 23>, minutes: int<0, 59>} $time
-     */
-    public function setTime(?array $time): self
+    public function setIp(?string $ip): self
     {
-        $this->time = $time;
-
-        return $this;
-    }
-
-    public function getAmount(): ?int
-    {
-        return $this->amount;
-    }
-
-    public function setAmount(?int $amount): self
-    {
-        $this->amount = $amount;
+        $this->ip = $ip;
 
         return $this;
     }
