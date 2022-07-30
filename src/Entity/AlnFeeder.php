@@ -233,10 +233,10 @@ class AlnFeeder
     private Collection $plannings;
 
     /**
-     * @var Collection<int, AlnMeal>
+     * @var Collection<int, AlnManualMeal>
      */
-    #[ORM\OneToMany(mappedBy: 'feeder', targetEntity: AlnMeal::class, orphanRemoval: true)]
-    private Collection $meals;
+    #[ORM\OneToMany(mappedBy: 'feeder', targetEntity: AlnManualMeal::class, orphanRemoval: true)]
+    private Collection $manualMeals;
 
     #[ApiProperty(required: true, example: 5)]
     #[Groups(['feeding:input'])]
@@ -250,7 +250,7 @@ class AlnFeeder
         $this->identifier = '';
         $this->name = '';
         $this->lastSeen = new DateTimeImmutable('now');
-        $this->meals = new ArrayCollection();
+        $this->manualMeals = new ArrayCollection();
         $this->plannings = new ArrayCollection();
     }
 
@@ -362,26 +362,26 @@ class AlnFeeder
     }
 
     /**
-     * @return Collection<int, AlnMeal>
+     * @return Collection<int, AlnManualMeal>
      */
-    public function getMeals(): Collection
+    public function getManualMeals(): Collection
     {
-        return $this->meals;
+        return $this->manualMeals;
     }
 
-    public function addMeal(AlnMeal $meal): self
+    public function addManualMeal(AlnManualMeal $meal): self
     {
-        if (!$this->meals->contains($meal)) {
-            $this->meals[] = $meal;
+        if (!$this->manualMeals->contains($meal)) {
+            $this->manualMeals[] = $meal;
             $meal->setFeeder($this);
         }
 
         return $this;
     }
 
-    public function removeMeal(AlnMeal $meal): self
+    public function removeManualMeal(AlnManualMeal $meal): self
     {
-        if ($this->meals->removeElement($meal)) {
+        if ($this->manualMeals->removeElement($meal)) {
             // set the owning side to null (unless already changed)
             if ($meal->getFeeder() === $this) {
                 $meal->setFeeder(null);

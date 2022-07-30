@@ -8,7 +8,7 @@ use App\ApiPlatform\Dto\TimeInput;
 
 final class MealButtonPressedMessage extends IdentifiedMessage
 {
-    private TimeInput $time;
+    private TimeInput $previousMeal;
 
     /**
      * @var int<5, 150>
@@ -21,25 +21,25 @@ final class MealButtonPressedMessage extends IdentifiedMessage
         $hexadecimalTime = substr($hexadecimal, -8, 4);
         $hexadecimalMealAmount = substr($hexadecimal, -4);
         $identifier = self::decodeIdentifier($hexadecimalIdentifier);
-        $time = self::decodeTime($hexadecimalTime);
+        $previousMeal = self::decodeTime($hexadecimalTime);
         $mealAmount = self::decodeMealAmount($hexadecimalMealAmount);
 
-        return new MealButtonPressedMessage($identifier, $mealAmount, $time);
+        return new MealButtonPressedMessage($identifier, $mealAmount, $previousMeal);
     }
 
     /**
      * @param int<5, 150> $mealAmount
      */
-    public function __construct(string $identifier, int $mealAmount, ?TimeInput $time = null)
+    public function __construct(string $identifier, int $mealAmount, TimeInput $previousMeal)
     {
-        $this->time = $time ?? TimeInput::now();
+        $this->previousMeal = $previousMeal;
         $this->mealAmount = $mealAmount;
         parent::__construct($identifier);
     }
 
-    public function getTime(): TimeInput
+    public function getPreviousMeal(): TimeInput
     {
-        return $this->time;
+        return $this->previousMeal;
     }
 
     /**
@@ -52,9 +52,9 @@ final class MealButtonPressedMessage extends IdentifiedMessage
 
     public function hexadecimal(): string
     {
-        $time = $this->encodeTime($this->time);
+        $previousMeal = $this->encodeTime($this->previousMeal);
         $amount = $this->encodeMealAmount($this->mealAmount);
 
-        return '9da114'.bin2hex($this->identifier).'21'.$time.$amount;
+        return '9da114'.bin2hex($this->identifier).'21'.$previousMeal.$amount;
     }
 }

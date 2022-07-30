@@ -6,9 +6,9 @@ namespace App\Controller;
 
 use ApiPlatform\Core\Validator\ValidatorInterface;
 use App\Entity\AlnFeeder;
-use App\Entity\AlnMeal;
+use App\Entity\AlnManualMeal;
 use App\Queue\MessageEnqueueInterface;
-use App\Repository\AlnMealRepository;
+use App\Repository\AlnManualMealRepository;
 use App\Socket\Messages\FeedNowMessage;
 use Doctrine\Persistence\ManagerRegistry;
 use Safe\DateTimeImmutable;
@@ -19,13 +19,13 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 final class FeedNowController extends AbstractSocketController
 {
     private ValidatorInterface $validator;
-    private AlnMealRepository $repository;
+    private AlnManualMealRepository $repository;
     private ManagerRegistry $doctrine;
 
     public function __construct(
         MessageEnqueueInterface $queue,
         ValidatorInterface $validator,
-        AlnMealRepository $repository,
+        AlnManualMealRepository $repository,
         ManagerRegistry $doctrine
     ) {
         $this->validator = $validator;
@@ -45,10 +45,10 @@ final class FeedNowController extends AbstractSocketController
         $message = new FeedNowMessage($amount);
         $this->sendSocketMessage($feeder, $message);
 
-        $meal = new AlnMeal();
+        $meal = new AlnManualMeal();
         $meal->setDistributedOn(new DateTimeImmutable('now'));
         $meal->setAmount($amount);
-        $feeder->addMeal($meal);
+        $feeder->addManualMeal($meal);
         $this->repository->add($meal);
 
         $this->doctrine->getManager()->flush();

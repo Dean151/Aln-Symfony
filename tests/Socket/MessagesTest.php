@@ -103,7 +103,7 @@ final class MessagesTest extends TestCase
         $message = MessageIdentification::identifyIncomingMessage($hexadecimal);
         $this->assertInstanceOf(MealButtonPressedMessage::class, $message);
         $this->assertEquals($identifier, $message->getIdentifier());
-        $this->assertEquals($time, $message->getTime());
+        $this->assertEquals($time, $message->getPreviousMeal());
         $this->assertEquals($mealAmount, $message->getMealAmount());
         $this->assertEquals($hexadecimal, (new MealButtonPressedMessage($identifier, $mealAmount, $time))->hexadecimal());
     }

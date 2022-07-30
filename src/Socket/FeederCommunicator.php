@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Socket;
 
 use App\Entity\AlnAlert;
-use App\Entity\AlnMeal;
+use App\Entity\AlnManualMeal;
 use App\Queue\AbstractQueue;
 use App\Queue\MessageDequeueInterface;
 use App\Repository\AlnAlertRepository;
 use App\Repository\AlnFeederRepository;
-use App\Repository\AlnMealRepository;
+use App\Repository\AlnManualMealRepository;
 use App\Socket\Messages\ExpectationMessage;
 use App\Socket\Messages\IdentificationMessage;
 use App\Socket\Messages\MealButtonPressedMessage;
@@ -29,7 +29,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 final class FeederCommunicator extends AbstractQueue implements MessageDequeueInterface, SocketMessageInterface
 {
     private AlnFeederRepository $feederRepository;
-    private AlnMealRepository $mealRepository;
+    private AlnManualMealRepository $mealRepository;
     private AlnAlertRepository $alertRepository;
     private ManagerRegistry $doctrine;
     private LoggerInterface $logger;
@@ -42,7 +42,7 @@ final class FeederCommunicator extends AbstractQueue implements MessageDequeueIn
     public function __construct(
         ContainerBagInterface $params,
         AlnFeederRepository $feederRepository,
-        AlnMealRepository $mealRepository,
+        AlnManualMealRepository $mealRepository,
         AlnAlertRepository $alertRepository,
         ManagerRegistry $doctrine,
         LoggerInterface $logger
@@ -173,10 +173,10 @@ final class FeederCommunicator extends AbstractQueue implements MessageDequeueIn
         $feeder->setDefaultMealAmount($message->getMealAmount());
 
         $now = new DateTimeImmutable('now');
-        $meal = new AlnMeal();
+        $meal = new AlnManualMeal();
         $meal->setDistributedOn($now);
-        $meal->setTime($message->getTime()->toArray());
-        $feeder->addMeal($meal);
+        $meal->setPreviousMeal($message->getPreviousMeal()->toArray());
+        $feeder->addManualMeal($meal);
         $this->mealRepository->add($meal);
 
         $this->doctrine->getManager()->flush();

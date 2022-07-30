@@ -6,10 +6,10 @@ namespace App\Controller;
 
 use App\ApiPlatform\Dto\PlanningInput;
 use App\Entity\AlnFeeder;
-use App\Entity\AlnMeal;
+use App\Entity\AlnPlannedMeal;
 use App\Entity\AlnPlanning;
 use App\Queue\MessageEnqueueInterface;
-use App\Repository\AlnMealRepository;
+use App\Repository\AlnPlannedMealRepository;
 use App\Repository\AlnPlanningRepository;
 use App\Socket\Messages\ChangePlanningMessage;
 use Doctrine\Persistence\ManagerRegistry;
@@ -20,13 +20,13 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 final class ChangePlanningController extends AbstractSocketController
 {
     private AlnPlanningRepository $planningRepository;
-    private AlnMealRepository $mealRepository;
+    private AlnPlannedMealRepository $mealRepository;
     private ManagerRegistry $doctrine;
 
     public function __construct(
         MessageEnqueueInterface $queue,
         AlnPlanningRepository $planningRepository,
-        AlnMealRepository $mealRepository,
+        AlnPlannedMealRepository $mealRepository,
         ManagerRegistry $doctrine
     ) {
         $this->doctrine = $doctrine;
@@ -49,11 +49,11 @@ final class ChangePlanningController extends AbstractSocketController
         $alnPlanning = new AlnPlanning();
         $feeder->addPlanning($alnPlanning);
         foreach ($planning->meals as $meal) {
-            $alnMeal = new AlnMeal();
+            $alnMeal = new AlnPlannedMeal();
             $alnMeal->setTime($meal->time->toArray());
             $alnMeal->setAmount($meal->amount);
             $alnMeal->setIsEnabled($meal->isEnabled);
-            $feeder->addMeal($alnMeal);
+            $alnMeal->setFeeder($feeder);
             $alnPlanning->addMeal($alnMeal);
             $this->mealRepository->add($alnMeal);
         }

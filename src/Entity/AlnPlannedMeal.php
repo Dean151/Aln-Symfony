@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Dbal\Types\AlnTimeType;
-use App\Repository\AlnMealRepository;
+use App\Repository\AlnPlannedMealRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 
-#[ORM\Entity(repositoryClass: AlnMealRepository::class)]
-class AlnMeal
+#[ORM\Entity(repositoryClass: AlnPlannedMealRepository::class)]
+class AlnPlannedMeal
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -24,10 +24,8 @@ class AlnMeal
     private ?AlnFeeder $feeder = null;
 
     #[ORM\ManyToOne(inversedBy: 'meals')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?AlnPlanning $planning = null;
-
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $distributedOn = null;
 
     /**
      * @var ?array{hours: int<0, 23>, minutes: int<0, 59>}
@@ -79,18 +77,6 @@ class AlnMeal
     public function setPlanning(?AlnPlanning $planning): self
     {
         $this->planning = $planning;
-
-        return $this;
-    }
-
-    public function getDistributedOn(): ?\DateTimeImmutable
-    {
-        return $this->distributedOn;
-    }
-
-    public function setDistributedOn(?\DateTimeImmutable $distributedOn): self
-    {
-        $this->distributedOn = $distributedOn;
 
         return $this;
     }

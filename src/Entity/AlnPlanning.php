@@ -24,9 +24,9 @@ class AlnPlanning
     private ?AlnFeeder $feeder = null;
 
     /**
-     * @var Collection<int, AlnMeal>
+     * @var Collection<int, AlnPlannedMeal>
      */
-    #[ORM\OneToMany(mappedBy: 'planning', targetEntity: AlnMeal::class)]
+    #[ORM\OneToMany(mappedBy: 'planning', targetEntity: AlnPlannedMeal::class)]
     #[Groups(['feeder:output'])]
     private Collection $meals;
 
@@ -57,14 +57,14 @@ class AlnPlanning
     }
 
     /**
-     * @return Collection<int, AlnMeal>
+     * @return Collection<int, AlnPlannedMeal>
      */
     public function getMeals(): Collection
     {
         return $this->meals;
     }
 
-    public function addMeal(AlnMeal $meal): self
+    public function addMeal(AlnPlannedMeal $meal): self
     {
         if (!$this->meals->contains($meal)) {
             $this->meals[] = $meal;
@@ -74,7 +74,7 @@ class AlnPlanning
         return $this;
     }
 
-    public function removeMeal(AlnMeal $meal): self
+    public function removeMeal(AlnPlannedMeal $meal): self
     {
         if ($this->meals->removeElement($meal)) {
             // set the owning side to null (unless already changed)

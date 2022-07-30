@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Api;
 
-use App\Entity\AlnMeal;
+use App\Entity\AlnManualMeal;
 use App\Factory\AlnFeederFactory;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -23,14 +23,10 @@ final class FeedNowApiTest extends FeederApiTestCase
         ]);
 
         $feeder = $this->findFeeder(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
-        $meal = $feeder->getMeals()->last();
-        $this->assertInstanceOf(AlnMeal::class, $meal);
+        $meal = $feeder->getManualMeals()->last();
+        $this->assertInstanceOf(AlnManualMeal::class, $meal);
         $this->assertNotNull($meal->getDistributedOn());
         $this->assertEquals($amount, $meal->getAmount());
-
-        // Planning reserved settings should be null
-        $this->assertNull($meal->getTime());
-        $this->assertNull($meal->getPlanning());
     }
 
     /**
