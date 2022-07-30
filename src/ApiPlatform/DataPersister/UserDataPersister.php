@@ -30,9 +30,10 @@ final class UserDataPersister implements DataPersisterInterface
      */
     public function persist($data): User
     {
-        if ($this->userPasswordHasher->needsRehash($data)) {
-            $hash = $this->userPasswordHasher->hashPassword($data, $data->getPassword());
+        if ($data->getPlainPassword()) {
+            $hash = $this->userPasswordHasher->hashPassword($data, $data->getPlainPassword());
             $data->setPassword($hash);
+            $data->eraseCredentials();
         }
         $this->entityManager->persist($data);
         $this->entityManager->flush();

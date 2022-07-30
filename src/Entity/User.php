@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
 #[ApiResource(
     collectionOperations: [
@@ -98,8 +99,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     #[ORM\Column]
-    #[Groups(['user:input'])]
     private string $password = '';
+
+    #[SerializedName('password')]
+    #[Groups(['user:input'])]
+    private ?string $plainPassword = null;
 
     /**
      * @var Collection<int, AlnFeeder>
@@ -174,6 +178,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(?string $password): self
+    {
+        $this->plainPassword = $password;
+
+        return $this;
+    }
+
     public function getPassword(): string
     {
         return $this->password;
@@ -188,7 +204,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
+        $this->plainPassword = null;
     }
 
     /**
