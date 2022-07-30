@@ -1,0 +1,4 @@
+services:
+  Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher:
+    autowire: true
+    public: true

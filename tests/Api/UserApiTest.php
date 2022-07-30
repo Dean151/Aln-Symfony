@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace App\Tests\Api;
 
+use App\Factory\UserFactory;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
+use Zenstruck\Foundry\Test\Factories;
 
 final class UserApiTest extends AuthenticatedApiTestCase
 {
+    use Factories;
+
     public function testAuthentication(): void
     {
         $response = $this->authenticateRequest('user.feeder@example.com', 'password');
@@ -57,14 +62,19 @@ final class UserApiTest extends AuthenticatedApiTestCase
 
     public function testUpdatePassword(): void
     {
+        $newPassword = UserFactory::faker()->password();
         $user = $this->getUserByEmail('user.nofeeder@example.com');
         $oldHash = $user->getPassword();
         $userId = $user->getId();
         $this->assertNotNull($userId);
-        $this->updateUserRequest($userId, ['password' => 'HelloWorld!'], $user);
+        $this->updateUserRequest($userId, ['password' => $newPassword], $user);
         $this->assertResponseIsSuccessful();
         $user = $this->getUserByEmail('user.nofeeder@example.com');
         $this->assertNotEquals($oldHash, $user->getPassword());
+
+        // Test that password is correct
+        $isValid = $this->getPasswordHasher()->isPasswordValid($user, $newPassword);
+        $this->assertTrue($isValid);
     }
 
     private function authenticateRequest(string $email, string $password): ResponseInterface
@@ -106,5 +116,13 @@ final class UserApiTest extends AuthenticatedApiTestCase
             ] + $this->getHeadersIfAuthenticated($authenticatedAs),
             'json' => $json,
         ]);
+    }
+
+    private function getPasswordHasher(): UserPasswordHasher
+    {
+        $hasher = self::getContainer()->get(UserPasswordHasher::class);
+        \assert($hasher instanceof UserPasswordHasher);
+
+        return $hasher;
     }
 }
