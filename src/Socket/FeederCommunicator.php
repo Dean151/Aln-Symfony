@@ -22,6 +22,7 @@ use React\Socket\ConnectionInterface;
 use Safe\DateTimeImmutable;
 
 use function Safe\hex2bin;
+use function Safe\parse_url;
 
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 
@@ -152,6 +153,13 @@ final class FeederCommunicator extends AbstractQueue implements MessageDequeueIn
 
         $feeder = $this->feederRepository->findOrCreateFeeder($message->getIdentifier());
         $feeder->setLastSeen(new DateTimeImmutable('now', new \DateTimeZone('UTC')));
+
+        if ($address = $connection->getRemoteAddress()) {
+            $host = parse_url($address, PHP_URL_HOST);
+            assert(is_string($host));
+            $ip = trim($host, '[]');
+            $feeder->setIp($ip);
+        }
 
         $this->sendInSocket((new TimeMessage())->hexadecimal(), $message->getIdentifier());
 

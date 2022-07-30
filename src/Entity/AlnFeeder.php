@@ -206,6 +206,9 @@ class AlnFeeder
     #[Groups(['feeder:output'])]
     private string $identifier;
 
+    #[ORM\Column(length: 64, nullable: true)]
+    private ?string $ip = null;
+
     #[ORM\Column(length: 255)]
     #[Groups(['feeder:input', 'feeder:output'])]
     #[Assert\Length(max: 255, groups: ['feeder:validation'])]
@@ -264,6 +267,18 @@ class AlnFeeder
     public function setIdentifier(string $identifier): self
     {
         $this->identifier = $identifier;
+
+        return $this;
+    }
+
+    public function getIp(): ?string
+    {
+        return $this->ip;
+    }
+
+    public function setIp(?string $ip): self
+    {
+        $this->ip = $ip;
 
         return $this;
     }
