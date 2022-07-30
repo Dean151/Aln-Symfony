@@ -26,7 +26,7 @@ final class MessageIdentification
     public static function identifyIncomingMessage(string $hexadecimal): MessageInterface
     {
         if (!\str_starts_with($hexadecimal, '9da114')) {
-            throw new \RuntimeException('All incoming messages should start with 9da114');
+            throw new \RuntimeException("All incoming messages should start with 9da114 ; got {$hexadecimal}");
         }
         if (\str_ends_with($hexadecimal, '01d0010000')) {
             return IdentificationMessage::decodeFrom($hexadecimal);
@@ -43,7 +43,7 @@ final class MessageIdentification
         if (preg_match('/210(?:5\d[[:xdigit:]]|[0-4][[:xdigit:]]{2})(00[0-9][0-9a-f])$/', $hexadecimal, $matches)) {
             return MealButtonPressedMessage::decodeFrom($hexadecimal);
         }
-        throw new \RuntimeException('Unknown incoming message: '.$hexadecimal);
+        throw new \RuntimeException("Unknown incoming message ; got {$hexadecimal}");
     }
 
     public static function identifyOutgoingMessage(string $hexadecimal): MessageInterface

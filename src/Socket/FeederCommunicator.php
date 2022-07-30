@@ -87,9 +87,16 @@ final class FeederCommunicator extends AbstractQueue implements MessageDequeueIn
             }
         } catch (\Exception $e) {
             $this->logger->warning($e->getMessage(), ['exception' => $e]);
-            $from->close();
+
             $alert = new AlnAlert();
             $alert->setMessage($e->getMessage());
+            if ($identifier = array_search($from, $this->connections, true)) {
+                $feeder = $this->feederRepository->findOneByIdentifier($identifier);
+                $alert->setFeeder($feeder);
+            } else {
+                // Only close a connexion that send unknown data and never identify itself
+                $from->close();
+            }
             $this->alertRepository->add($alert);
         }
     }
