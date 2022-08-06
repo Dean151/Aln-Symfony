@@ -50,6 +50,6 @@ final class NewPasswordEmailFactory
 
     private function buildUrl(ResetPasswordToken $token, string $locale): string
     {
-        return "{$this->siteBaseUrl}/{$locale}/register/{$token->getToken()}";
+        return "{$this->siteBaseUrl}/reset/{$token->getToken()}";
     }
 }
