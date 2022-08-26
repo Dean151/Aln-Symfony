@@ -21,10 +21,6 @@ class AlnPlannedMeal
 
     #[ORM\ManyToOne(inversedBy: 'meals')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?AlnFeeder $feeder = null;
-
-    #[ORM\ManyToOne(inversedBy: 'meals')]
-    #[ORM\JoinColumn(nullable: false)]
     private ?AlnPlanning $planning = null;
 
     /**
@@ -55,18 +51,6 @@ class AlnPlannedMeal
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getFeeder(): ?AlnFeeder
-    {
-        return $this->feeder;
-    }
-
-    public function setFeeder(?AlnFeeder $feeder): self
-    {
-        $this->feeder = $feeder;
-
-        return $this;
     }
 
     public function getPlanning(): ?AlnPlanning
