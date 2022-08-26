@@ -37,6 +37,21 @@ use Symfony\Component\Validator\Constraints as Assert;
             'openapi_context' => [
                 'summary' => 'Associate an unassociated feeder to your account',
                 'description' => 'Associate an unassociated feeder to your account',
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'identifier' => [
+                                        'type' => 'string',
+                                        'example' => 'ALE123456789',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
                 'responses' => [
                     Response::HTTP_OK => [
                         'description' => 'Feeder associated',
@@ -168,6 +183,47 @@ use Symfony\Component\Validator\Constraints as Assert;
             'openapi_context' => [
                 'summary' => 'Replace the meal plan with a new one',
                 'description' => 'Replace the meal plan with a new one',
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'meals' => [
+                                        'type' => 'array',
+                                        'items' => [
+                                            'type' => 'object',
+                                            'properties' => [
+                                                'time' => [
+                                                    'type' => 'object',
+                                                    'properties' => [
+                                                        'hours' => [
+                                                            'type' => 'integer',
+                                                            'example' => 12,
+                                                        ],
+                                                        'minutes' => [
+                                                            'type' => 'integer',
+                                                            'example' => 00,
+                                                        ],
+                                                    ],
+                                                ],
+                                                'amount' => [
+                                                    'type' => 'integer',
+                                                    'example' => 5,
+                                                ],
+                                                'enabled' => [
+                                                    'type' => 'boolean',
+                                                    'example' => true,
+                                                    'default' => true,
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
                 'responses' => [
                     Response::HTTP_OK => [
                         'description' => 'Planning replaced',
