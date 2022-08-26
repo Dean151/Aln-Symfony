@@ -25,6 +25,13 @@ final class AssociateFeederApiTest extends FeederApiTestCase
         $this->assertEquals($user->getId(), $feeder->getOwner()->getId());
     }
 
+    public function testFeederAssociationWrongIp(): void
+    {
+        $user = $this->getUserByEmail('user.feeder@example.com');
+        $this->associateFeederRequest(AlnFeederFactory::EMPTY_FEEDER_IDENTIFIER, $user);
+        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+    }
+
     public function testFeederAssociationUnauthenticated(): void
     {
         $this->associateFeederRequest(AlnFeederFactory::UNAVAILABLE_FEEDER_IDENTIFIER);
@@ -43,8 +50,9 @@ final class AssociateFeederApiTest extends FeederApiTestCase
 
     public function testFeederAssociationUnknown(): void
     {
-        $this->associateFeederRequest('unkwown');
-        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+        $user = $this->getUserByEmail('user.nofeeder@example.com');
+        $this->associateFeederRequest('unkwown', $user);
+        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
     /**

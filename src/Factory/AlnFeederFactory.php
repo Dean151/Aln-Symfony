@@ -45,6 +45,7 @@ final class AlnFeederFactory extends ModelFactory
             'name' => self::faker()->firstName(),
             'lastSeen' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
             'owner' => null,
+            'ip' => self::faker()->ipv4(),
         ];
     }
 

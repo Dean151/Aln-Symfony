@@ -23,12 +23,17 @@ class AppFixtures extends Fixture
         $availableFeeder = AlnFeederFactory::createOne([
             'identifier' => AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER,
             'owner' => $userWithFeeders,
+            'ip' => '127.0.0.1',
         ]);
         $unavailableFeeder = AlnFeederFactory::createOne([
             'identifier' => AlnFeederFactory::UNAVAILABLE_FEEDER_IDENTIFIER,
+            'ip' => '127.0.0.1',
         ]);
         $notRespondingFeeder = AlnFeederFactory::createOne([
             'identifier' => AlnFeederFactory::NOT_RESPONDING_FEEDER_IDENTIFIER,
+        ]);
+        $emptyFeder = AlnFeederFactory::createOne([
+            'identifier' => AlnFeederFactory::EMPTY_FEEDER_IDENTIFIER,
         ]);
 
         $manager->flush();
