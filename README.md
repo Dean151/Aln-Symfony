@@ -26,7 +26,7 @@ Above, you'll also find a Swagger UI that will document available endpoints, res
 
 - `POST user/register` with your email in the body. It'll send an email with an activation link. For now this link is dead, but note the token in this URL for the next step.
 - `POST user/reset/consume` with the above in-url token to get your authorization token.
-- In swagger UI ; on the top-right "authorize" button ; add "Bearer <token>" value for making all following calls to be authenticated as yourself
+- In swagger UI ; on the top-right "authorize" button ; add `Bearer <token>` value for making all following calls to be authenticated as yourself
 - `GET user/me` will allow to make sure the token is valid, that you're authenticated. And it'll respond with your associated feeders ; and your user id. Note it for next step.
 - `PUT user/{id}` with your password to create (or update) your password.
 
@@ -34,12 +34,12 @@ Above, you'll also find a Swagger UI that will document available endpoints, res
 
 - `POST user/reset` with your email in the body. It'll send an email with an activation link. For now this link is dead, but note the token in this URL for the next step.
 - `POST user/reset/consume` with the above in-url token to get your authorization token.
-- In swagger UI ; on the top-right "authorize" button ; add "Bearer <token>" value for making all following calls to be authenticated as yourself
+- In swagger UI ; on the top-right "authorize" button ; add `Bearer <token>` value for making all following calls to be authenticated as yourself
 
 ### Login with password
 
 - `POST user/login` with your email & password in the body to get your authorization token.
-- In swagger UI ; on the top-right "authorize" button ; add "Bearer <token>" value for making all following calls to be authenticated as yourself
+- In swagger UI ; on the top-right "authorize" button ; add `Bearer <token>` value for making all following calls to be authenticated as yourself
 
 ### Configure your feeder
 
