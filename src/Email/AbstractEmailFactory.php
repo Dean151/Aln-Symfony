@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Email;
 
+use App\Entity\User;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Component\Mime\Email;
@@ -32,23 +33,23 @@ abstract class AbstractEmailFactory
     /**
      * @param array<string, string> $context
      */
-    protected function createTemplatedEmail(string $recipientEmail, string $subject, string $template, array $context): TemplatedEmail
+    protected function createTemplatedEmail(User $recipient, string $subject, string $template, array $context): TemplatedEmail
     {
         $email = new TemplatedEmail();
-        $this->setUnsubscribeHeaders($email, $recipientEmail);
+        $this->setUnsubscribeHeaders($email, $recipient);
 
         return $email
-            ->to($recipientEmail)
+            ->to($recipient->getEmail())
             ->from($this->senderEmail)
             ->subject($subject)
             ->htmlTemplate($template)
             ->context($context);
     }
 
-    private function setUnsubscribeHeaders(Email $email, string $recipientEmail): void
+    private function setUnsubscribeHeaders(Email $email, User $recipient): void
     {
-        // FIXME: generate a token that we can check back afterward
-        $unsubscribeToken = strtr(base64_encode(random_bytes(16)), ['+' => '-', '/' => '_', '=' => '']);
+        $recipientEmail = $recipient->getEmail();
+        $unsubscribeToken = $recipient->getUnsubscribeToken();
         $unsubscribeMailto = "mailto:{$this->unsubscribeEmail}?subject=unsubscribe&body={$unsubscribeToken}";
         $unsubscribeUrl = "{$this->unsubscribeUrl}?email={$recipientEmail}&token={$unsubscribeToken}";
         $unsubscribeBody = sprintf('<%s>, <%s>', $unsubscribeMailto, $unsubscribeUrl);

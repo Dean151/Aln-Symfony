@@ -30,8 +30,7 @@ abstract class AbstractNewPasswordController extends AbstractController
         $token = null;
         try {
             $token = $this->resetPasswordHelper->generateResetToken($user);
-
-            $email = $this->emailFactory->create($type, $user->getEmail(), $token);
+            $email = $this->emailFactory->create($type, $user, $token);
             $this->mailer->send($email);
         } catch (ResetPasswordExceptionInterface $e) {
             if ($token?->getToken()) {

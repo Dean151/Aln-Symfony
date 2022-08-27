@@ -156,6 +156,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->email;
     }
 
+    public function getUnsubscribeToken(): string
+    {
+        $payload = implode('-', [$this->getId(), $this->getIdentifier()]);
+
+        return strtr(base64_encode($payload), ['+' => '-', '/' => '_', '=' => '']);
+    }
+
     /**
      * @return string[]
      */
