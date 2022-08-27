@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Email;
 
 use App\Entity\User;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Component\Mime\Crypto\DkimSigner;
 use Symfony\Component\Mime\Email;
@@ -43,7 +44,7 @@ abstract class AbstractEmailFactory
      */
     protected function createTemplatedEmail(User $recipient, string $subject, string $template, array $context): Message
     {
-        $email = new Email();
+        $email = new TemplatedEmail();
         $email = $email->to($recipient->getEmail())
             ->from($this->senderEmail)
             ->subject($subject)
