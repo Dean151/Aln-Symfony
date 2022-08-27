@@ -29,7 +29,7 @@ abstract class AbstractEmailFactory
         $this->translator = $translator;
         $this->senderEmail = $params->get('email.sender');
         $this->unsubscribeEmail = $params->get('email.unsubscribe');
-        $this->unsubscribeUrl = $params->get('api.base_url');
+        $this->unsubscribeUrl = $params->get('api.base_url').'/email/unsubscribe';
         $this->dkimKey = $params->get('email.dkim.key');
         $this->dkimPassphrase = $params->get('email.dkim.passphrase');
         $this->siteBaseUrl = $params->get('site.base_url');
