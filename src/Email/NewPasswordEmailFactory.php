@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Email;
 
 use App\Entity\User;
-use Symfony\Component\Mime\Email;
+use Symfony\Component\Mime\Message;
 use SymfonyCasts\Bundle\ResetPassword\Model\ResetPasswordToken;
 
 final class NewPasswordEmailFactory extends AbstractEmailFactory
 {
-    public function create(string $type, User $recipient, ResetPasswordToken $token): Email
+    public function create(string $type, User $recipient, ResetPasswordToken $token): Message
     {
         if (!in_array($type, ['register', 'reset_password'])) {
             throw new \InvalidArgumentException('$type is invalid');

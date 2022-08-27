@@ -6,6 +6,8 @@
 parameters:
     api.base_url: '%env(string:API_BASE_URL)%'
     authentication.enabled: '%env(bool:AUTHENTICATION_ENABLED)%'
+    email.dkim.key: '%env(string:EMAIL_DKIM_KEY)%'
+    email.dkim.passphrase: '%env(string:EMAIL_DKIM_PASSPHRASE)%'
     email.sender: '%env(string:EMAIL_SENDER)%'
     email.unsubscribe: '%env(string:EMAIL_UNSUBSCRIBE)%'
     feeder.response_timeout: '%env(float:FEEDER_RESPONSE_TIMEOUT)%'
