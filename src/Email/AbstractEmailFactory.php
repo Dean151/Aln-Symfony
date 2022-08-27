@@ -73,6 +73,8 @@ abstract class AbstractEmailFactory
         $domain = explode('@', $this->senderEmail)[1];
         $signer = new DkimSigner($this->dkimKey, $domain, 'sf', [], $this->dkimPassphrase);
 
+        // We need to generate the body before signing
+        $email  = new Message($email->getPreparedHeaders(), $email->getBody());
         return $signer->sign($email);
     }
 
