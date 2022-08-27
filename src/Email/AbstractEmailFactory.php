@@ -13,6 +13,8 @@ use Symfony\Component\Mime\Message;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
+use function Safe\preg_replace as preg_replace;
+
 abstract class AbstractEmailFactory
 {
     private Environment $twig;
@@ -47,8 +49,11 @@ abstract class AbstractEmailFactory
         $email = new TemplatedEmail();
         $email = $email->to($recipient->getEmail())
             ->from($this->senderEmail)
-            ->subject($subject)
-            ->html($this->twig->render($template, $context));
+            ->subject($subject);
+
+        $html = $this->twig->render($template, $context);
+        $text = strip_tags(preg_replace('{<(head|style)\b.*?</\1>}is', '', $html));
+        $email = $email->html($html)->text($text);
 
         $this->setUnsubscribeHeaders($email, $recipient);
 
