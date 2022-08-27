@@ -53,7 +53,6 @@ final class ChangePlanningController extends AbstractSocketController
             $alnMeal->setTime($meal->time->toArray());
             $alnMeal->setAmount($meal->amount);
             $alnMeal->setIsEnabled($meal->isEnabled);
-            $alnMeal->setFeeder($feeder);
             $alnPlanning->addMeal($alnMeal);
             $this->mealRepository->add($alnMeal);
         }

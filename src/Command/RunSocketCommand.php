@@ -22,8 +22,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 final class RunSocketCommand extends Command implements SignalableCommandInterface
 {
-    protected static $defaultName = 'aln:socket:run';
-
     private AsyncConsumer $queueConsumer;
     private AsyncServer $socketServer;
     private FeederCommunicator $communicator;

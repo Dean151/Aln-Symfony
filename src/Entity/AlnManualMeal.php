@@ -17,7 +17,7 @@ class AlnManualMeal
     #[ORM\Column()]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'meals')]
+    #[ORM\ManyToOne(inversedBy: 'manualMeals')]
     #[ORM\JoinColumn(nullable: false)]
     private ?AlnFeeder $feeder = null;
 

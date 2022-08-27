@@ -22,8 +22,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 class SimulateFeederCommand extends Command implements SignalableCommandInterface
 {
-    protected static $defaultName = 'aln:feeder:simulate';
-
     private FeederSimulator $simulator;
 
     public function __construct(FeederSimulator $simulator)
