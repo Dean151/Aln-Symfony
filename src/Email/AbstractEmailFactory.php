@@ -5,15 +5,16 @@ declare(strict_types=1);
 namespace App\Email;
 
 use App\Entity\User;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Component\Mime\Crypto\DkimSigner;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Message;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Twig\Environment;
 
 abstract class AbstractEmailFactory
 {
+    private Environment $twig;
     private TranslatorInterface $translator;
     private string $senderEmail;
     private string $unsubscribeEmail;
@@ -24,8 +25,9 @@ abstract class AbstractEmailFactory
     protected string $siteName;
     protected string $siteBaseUrl;
 
-    public function __construct(ContainerBagInterface $params, TranslatorInterface $translator)
+    public function __construct(ContainerBagInterface $params, Environment $twig, TranslatorInterface $translator)
     {
+        $this->twig = $twig;
         $this->translator = $translator;
         $this->senderEmail = $params->get('email.sender');
         $this->unsubscribeEmail = $params->get('email.unsubscribe');
@@ -41,12 +43,11 @@ abstract class AbstractEmailFactory
      */
     protected function createTemplatedEmail(User $recipient, string $subject, string $template, array $context): Message
     {
-        $email = new TemplatedEmail();
+        $email = new Email();
         $email = $email->to($recipient->getEmail())
             ->from($this->senderEmail)
             ->subject($subject)
-            ->htmlTemplate($template)
-            ->context($context);
+            ->html($this->twig->render($template, $context));
 
         $this->setUnsubscribeHeaders($email, $recipient);
 
