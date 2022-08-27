@@ -41,8 +41,8 @@ abstract class AbstractEmailFactory
      */
     protected function createTemplatedEmail(User $recipient, string $subject, string $template, array $context): Message
     {
-        $email = (new TemplatedEmail())
-            ->to($recipient->getEmail())
+        $email = new TemplatedEmail();
+        $email = $email->to($recipient->getEmail())
             ->from($this->senderEmail)
             ->subject($subject)
             ->htmlTemplate($template)
@@ -66,7 +66,6 @@ abstract class AbstractEmailFactory
 
     private function signEmailWithDkim(Email $email): Message
     {
-        print_r($this->dkimKey);
         if (empty($this->dkimKey)) {
             return $email;
         }
