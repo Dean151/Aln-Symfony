@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Socket\Messages;
 
-final class MealDistributedMessage extends ExpectationMessage
+final class MealTriggeredViaNetworkMessage extends ExpectationMessage
 {
     public static function decodeFrom(string $hexadecimal): self
     {
         $hexadecimalIdentifier = substr($hexadecimal, 6, -10);
         $identifier = self::decodeIdentifier($hexadecimalIdentifier);
 
-        return new MealDistributedMessage($identifier);
+        return new MealTriggeredViaNetworkMessage($identifier);
     }
 
     public function hexadecimal(): string

@@ -7,13 +7,13 @@ namespace App\Socket;
 use App\Socket\Messages\ChangeDefaultMealMessage;
 use App\Socket\Messages\ChangePlanningMessage;
 use App\Socket\Messages\DefaultMealChangedMessage;
-use App\Socket\Messages\FeedNowMessage;
 use App\Socket\Messages\IdentificationMessage;
-use App\Socket\Messages\MealButtonPressedMessage;
-use App\Socket\Messages\MealDistributedMessage;
+use App\Socket\Messages\MealTriggeredViaButtonMessage;
+use App\Socket\Messages\MealTriggeredViaNetworkMessage;
 use App\Socket\Messages\MessageInterface;
 use App\Socket\Messages\PlanningChangedMessage;
 use App\Socket\Messages\TimeMessage;
+use App\Socket\Messages\TriggerMealMessage;
 use Safe\Exceptions\PcreException;
 
 use function Safe\preg_match;
@@ -38,10 +38,10 @@ final class MessageIdentification
             return PlanningChangedMessage::decodeFrom($hexadecimal);
         }
         if (\str_ends_with($hexadecimal, 'a2d0a10000')) {
-            return MealDistributedMessage::decodeFrom($hexadecimal);
+            return MealTriggeredViaNetworkMessage::decodeFrom($hexadecimal);
         }
         if (preg_match('/210(?:5\d[[:xdigit:]]|[0-4][[:xdigit:]]{2})(00[0-9][0-9a-f])$/', $hexadecimal, $matches)) {
-            return MealButtonPressedMessage::decodeFrom($hexadecimal);
+            return MealTriggeredViaButtonMessage::decodeFrom($hexadecimal);
         }
         throw new \RuntimeException("Unknown incoming message ; got {$hexadecimal}");
     }
@@ -55,7 +55,7 @@ final class MessageIdentification
             return ChangeDefaultMealMessage::decodeFrom($hexadecimal);
         }
         if (\str_starts_with($hexadecimal, '9da106a2')) {
-            return FeedNowMessage::decodeFrom($hexadecimal);
+            return TriggerMealMessage::decodeFrom($hexadecimal);
         }
         if (\str_starts_with($hexadecimal, '9da12dc4')) {
             return ChangePlanningMessage::decodeFrom($hexadecimal);

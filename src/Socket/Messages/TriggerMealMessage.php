@@ -6,7 +6,7 @@ namespace App\Socket\Messages;
 
 use App\Socket\MessageTranscriber;
 
-final class FeedNowMessage extends ExpectableMessageInterface
+final class TriggerMealMessage extends ExpectableMessageInterface
 {
     use MessageTranscriber;
 
@@ -20,7 +20,7 @@ final class FeedNowMessage extends ExpectableMessageInterface
         $hexadecimalMealAmount = substr($hexadecimal, -4);
         $mealAmount = self::decodeMealAmount($hexadecimalMealAmount);
 
-        return new FeedNowMessage($mealAmount);
+        return new TriggerMealMessage($mealAmount);
     }
 
     /**
@@ -49,6 +49,6 @@ final class FeedNowMessage extends ExpectableMessageInterface
 
     public function expectationMessage(string $identifier): ExpectationMessage
     {
-        return new MealDistributedMessage($identifier);
+        return new MealTriggeredViaNetworkMessage($identifier);
     }
 }

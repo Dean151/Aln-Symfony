@@ -9,7 +9,7 @@ use App\Entity\AlnFeeder;
 use App\Entity\AlnManualMeal;
 use App\Queue\MessageEnqueueInterface;
 use App\Repository\AlnManualMealRepository;
-use App\Socket\Messages\FeedNowMessage;
+use App\Socket\Messages\TriggerMealMessage;
 use Doctrine\Persistence\ManagerRegistry;
 use Safe\DateTimeImmutable;
 use Symfony\Component\HttpFoundation\Response;
@@ -42,7 +42,7 @@ final class TriggerManualMeal extends AbstractSocketController
         assert($amount >= 5 && $amount <= 150);
         $feeder = $data;
 
-        $message = new FeedNowMessage($amount);
+        $message = new TriggerMealMessage($amount);
         $this->sendSocketMessage($feeder, $message);
 
         $meal = new AlnManualMeal();

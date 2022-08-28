@@ -6,7 +6,7 @@ namespace App\Socket\Messages;
 
 use App\ApiPlatform\Dto\TimeInput;
 
-final class MealButtonPressedMessage extends IdentifiedMessage
+final class MealTriggeredViaButtonMessage extends IdentifiedMessage
 {
     private TimeInput $previousMeal;
 
@@ -24,7 +24,7 @@ final class MealButtonPressedMessage extends IdentifiedMessage
         $previousMeal = self::decodeTime($hexadecimalTime);
         $mealAmount = self::decodeMealAmount($hexadecimalMealAmount);
 
-        return new MealButtonPressedMessage($identifier, $mealAmount, $previousMeal);
+        return new MealTriggeredViaButtonMessage($identifier, $mealAmount, $previousMeal);
     }
 
     /**

@@ -13,7 +13,7 @@ use App\Repository\AlnFeederRepository;
 use App\Repository\AlnManualMealRepository;
 use App\Socket\Messages\ExpectationMessage;
 use App\Socket\Messages\IdentificationMessage;
-use App\Socket\Messages\MealButtonPressedMessage;
+use App\Socket\Messages\MealTriggeredViaButtonMessage;
 use App\Socket\Messages\TimeMessage;
 use Doctrine\Persistence\ManagerRegistry;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -81,7 +81,7 @@ final class FeederCommunicator extends AbstractQueue implements MessageDequeueIn
             $message = MessageIdentification::identifyIncomingMessage($hexadecimalMessage);
             if ($message instanceof IdentificationMessage) {
                 $this->identified($message, $from);
-            } elseif ($message instanceof MealButtonPressedMessage) {
+            } elseif ($message instanceof MealTriggeredViaButtonMessage) {
                 $this->recordManualMeal($message);
             } elseif ($message instanceof ExpectationMessage) {
                 $this->publishResponseInQueue($message);
@@ -165,7 +165,7 @@ final class FeederCommunicator extends AbstractQueue implements MessageDequeueIn
         $this->doctrine->getManager()->flush();
     }
 
-    private function recordManualMeal(MealButtonPressedMessage $message): void
+    private function recordManualMeal(MealTriggeredViaButtonMessage $message): void
     {
         $this->logger->info("Feeder {$message->getIdentifier()} served a meal of {$message->getMealAmount()}g");
 

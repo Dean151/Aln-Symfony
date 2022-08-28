@@ -8,10 +8,10 @@ use App\Socket\Messages\ChangeDefaultMealMessage;
 use App\Socket\Messages\ChangePlanningMessage;
 use App\Socket\Messages\ExpectableMessageInterface;
 use App\Socket\Messages\ExpectationMessage;
-use App\Socket\Messages\FeedNowMessage;
 use App\Socket\Messages\IdentificationMessage;
 use App\Socket\Messages\MessageInterface;
 use App\Socket\Messages\TimeMessage;
+use App\Socket\Messages\TriggerMealMessage;
 use Psr\Log\LoggerInterface;
 use React\EventLoop\LoopInterface;
 use React\Socket\ConnectionInterface;
@@ -170,7 +170,7 @@ final class FeederSimulator
             $this->logger->info("Received time: {$message->getTime()->hours}h{$minutes}");
         } elseif ($message instanceof ChangeDefaultMealMessage) {
             $this->logger->info("Changed default meal to {$message->getMealAmount()}g");
-        } elseif ($message instanceof FeedNowMessage) {
+        } elseif ($message instanceof TriggerMealMessage) {
             $this->logger->info("Meal distributed of {$message->getMealAmount()}g");
         } elseif ($message instanceof ChangePlanningMessage) {
             $this->logger->info("Planning changed with {$message->getCount()} meal(s)");

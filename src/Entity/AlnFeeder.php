@@ -111,7 +111,7 @@ use Symfony\Component\Validator\Constraints as Assert;
                 ],
             ],
         ],
-        'feed' => [
+        'trigger_meal' => [
             'method' => 'POST',
             'status' => Response::HTTP_OK,
             'path' => '/feeders/{id}/feed',
@@ -141,7 +141,7 @@ use Symfony\Component\Validator\Constraints as Assert;
                 ],
             ],
         ],
-        'amount' => [
+        'set_amount' => [
             'method' => 'PUT',
             'status' => Response::HTTP_OK,
             'path' => '/feeders/{id}/amount',
@@ -171,7 +171,7 @@ use Symfony\Component\Validator\Constraints as Assert;
                 ],
             ],
         ],
-        'planning' => [
+        'set_planning' => [
             'method' => 'PUT',
             'status' => Response::HTTP_OK,
             'path' => '/feeders/{id}/planning',

@@ -12,12 +12,12 @@ use App\Socket\Messages\ChangePlanningMessage;
 use App\Socket\Messages\DefaultMealChangedMessage;
 use App\Socket\Messages\ExpectableMessageInterface;
 use App\Socket\Messages\ExpectationMessage;
-use App\Socket\Messages\FeedNowMessage;
 use App\Socket\Messages\IdentificationMessage;
-use App\Socket\Messages\MealButtonPressedMessage;
-use App\Socket\Messages\MealDistributedMessage;
+use App\Socket\Messages\MealTriggeredViaButtonMessage;
+use App\Socket\Messages\MealTriggeredViaNetworkMessage;
 use App\Socket\Messages\PlanningChangedMessage;
 use App\Socket\Messages\TimeMessage;
+use App\Socket\Messages\TriggerMealMessage;
 use PHPUnit\Framework\TestCase;
 
 final class MessagesTest extends TestCase
@@ -83,9 +83,9 @@ final class MessagesTest extends TestCase
     public function testMealDistributed(string $hexadecimal, string $identifier): void
     {
         $message = MessageIdentification::identifyIncomingMessage($hexadecimal);
-        $this->assertInstanceOf(MealDistributedMessage::class, $message);
+        $this->assertInstanceOf(MealTriggeredViaNetworkMessage::class, $message);
         $this->assertEquals($identifier, $message->getIdentifier());
-        $this->assertEquals($hexadecimal, (new MealDistributedMessage($identifier))->hexadecimal());
+        $this->assertEquals($hexadecimal, (new MealTriggeredViaNetworkMessage($identifier))->hexadecimal());
     }
 
     public function provideMealDistributedData(): \Generator
@@ -101,11 +101,11 @@ final class MessagesTest extends TestCase
     public function testMealButtonPressed(string $hexadecimal, string $identifier, TimeInput $time, int $mealAmount): void
     {
         $message = MessageIdentification::identifyIncomingMessage($hexadecimal);
-        $this->assertInstanceOf(MealButtonPressedMessage::class, $message);
+        $this->assertInstanceOf(MealTriggeredViaButtonMessage::class, $message);
         $this->assertEquals($identifier, $message->getIdentifier());
         $this->assertEquals($time, $message->getPreviousMeal());
         $this->assertEquals($mealAmount, $message->getMealAmount());
-        $this->assertEquals($hexadecimal, (new MealButtonPressedMessage($identifier, $mealAmount, $time))->hexadecimal());
+        $this->assertEquals($hexadecimal, (new MealTriggeredViaButtonMessage($identifier, $mealAmount, $time))->hexadecimal());
     }
 
     public function provideMealButtonPressedData(): \Generator
@@ -167,8 +167,8 @@ final class MessagesTest extends TestCase
      */
     public function testFeedNow(string $hexadecimal, int $mealAmount): void
     {
-        $this->assertEquals($hexadecimal, (new FeedNowMessage($mealAmount))->hexadecimal());
-        $this->assertEquals($mealAmount, FeedNowMessage::decodeFrom($hexadecimal)->getMealAmount());
+        $this->assertEquals($hexadecimal, (new TriggerMealMessage($mealAmount))->hexadecimal());
+        $this->assertEquals($mealAmount, TriggerMealMessage::decodeFrom($hexadecimal)->getMealAmount());
     }
 
     public function provideFeedNowData(): \Generator
@@ -220,6 +220,6 @@ final class MessagesTest extends TestCase
         $identifier = 'ALE291382748';
         yield [$identifier, new ChangeDefaultMealMessage(12), new DefaultMealChangedMessage($identifier)];
         yield [$identifier, new ChangePlanningMessage([]), new PlanningChangedMessage($identifier)];
-        yield [$identifier, new FeedNowMessage(24), new MealDistributedMessage($identifier)];
+        yield [$identifier, new TriggerMealMessage(24), new MealTriggeredViaNetworkMessage($identifier)];
     }
 }
