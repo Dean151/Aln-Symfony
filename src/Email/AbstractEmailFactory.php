@@ -52,13 +52,22 @@ abstract class AbstractEmailFactory
             ->from($this->senderEmail)
             ->subject($subject);
 
-        $html = $this->twig->render($template, $context);
-        $text = strip_tags(preg_replace('{<(head|style)\b.*?</\1>}is', '', $html));
-        $email = $email->html($html)->text($text);
+        $body = $this->twig->render($template, $context);
+        $text = strip_tags(preg_replace('{<(head|style)\b.*?</\1>}is', '', $body));
+        $email = $email->html($this->buildHtml($subject, $body))->text($text);
 
         $this->setUnsubscribeHeaders($email, $recipient);
 
         return $this->signEmailWithDkim($email);
+    }
+
+    private function buildHtml(string $subject, string $body): string
+    {
+        return $this->twig->render('emails/base_mail.html.twig', [
+            'language' => $this->getLocale(),
+            'subject' => $subject,
+            'body' => $body,
+        ]);
     }
 
     private function setUnsubscribeHeaders(Email $email, User $recipient): void
