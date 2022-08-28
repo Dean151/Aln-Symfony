@@ -7,7 +7,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\ApiPlatform\Dto\LoginInput;
 use App\ApiPlatform\Dto\ResetPassTokenInput;
-use App\Controller\GetCurrentUserController;
+use App\Controller\GetCurrentUser;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -60,7 +60,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
     itemOperations: [
         'get' => [
             'path' => '/user/me',
-            'controller' => GetCurrentUserController::class,
+            'controller' => GetCurrentUser::class,
             'openapi_context' => [
                 'summary' => 'Get current user information',
                 'description' => '#withoutIdentifier Get current user information',

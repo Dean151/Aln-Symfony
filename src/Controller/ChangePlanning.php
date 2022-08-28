@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 
 #[AsController]
-final class ChangePlanningController extends AbstractSocketController
+final class ChangePlanning extends AbstractSocketController
 {
     private AlnPlanningRepository $planningRepository;
     private AlnPlannedMealRepository $mealRepository;

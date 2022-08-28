@@ -8,11 +8,11 @@ use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\ApiPlatform\Dto\IdentifierInput;
 use App\ApiPlatform\Dto\PlanningInput;
-use App\Controller\AssociateFeederController;
-use App\Controller\ChangeDefaultMealController;
-use App\Controller\ChangePlanningController;
-use App\Controller\DissociateFeederController;
-use App\Controller\FeedNowController;
+use App\Controller\AssociateFeeder;
+use App\Controller\ChangeDefaultMeal;
+use App\Controller\ChangePlanning;
+use App\Controller\DissociateFeeder;
+use App\Controller\TriggerManualMeal;
 use App\Repository\AlnFeederRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -29,7 +29,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             'method' => 'POST',
             'status' => Response::HTTP_OK,
             'path' => '/feeders/associate',
-            'controller' => AssociateFeederController::class,
+            'controller' => AssociateFeeder::class,
             'input' => IdentifierInput::class,
             'denormalization_context' => ['groups' => []],
             'validation_groups' => [],
@@ -88,7 +88,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             'method' => 'DELETE',
             'status' => Response::HTTP_OK,
             'path' => '/feeders/{id}/association',
-            'controller' => DissociateFeederController::class,
+            'controller' => DissociateFeeder::class,
             'denormalization_context' => ['groups' => []],
             'validation_groups' => [],
             'security' => "is_granted('MANAGE', object)",
@@ -115,7 +115,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             'method' => 'POST',
             'status' => Response::HTTP_OK,
             'path' => '/feeders/{id}/feed',
-            'controller' => FeedNowController::class,
+            'controller' => TriggerManualMeal::class,
             'denormalization_context' => ['groups' => ['feeding:input']],
             'validation_groups' => ['feeding:validation'],
             'security' => "is_granted('MANAGE', object)",
@@ -145,7 +145,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             'method' => 'PUT',
             'status' => Response::HTTP_OK,
             'path' => '/feeders/{id}/amount',
-            'controller' => ChangeDefaultMealController::class,
+            'controller' => ChangeDefaultMeal::class,
             'denormalization_context' => ['groups' => ['feeding:input']],
             'validation_groups' => ['feeding:validation'],
             'security' => "is_granted('MANAGE', object)",
@@ -175,7 +175,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             'method' => 'PUT',
             'status' => Response::HTTP_OK,
             'path' => '/feeders/{id}/planning',
-            'controller' => ChangePlanningController::class,
+            'controller' => ChangePlanning::class,
             'input' => PlanningInput::class,
             'denormalization_context' => ['groups' => []],
             'validation_groups' => [],

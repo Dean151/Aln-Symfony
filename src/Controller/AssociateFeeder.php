@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 
 #[AsController]
-final class AssociateFeederController extends AbstractController
+final class AssociateFeeder extends AbstractController
 {
     private ManagerRegistry $doctrine;
 

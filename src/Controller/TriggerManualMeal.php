@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 
 #[AsController]
-final class FeedNowController extends AbstractSocketController
+final class TriggerManualMeal extends AbstractSocketController
 {
     private ValidatorInterface $validator;
     private AlnManualMealRepository $repository;

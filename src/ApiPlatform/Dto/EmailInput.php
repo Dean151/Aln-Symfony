@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\ApiPlatform\Dto;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Controller\RegisterUserController;
-use App\Controller\ResetPasswordController;
+use App\Controller\RegisterUser;
+use App\Controller\ResetPassword;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         'register' => [
             'method' => 'POST',
             'path' => '/user/register',
-            'controller' => RegisterUserController::class,
+            'controller' => RegisterUser::class,
             'status' => Response::HTTP_OK,
             'openapi_context' => [
                 'tags' => ['User'],
@@ -34,7 +34,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         'reset' => [
             'method' => 'POST',
             'path' => '/user/reset',
-            'controller' => ResetPasswordController::class,
+            'controller' => ResetPassword::class,
             'status' => Response::HTTP_OK,
             'openapi_context' => [
                 'tags' => ['User'],

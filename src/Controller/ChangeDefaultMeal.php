@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 
 #[AsController]
-final class ChangeDefaultMealController extends AbstractSocketController
+final class ChangeDefaultMeal extends AbstractSocketController
 {
     private ValidatorInterface $validator;
     private ManagerRegistry $doctrine;

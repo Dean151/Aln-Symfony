@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 
 #[AsController]
-final class DissociateFeederController extends AbstractController
+final class DissociateFeeder extends AbstractController
 {
     private ManagerRegistry $doctrine;
 

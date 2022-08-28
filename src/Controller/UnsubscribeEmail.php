@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[AsController]
-final class UnsubscribeEmail extends \Symfony\Bundle\FrameworkBundle\Controller\AbstractController
+final class UnsubscribeEmail extends AbstractController
 {
     #[Route(path: 'email/unsubscribe', name: 'app_email_unsubscribe', methods: ['POST'])]
     public function unsubscribe(): Response
