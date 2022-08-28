@@ -53,4 +53,18 @@ final class ResetPasswordRequestRepository extends ServiceEntityRepository imple
 
         return new ResetPasswordRequest($user, $expiresAt, $selector, $hashedToken);
     }
+
+    /**
+     * @private For tests only
+     */
+    public function deleteAllFor(User $user): void
+    {
+        // FIXME: improve query
+        $entities = $this->findBy(['user' => $user]);
+        foreach ($entities as $entity) {
+            $this->remove($entity);
+        }
+
+        $this->getEntityManager()->flush();
+    }
 }

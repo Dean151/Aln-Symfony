@@ -38,7 +38,9 @@ final class RegisterUser extends AbstractNewPasswordController
         $this->validator->validate($data);
 
         $user = $this->userRepository->findOneByEmail($data->email);
-        if (null === $user) {
+        if (null !== $user) {
+            $this->sendNewPasswordEmail($user, 'reset_password');
+        } else {
             $user = new User();
             $user->setIdentifier(Uuid::v4()->toRfc4122());
             $user->setEmail($data->email);

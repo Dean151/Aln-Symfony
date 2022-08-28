@@ -16,9 +16,9 @@ use SymfonyCasts\Bundle\ResetPassword\ResetPasswordHelperInterface;
 
 abstract class AbstractNewPasswordController extends AbstractController
 {
-    private ResetPasswordHelperInterface $resetPasswordHelper;
-    private MailerInterface $mailer;
-    private NewPasswordEmailFactory $emailFactory;
+    protected ResetPasswordHelperInterface $resetPasswordHelper;
+    protected MailerInterface $mailer;
+    protected NewPasswordEmailFactory $emailFactory;
 
     public function __construct(ResetPasswordHelperInterface $resetPasswordHelper, MailerInterface $mailer, NewPasswordEmailFactory $emailFactory)
     {

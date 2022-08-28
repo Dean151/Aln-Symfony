@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Api;
 
+use App\Repository\ResetPasswordRequestRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\DataCollector\MessageDataCollector;
 use Symfony\Contracts\HttpClient\ResponseInterface;
@@ -35,6 +36,9 @@ final class ResetPasswordApiTest extends AuthenticatedApiTestCase
     {
         $this->resetPasswordRequest('user.feeder@example.com');
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_ACCEPTABLE);
+
+        $user = $this->getUserByEmail('user.feeder@example.com');
+        $this->getResetPasswordRequestRepository()->deleteAllFor($user);
     }
 
     public function testResetPasswordWithInvalidEmail(): void
@@ -132,5 +136,13 @@ final class ResetPasswordApiTest extends AuthenticatedApiTestCase
         $this->assertInstanceOf(ResetPasswordHelperInterface::class, $helper);
 
         return $helper;
+    }
+
+    private function getResetPasswordRequestRepository(): ResetPasswordRequestRepository
+    {
+        $repository = self::getContainer()->get(ResetPasswordRequestRepository::class);
+        $this->assertInstanceOf(ResetPasswordRequestRepository::class, $repository);
+
+        return $repository;
     }
 }

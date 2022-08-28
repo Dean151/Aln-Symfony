@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Tests\Api;
 
-use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
+use App\Repository\ResetPasswordRequestRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\DataCollector\MessageDataCollector;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
-final class RegisterApiTest extends ApiTestCase
+final class RegisterApiTest extends AuthenticatedApiTestCase
 {
     public function testRegisterWithEmail(): void
     {
@@ -26,6 +26,9 @@ final class RegisterApiTest extends ApiTestCase
         $recipients = $event->getEnvelope()->getRecipients();
         $this->assertCount(1, $recipients);
         $this->assertEquals('new_user@example.com', $recipients[0]->getAddress());
+
+        $user = $this->getUserByEmail('new_user@example.com');
+        $this->getResetPasswordRequestRepository()->deleteAllFor($user);
     }
 
     public function testRegisterWithInvalidEmail(): void
@@ -39,13 +42,16 @@ final class RegisterApiTest extends ApiTestCase
      */
     public function testRegisterWithUsedEmail(): void
     {
-        $this->registerEmailRequestWithProfiler('new_user@example.com', $mailer);
+        $this->registerEmailRequestWithProfiler('user.nofeeder@example.com', $mailer);
         $this->assertResponseIsSuccessful();
         $this->assertJsonEquals(['message' => 'Register mail sent']);
 
         $this->assertInstanceOf(MessageDataCollector::class, $mailer);
         $events = $mailer->getEvents()->getEvents();
-        $this->assertCount(0, $events);
+        $this->assertCount(1, $events); // A password reset mail should be sent
+
+        $user = $this->getUserByEmail('user.nofeeder@example.com');
+        $this->getResetPasswordRequestRepository()->deleteAllFor($user);
     }
 
     private function registerEmailRequest(string $email): ResponseInterface
@@ -83,5 +89,13 @@ final class RegisterApiTest extends ApiTestCase
         }
 
         return $response;
+    }
+
+    private function getResetPasswordRequestRepository(): ResetPasswordRequestRepository
+    {
+        $repository = self::getContainer()->get(ResetPasswordRequestRepository::class);
+        $this->assertInstanceOf(ResetPasswordRequestRepository::class, $repository);
+
+        return $repository;
     }
 }
