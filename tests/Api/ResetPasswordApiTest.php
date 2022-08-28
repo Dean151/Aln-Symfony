@@ -28,6 +28,15 @@ final class ResetPasswordApiTest extends AuthenticatedApiTestCase
         $this->assertEquals('user.feeder@example.com', $recipients[0]->getAddress());
     }
 
+    /**
+     * @depends testResetPasswordWithEmail
+     */
+    public function testResetPasswordAlreadyRequested(): void
+    {
+        $this->resetPasswordRequest('user.feeder@example.com');
+        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_ACCEPTABLE);
+    }
+
     public function testResetPasswordWithInvalidEmail(): void
     {
         $this->resetPasswordRequest('not_an_email');
