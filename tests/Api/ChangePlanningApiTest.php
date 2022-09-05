@@ -13,6 +13,7 @@ final class ChangePlanningApiTest extends FeederApiTestCase
 {
     /**
      * @param array<array<string, mixed>> $meals
+     *
      * @dataProvider providePlanningChangeData
      */
     public function testPlanningChange(array $meals): void
@@ -44,6 +45,7 @@ final class ChangePlanningApiTest extends FeederApiTestCase
 
     /**
      * @param-stan Response::HTTP_* $response_code
+     *
      * @dataProvider provideNonValidInputData
      */
     public function testPlanningChangeWithNonValidInput(int $response_code, mixed $meals): void

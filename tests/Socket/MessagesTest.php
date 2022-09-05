@@ -96,6 +96,7 @@ final class MessagesTest extends TestCase
 
     /**
      * @param int<5, 150> $mealAmount
+     *
      * @dataProvider provideMealButtonPressedData
      */
     public function testMealButtonPressed(string $hexadecimal, string $identifier, TimeInput $time, int $mealAmount): void
@@ -144,6 +145,7 @@ final class MessagesTest extends TestCase
 
     /**
      * @param int<5, 150> $mealAmount
+     *
      * @dataProvider provideDefaultMealData
      */
     public function testChangeDefaultMeal(string $hexadecimal, int $mealAmount): void
@@ -163,6 +165,7 @@ final class MessagesTest extends TestCase
 
     /**
      * @param int<5, 150> $mealAmount
+     *
      * @dataProvider provideFeedNowData
      */
     public function testFeedNow(string $hexadecimal, int $mealAmount): void
@@ -182,6 +185,7 @@ final class MessagesTest extends TestCase
 
     /**
      * @param array<MealInput> $meals
+     *
      * @dataProvider provideChangePlanningData
      */
     public function testChangePlanning(string $hexadecimal, array $meals): void
