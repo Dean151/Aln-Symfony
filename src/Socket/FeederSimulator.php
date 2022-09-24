@@ -116,9 +116,9 @@ final class FeederSimulator
         $this->shutdown();
     }
 
-    private function onConnectionClosed(?int $code, ?string $reason): void
+    private function onConnectionClosed(): void
     {
-        $this->logger->info("Connection closed: {$code} {$reason}");
+        $this->logger->info('Connection closed');
         $this->shutdown();
     }
 
