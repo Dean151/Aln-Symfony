@@ -15,11 +15,9 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 #[AsController]
 final class AssociateFeeder extends AbstractController
 {
-    private ManagerRegistry $doctrine;
-
-    public function __construct(ManagerRegistry $doctrine)
-    {
-        $this->doctrine = $doctrine;
+    public function __construct(
+        private readonly ManagerRegistry $doctrine,
+    ) {
     }
 
     public function __invoke(AlnFeeder $data): Response

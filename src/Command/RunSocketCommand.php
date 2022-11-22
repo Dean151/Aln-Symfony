@@ -22,17 +22,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 final class RunSocketCommand extends Command implements SignalableCommandInterface
 {
-    private AsyncConsumer $queueConsumer;
-    private AsyncServer $socketServer;
-    private FeederCommunicator $communicator;
-
     private ?LoopInterface $loop = null;
 
-    public function __construct(AsyncConsumer $queueConsumer, AsyncServer $socketServer, FeederCommunicator $communicator)
-    {
-        $this->queueConsumer = $queueConsumer;
-        $this->socketServer = $socketServer;
-        $this->communicator = $communicator;
+    public function __construct(
+        private readonly AsyncConsumer $queueConsumer,
+        private readonly AsyncServer $socketServer,
+        private readonly FeederCommunicator $communicator,
+    ) {
         parent::__construct();
     }
 

@@ -16,15 +16,11 @@ use SymfonyCasts\Bundle\ResetPassword\ResetPasswordHelperInterface;
 
 abstract class AbstractNewPasswordController extends AbstractController
 {
-    protected ResetPasswordHelperInterface $resetPasswordHelper;
-    protected MailerInterface $mailer;
-    protected NewPasswordEmailFactory $emailFactory;
-
-    public function __construct(ResetPasswordHelperInterface $resetPasswordHelper, MailerInterface $mailer, NewPasswordEmailFactory $emailFactory)
-    {
-        $this->resetPasswordHelper = $resetPasswordHelper;
-        $this->mailer = $mailer;
-        $this->emailFactory = $emailFactory;
+    public function __construct(
+        protected readonly ResetPasswordHelperInterface $resetPasswordHelper,
+        protected readonly MailerInterface $mailer,
+        protected readonly NewPasswordEmailFactory $emailFactory,
+    ) {
     }
 
     protected function sendNewPasswordEmail(User $user, string $type): void

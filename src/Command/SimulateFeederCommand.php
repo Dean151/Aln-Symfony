@@ -22,11 +22,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 class SimulateFeederCommand extends Command implements SignalableCommandInterface
 {
-    private FeederSimulator $simulator;
-
-    public function __construct(FeederSimulator $simulator)
-    {
-        $this->simulator = $simulator;
+    public function __construct(
+        private readonly FeederSimulator $simulator,
+    ) {
         parent::__construct();
     }
 

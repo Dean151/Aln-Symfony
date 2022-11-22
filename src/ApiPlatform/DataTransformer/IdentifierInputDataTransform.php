@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\ApiPlatform\DataTransformer;
 
+use ApiPlatform\Core\DataTransformer\DataTransformerInterface;
 use ApiPlatform\Validator\ValidatorInterface;
 use App\ApiPlatform\Dto\IdentifierInput;
 use App\Entity\AlnFeeder;
@@ -13,7 +14,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 /**
  * @deprecated Use of DataTransformerInterface
  */
-class IdentifierInputDataTransform implements \ApiPlatform\Core\DataTransformer\DataTransformerInterface
+class IdentifierInputDataTransform implements DataTransformerInterface
 {
     private ValidatorInterface $validator;
     private AlnFeederRepository $repository;

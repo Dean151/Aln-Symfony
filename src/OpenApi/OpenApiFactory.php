@@ -14,11 +14,9 @@ use Symfony\Component\DependencyInjection\Attribute\AsDecorator;
 #[AsDecorator('api_platform.openapi.factory')]
 class OpenApiFactory implements OpenApiFactoryInterface
 {
-    private OpenApiFactoryInterface $decorated;
-
-    public function __construct(OpenApiFactoryInterface $decorated)
-    {
-        $this->decorated = $decorated;
+    public function __construct(
+        private OpenApiFactoryInterface $decorated,
+    ) {
     }
 
     /**
