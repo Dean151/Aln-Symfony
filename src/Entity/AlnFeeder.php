@@ -67,7 +67,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             denormalizationContext: ['groups' => []],
             security: 'is_granted(\'IS_AUTHENTICATED\')',
             validationContext: ['groups' => []],
-            input: IdentifierInput::class
+            input: IdentifierInput::class,
         ),
         new Get(
             openapiContext: [

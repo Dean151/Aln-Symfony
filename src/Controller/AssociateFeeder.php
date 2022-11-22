@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\AlnFeeder;
+use ApiPlatform\Validator\ValidatorInterface;
+use App\ApiPlatform\Dto\IdentifierInput;
 use App\Entity\User;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Repository\AlnFeederRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,13 +17,19 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 final class AssociateFeeder extends AbstractController
 {
     public function __construct(
-        private readonly ManagerRegistry $doctrine,
+        private readonly ValidatorInterface $validator,
+        private readonly AlnFeederRepository $repository,
     ) {
     }
 
-    public function __invoke(AlnFeeder $data): Response
+    public function __invoke(IdentifierInput $data): Response
     {
-        $feeder = $data;
+        $this->validator->validate($data);
+
+        $feeder = $this->repository->findOneByIdentifier($data->identifier);
+        if (null === $feeder) {
+            throw $this->createNotFoundException();
+        }
 
         if (null !== $feeder->getOwner()) {
             throw $this->createAccessDeniedException('Feeder already associated');
@@ -38,7 +45,7 @@ final class AssociateFeeder extends AbstractController
         assert($user instanceof User);
         $feeder->setOwner($user);
 
-        $this->doctrine->getManager()->flush();
+        $this->repository->add($feeder, true);
 
         return $this->json([
             'message' => 'Feeder associated',
