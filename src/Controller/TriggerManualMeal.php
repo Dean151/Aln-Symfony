@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use ApiPlatform\Core\Validator\ValidatorInterface;
+use ApiPlatform\Validator\ValidatorInterface;
 use App\Entity\AlnFeeder;
 use App\Entity\AlnManualMeal;
 use App\Queue\MessageEnqueueInterface;

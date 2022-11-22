@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace App\ApiPlatform\DataTransformer;
 
 use ApiPlatform\Core\DataTransformer\DataTransformerInterface;
-use ApiPlatform\Core\Validator\ValidatorInterface;
+use ApiPlatform\Validator\ValidatorInterface;
 use App\ApiPlatform\Dto\PlanningInput;
 use App\Entity\AlnFeeder;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
+/**
+ * @deprecated Use of DataTransformerInterface
+ */
 final class PlanningInputDataTransformer implements DataTransformerInterface
 {
     private ValidatorInterface $validator;

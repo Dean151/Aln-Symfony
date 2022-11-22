@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
+// TODO: move to ProcessorInterface
 final class UserDataPersister implements DataPersisterInterface
 {
     private UserRepository $repository;
