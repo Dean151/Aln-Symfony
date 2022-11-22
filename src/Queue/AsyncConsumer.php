@@ -9,19 +9,25 @@ use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 use Psr\Log\LoggerInterface;
 use React\EventLoop\LoopInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class AsyncConsumer extends AbstractQueue
 {
-    private LoggerInterface $logger;
-
     private ?AMQPStreamConnection $connection = null;
     private ?AMQPChannel $channel = null;
 
-    public function __construct(ContainerBagInterface $params, LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-        parent::__construct($params);
+    public function __construct(
+        #[Autowire('%env(string:RABBITMQ_HOST)%')]
+        string $host,
+        #[Autowire('%env(int:RABBITMQ_PORT)%')]
+        int $port,
+        #[Autowire('%env(string:RABBITMQ_USERNAME)%')]
+        string $username,
+        #[Autowire('%env(string:RABBITMQ_PASSWORD)%')]
+        string $password,
+        private readonly LoggerInterface $logger,
+    ) {
+        parent::__construct($host, $port, $username, $password);
     }
 
     public function start(LoopInterface $loop, MessageDequeueInterface $messageDequeue): void
@@ -40,7 +46,7 @@ final class AsyncConsumer extends AbstractQueue
             $this->channel?->wait(null, true);
         });
 
-        $this->logger->info("Started rabbitmq consumer on {$this->getHost()}:{$this->getPort()}");
+        $this->logger->info("Started rabbitmq consumer on {$this->host}:{$this->port}");
     }
 
     public function shutdown(): void

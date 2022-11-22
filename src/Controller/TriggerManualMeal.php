@@ -12,26 +12,22 @@ use App\Repository\AlnManualMealRepository;
 use App\Socket\Messages\TriggerMealMessage;
 use Doctrine\Persistence\ManagerRegistry;
 use Safe\DateTimeImmutable;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 
 #[AsController]
 final class TriggerManualMeal extends AbstractSocketController
 {
-    private ValidatorInterface $validator;
-    private AlnManualMealRepository $repository;
-    private ManagerRegistry $doctrine;
-
     public function __construct(
+        #[Autowire('%env(float:FEEDER_RESPONSE_TIMEOUT)%')]
+        float $timeout,
         MessageEnqueueInterface $queue,
-        ValidatorInterface $validator,
-        AlnManualMealRepository $repository,
-        ManagerRegistry $doctrine
+        private readonly ValidatorInterface $validator,
+        private readonly AlnManualMealRepository $repository,
+        private readonly ManagerRegistry $doctrine,
     ) {
-        $this->validator = $validator;
-        $this->repository = $repository;
-        $this->doctrine = $doctrine;
-        parent::__construct($queue);
+        parent::__construct($timeout, $queue);
     }
 
     public function __invoke(AlnFeeder $data): Response

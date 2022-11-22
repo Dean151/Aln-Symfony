@@ -20,7 +20,7 @@ use React\Socket\Connector;
 use function Safe\hex2bin;
 
 use Symfony\Component\Console\Exception\InvalidArgumentException;
-use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class FeederSimulator
 {
@@ -28,19 +28,19 @@ final class FeederSimulator
     public const OPTION_UNRESPONSIVE = 0b001;
     public const OPTION_FAST_RESPONSE = 0b010;
 
-    private ContainerBagInterface $params;
-    private LoggerInterface $logger;
-
     private string $identifier = '';
     private int $options = self::OPTION_NONE;
 
     private ?LoopInterface $loop = null;
     private ?ConnectionInterface $connection = null;
 
-    public function __construct(ContainerBagInterface $params, LoggerInterface $logger)
-    {
-        $this->params = $params;
-        $this->logger = $logger;
+    public function __construct(
+        #[Autowire('%env(string:SIMULATOR_HOST)%')]
+        private readonly string $host,
+        #[Autowire('%env(int:SIMULATOR_PORT)%')]
+        private readonly int $port,
+        private readonly LoggerInterface $logger,
+    ) {
     }
 
     /**
@@ -55,11 +55,8 @@ final class FeederSimulator
         $this->identifier = $identifier;
         $this->options = $options;
 
-        $host = $this->params->get('simulator.host');
-        $port = $this->params->get('simulator.port');
-
-        $uri = "{$host}:{$port}";
-        $this->logger->info("Starting feeder simulator on {$host}:{$port}");
+        $uri = "{$this->host}:{$this->port}";
+        $this->logger->info("Starting feeder simulator on {$this->host}:{$this->port}");
 
         $connector = new Connector([], $loop);
         $connector->connect($uri)->then($this->onConnected(...), $this->onConnectionError(...));

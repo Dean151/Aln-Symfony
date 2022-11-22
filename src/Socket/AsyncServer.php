@@ -8,27 +8,24 @@ use Psr\Log\LoggerInterface;
 use React\EventLoop\LoopInterface;
 use React\Socket\ConnectionInterface;
 use React\Socket\SocketServer;
-use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class AsyncServer
 {
-    private ContainerBagInterface $params;
-    private LoggerInterface $logger;
-
     private ?SocketServer $socket = null;
 
-    public function __construct(ContainerBagInterface $params, LoggerInterface $logger)
-    {
-        $this->params = $params;
-        $this->logger = $logger;
+    public function __construct(
+        #[Autowire('%env(string:WEBSOCKET_HOST)%')]
+        private readonly string $host,
+        #[Autowire('%env(int:WEBSOCKET_PORT)%')]
+        private readonly int $port,
+        private readonly LoggerInterface $logger,
+    ) {
     }
 
     public function start(LoopInterface $loop, SocketMessageInterface $socketInterface): void
     {
-        $host = $this->params->get('websocket.host');
-        $port = $this->params->get('websocket.port');
-
-        $bind = 'tcp://'.$host.':'.$port;
+        $bind = 'tcp://'.$this->host.':'.$this->port;
 
         $this->socket = new SocketServer($bind, [], $loop);
         $this->socket->on('connection', function (ConnectionInterface $connection) use ($socketInterface) {

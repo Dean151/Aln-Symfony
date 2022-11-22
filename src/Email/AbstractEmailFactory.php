@@ -9,7 +9,7 @@ use App\Entity\User;
 use function Safe\preg_replace;
 
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Mime\Crypto\DkimSigner;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Message;
@@ -18,28 +18,27 @@ use Twig\Environment;
 
 abstract class AbstractEmailFactory
 {
-    private Environment $twig;
-    private TranslatorInterface $translator;
-    private string $senderEmail;
-    private string $unsubscribeEmail;
-    private string $unsubscribeUrl;
-    private string $dkimKey;
-    private string $dkimPassphrase;
+    private readonly string $unsubscribeUrl;
 
-    protected string $siteName;
-    protected string $siteBaseUrl;
-
-    public function __construct(ContainerBagInterface $params, Environment $twig, TranslatorInterface $translator)
-    {
-        $this->twig = $twig;
-        $this->translator = $translator;
-        $this->senderEmail = $params->get('email.sender');
-        $this->unsubscribeEmail = $params->get('email.unsubscribe');
-        $this->unsubscribeUrl = $params->get('api.base_url').'/email/unsubscribe';
-        $this->dkimKey = $params->get('email.dkim.key');
-        $this->dkimPassphrase = $params->get('email.dkim.passphrase');
-        $this->siteBaseUrl = $params->get('site.base_url');
-        $this->siteName = $params->get('site.name');
+    public function __construct(
+        private readonly Environment $twig,
+        private readonly TranslatorInterface $translator,
+        #[Autowire('%env(string:EMAIL_SENDER)%')]
+        private readonly string $senderEmail,
+        #[Autowire('%env(string:EMAIL_UNSUBSCRIBE)%')]
+        private readonly string $unsubscribeEmail,
+        #[Autowire('%env(string:EMAIL_DKIM_KEY)%')]
+        private readonly string $dkimKey,
+        #[Autowire('%env(string:EMAIL_DKIM_PASSPHRASE)%')]
+        private readonly string $dkimPassphrase,
+        #[Autowire('%env(string:SITE_NAME)%')]
+        protected readonly string $siteName,
+        #[Autowire('%env(string:SITE_BASE_URL)%')]
+        protected readonly string $siteBaseUrl,
+        #[Autowire('%env(string:API_BASE_URL)%')]
+        string $apiBaseUrl,
+    ) {
+        $this->unsubscribeUrl = $apiBaseUrl.'/email/unsubscribe';
     }
 
     /**

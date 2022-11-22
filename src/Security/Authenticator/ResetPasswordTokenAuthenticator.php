@@ -24,18 +24,11 @@ use SymfonyCasts\Bundle\ResetPassword\ResetPasswordHelperInterface;
 
 final class ResetPasswordTokenAuthenticator extends AbstractAuthenticator
 {
-    private ResetPasswordHelperInterface $resetPasswordHelper;
-    private AuthenticationSuccessHandler $authenticationSuccessHandler;
-    private AuthenticationFailureHandler $authenticationFailureHandler;
-
     public function __construct(
-        ResetPasswordHelperInterface $resetPasswordHelper,
-        AuthenticationSuccessHandler $authenticationSuccessHandler,
-        AuthenticationFailureHandler $authenticationFailureHandler
+        private readonly ResetPasswordHelperInterface $resetPasswordHelper,
+        private readonly AuthenticationSuccessHandler $authenticationSuccessHandler,
+        private readonly AuthenticationFailureHandler $authenticationFailureHandler,
     ) {
-        $this->resetPasswordHelper = $resetPasswordHelper;
-        $this->authenticationSuccessHandler = $authenticationSuccessHandler;
-        $this->authenticationFailureHandler = $authenticationFailureHandler;
     }
 
     public function supports(Request $request): ?bool

@@ -14,3 +14,4 @@ parameters:
 		- %rootDir%/../../../migrations
 	symfony:
 		container_xml_path: %rootDir%/../../../var/cache/dev/App_KernelDevDebugContainer.xml
+	checkMissingCallableSignature: true

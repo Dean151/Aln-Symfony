@@ -24,35 +24,31 @@ use Safe\DateTimeImmutable;
 use function Safe\hex2bin;
 use function Safe\parse_url;
 
-use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class FeederCommunicator extends AbstractQueue implements MessageDequeueInterface, SocketMessageInterface
 {
-    private AlnFeederRepository $feederRepository;
-    private AlnManualMealRepository $mealRepository;
-    private AlnAlertRepository $alertRepository;
-    private ManagerRegistry $doctrine;
-    private LoggerInterface $logger;
-
     /**
      * @var array<string, ConnectionInterface>
      */
     private array $connections = [];
 
     public function __construct(
-        ContainerBagInterface $params,
-        AlnFeederRepository $feederRepository,
-        AlnManualMealRepository $mealRepository,
-        AlnAlertRepository $alertRepository,
-        ManagerRegistry $doctrine,
-        LoggerInterface $logger
+        #[Autowire('%env(string:RABBITMQ_HOST)%')]
+        string $host,
+        #[Autowire('%env(int:RABBITMQ_PORT)%')]
+        int $port,
+        #[Autowire('%env(string:RABBITMQ_USERNAME)%')]
+        string $username,
+        #[Autowire('%env(string:RABBITMQ_PASSWORD)%')]
+        string $password,
+        private AlnFeederRepository $feederRepository,
+        private AlnManualMealRepository $mealRepository,
+        private AlnAlertRepository $alertRepository,
+        private ManagerRegistry $doctrine,
+        private LoggerInterface $logger,
     ) {
-        $this->feederRepository = $feederRepository;
-        $this->mealRepository = $mealRepository;
-        $this->alertRepository = $alertRepository;
-        $this->doctrine = $doctrine;
-        $this->logger = $logger;
-        parent::__construct($params);
+        parent::__construct($host, $port, $username, $password);
     }
 
     public function onOpen(ConnectionInterface $conn): void

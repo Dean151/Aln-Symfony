@@ -13,26 +13,22 @@ use App\Repository\AlnPlannedMealRepository;
 use App\Repository\AlnPlanningRepository;
 use App\Socket\Messages\ChangePlanningMessage;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 
 #[AsController]
 final class ChangePlanning extends AbstractSocketController
 {
-    private AlnPlanningRepository $planningRepository;
-    private AlnPlannedMealRepository $mealRepository;
-    private ManagerRegistry $doctrine;
-
     public function __construct(
+        #[Autowire('%env(float:FEEDER_RESPONSE_TIMEOUT)%')]
+        float $timeout,
         MessageEnqueueInterface $queue,
-        AlnPlanningRepository $planningRepository,
-        AlnPlannedMealRepository $mealRepository,
-        ManagerRegistry $doctrine
+        private readonly AlnPlanningRepository $planningRepository,
+        private readonly AlnPlannedMealRepository $mealRepository,
+        private readonly ManagerRegistry $doctrine,
     ) {
-        $this->doctrine = $doctrine;
-        $this->planningRepository = $planningRepository;
-        $this->mealRepository = $mealRepository;
-        parent::__construct($queue);
+        parent::__construct($timeout, $queue);
     }
 
     public function __invoke(AlnFeeder $data): Response
