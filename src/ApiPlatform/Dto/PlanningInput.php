@@ -4,21 +4,18 @@ declare(strict_types=1);
 
 namespace App\ApiPlatform\Dto;
 
+use App\Entity\AlnFeeder;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 final class PlanningInput
 {
+    public AlnFeeder $feeder;
+
     /**
      * @var MealInput[]
      */
+    #[Groups('planning:input')]
     #[Assert\Valid]
     public array $meals;
-
-    /**
-     * @param MealInput[] $meals
-     */
-    public function __construct(array $meals)
-    {
-        $this->meals = $meals;
-    }
 }

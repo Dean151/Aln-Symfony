@@ -169,51 +169,32 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Put(
             uriTemplate: '/feeders/{id}/planning',
-            status: 200,
+            status: Response::HTTP_OK,
             controller: ChangePlanning::class,
             openapiContext: [
                 'summary' => 'Replace the meal plan with a new one',
                 'description' => 'Replace the meal plan with a new one',
-                'requestBody' => [
-                    'content' => [
-                        'application/json' => [
-                            'schema' => [
-                                'type' => 'object',
-                                'properties' => [
-                                    'meals' => [
-                                        'type' => 'array',
-                                        'items' => [
-                                            'type' => 'object',
-                                            'properties' => [
-                                                'time' => [
-                                                    'type' => 'object',
-                                                    'properties' => [
-                                                        'hours' => ['type' => 'integer', 'example' => '12'],
-                                                        'minutes' => ['type' => 'integer', 'example' => '0'],
-                                                    ],
-                                                ],
-                                                'amount' => ['type' => 'integer', 'example' => '5'],
-                                                'enabled' => ['type' => 'boolean', 'example' => true, 'default' => true],
-                                            ],
-                                        ],
-                                    ],
-                                ],
-                            ],
-                        ],
+                'responses' => [
+                    Response::HTTP_OK => [
+                        'description' => 'Planning replaced',
+                    ],
+                    Response::HTTP_NOT_FOUND => [
+                        'description' => 'Feeder not registered',
+                    ],
+                    Response::HTTP_CONFLICT => [
+                        'description' => 'Feeder not connected',
+                    ],
+                    Response::HTTP_UNPROCESSABLE_ENTITY => [
+                        'description' => 'Meal plan is not valid',
+                    ],
+                    Response::HTTP_SERVICE_UNAVAILABLE => [
+                        'description' => 'Feeder did not responded to request',
                     ],
                 ],
-                'responses' => [
-                    ['description' => 'Planning replaced'],
-                    ['description' => 'Feeder not registered'],
-                    ['description' => 'Feeder not connected'],
-                    ['description' => 'Meal plan is not valid'],
-                    ['description' => 'Feeder did not responded to request'],
-                ],
             ],
-            denormalizationContext: ['groups' => []],
+            denormalizationContext: ['groups' => ['planning:input']],
             security: 'is_granted(\'MANAGE\', object)',
-            validationContext: ['groups' => []],
-            input: PlanningInput::class
+            input: PlanningInput::class,
         ),
     ],
     normalizationContext: ['groups' => ['feeder:output']],
@@ -269,8 +250,6 @@ class AlnFeeder
     #[Groups(['feeding:input'])]
     #[Assert\Range(min: 5, max: 150, groups: ['feeding:validation'])]
     public int $amount; // DTO used for feeding ; and changing default meal amount
-
-    public ?PlanningInput $planning = null; // DTO used for change planning
 
     public function __construct()
     {

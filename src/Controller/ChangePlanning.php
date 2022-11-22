@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use ApiPlatform\Validator\ValidatorInterface;
 use App\ApiPlatform\Dto\PlanningInput;
-use App\Entity\AlnFeeder;
 use App\Entity\AlnPlannedMeal;
 use App\Entity\AlnPlanning;
 use App\Queue\MessageEnqueueInterface;
@@ -24,6 +24,7 @@ final class ChangePlanning extends AbstractSocketController
         #[Autowire('%env(float:FEEDER_RESPONSE_TIMEOUT)%')]
         float $timeout,
         MessageEnqueueInterface $queue,
+        private readonly ValidatorInterface $validator,
         private readonly AlnPlanningRepository $planningRepository,
         private readonly AlnPlannedMealRepository $mealRepository,
         private readonly ManagerRegistry $doctrine,
@@ -31,13 +32,12 @@ final class ChangePlanning extends AbstractSocketController
         parent::__construct($timeout, $queue);
     }
 
-    public function __invoke(AlnFeeder $data): Response
+    public function __invoke(PlanningInput $data): Response
     {
-        // Validation is made by DTO
+        $this->validator->validate($data);
 
-        $planning = $data->planning;
-        assert($planning instanceof PlanningInput);
-        $feeder = $data;
+        $planning = $data;
+        $feeder = $data->feeder;
 
         $message = new ChangePlanningMessage($planning->meals);
         $this->sendSocketMessage($feeder, $message);
