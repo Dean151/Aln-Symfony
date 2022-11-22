@@ -41,7 +41,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
         ),
         new Post(
             uriTemplate: '/user/login',
-            status: 200,
+            status: Response::HTTP_OK,
             openapiContext: [
                 'summary' => 'Request an authentication token using email/password',
                 'description' => 'Request an authentication token using email/password',
@@ -58,7 +58,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
         ),
         new Post(
             uriTemplate: '/user/reset/consume',
-            status: 200,
+            status: Response::HTTP_OK,
             openapiContext: [
                 'summary' => 'Request an authentication token using a reset password token',
                 'description' => 'Request an authentication token using a reset password token',

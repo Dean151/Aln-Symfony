@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new Post(
             uriTemplate: '/user/register',
-            status: 200,
+            status: Response::HTTP_OK,
             controller: RegisterUser::class,
             openapiContext: [
                 'tags' => ['User'],
@@ -35,7 +35,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Post(
             uriTemplate: '/user/reset',
-            status: 200,
+            status: Response::HTTP_OK,
             controller: ResetPassword::class,
             openapiContext: [
                 'tags' => ['User'],

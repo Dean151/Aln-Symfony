@@ -32,7 +32,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new Post(
             uriTemplate: '/feeders/associate',
-            status: 200,
+            status: Response::HTTP_OK,
             controller: AssociateFeeder::class,
             openapiContext: [
                 'summary' => 'Associate an unassociated feeder to your account',
@@ -85,7 +85,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Delete(
             uriTemplate: '/feeders/{id}/association',
-            status: 200,
+            status: Response::HTTP_OK,
             controller: DissociateFeeder::class,
             openapiContext: [
                 'summary' => 'Dissociate an associated feeder from your account',
@@ -111,7 +111,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Post(
             uriTemplate: '/feeders/{id}/feed',
-            status: 200,
+            status: Response::HTTP_OK,
             controller: TriggerManualMeal::class,
             openapiContext: [
                 'summary' => 'Trigger a meal immediately with specified amount in grams',
@@ -140,7 +140,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Put(
             uriTemplate: '/feeders/{id}/amount',
-            status: 200,
+            status: Response::HTTP_OK,
             controller: ChangeDefaultMeal::class,
             openapiContext: [
                 'summary' => 'Update the amount distributed when the feeder button is pressed in grams',
