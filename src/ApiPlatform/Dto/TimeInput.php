@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\ApiPlatform\Dto;
 
 use Safe\DateTimeImmutable;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 final class TimeInput
@@ -12,18 +13,20 @@ final class TimeInput
     /**
      * @var int<0, 23>
      */
+    #[Groups('planning:input')]
     #[Assert\Range(min: 0, max: 23)]
     public int $hours;
 
     /**
      * @var int<0, 59>
      */
+    #[Groups('planning:input')]
     #[Assert\Range(min: 0, max: 59)]
     public int $minutes;
 
     /**
-     * @param int<0, 23> $hours
-     * @param int<0, 59> $minutes
+     * @phpstan-param int<0, 23> $hours
+     * @phpstan-param int<0, 59> $minutes
      */
     public function __construct(int $hours, int $minutes)
     {

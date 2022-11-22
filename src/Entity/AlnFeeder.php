@@ -11,10 +11,8 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\ApiPlatform\Dto\IdentifierInput;
-use App\ApiPlatform\Dto\PlanningInput;
 use App\Controller\AssociateFeeder;
 use App\Controller\ChangeDefaultMeal;
-use App\Controller\ChangePlanning;
 use App\Controller\DissociateFeeder;
 use App\Controller\TriggerManualMeal;
 use App\Repository\AlnFeederRepository;
@@ -167,54 +165,6 @@ use Symfony\Component\Validator\Constraints as Assert;
             security: 'is_granted(\'MANAGE\', object)',
             validationContext: ['groups' => ['feeding:validation']]
         ),
-        new Put(
-            uriTemplate: '/feeders/{id}/planning',
-            status: 200,
-            controller: ChangePlanning::class,
-            openapiContext: [
-                'summary' => 'Replace the meal plan with a new one',
-                'description' => 'Replace the meal plan with a new one',
-                'requestBody' => [
-                    'content' => [
-                        'application/json' => [
-                            'schema' => [
-                                'type' => 'object',
-                                'properties' => [
-                                    'meals' => [
-                                        'type' => 'array',
-                                        'items' => [
-                                            'type' => 'object',
-                                            'properties' => [
-                                                'time' => [
-                                                    'type' => 'object',
-                                                    'properties' => [
-                                                        'hours' => ['type' => 'integer', 'example' => '12'],
-                                                        'minutes' => ['type' => 'integer', 'example' => '0'],
-                                                    ],
-                                                ],
-                                                'amount' => ['type' => 'integer', 'example' => '5'],
-                                                'enabled' => ['type' => 'boolean', 'example' => true, 'default' => true],
-                                            ],
-                                        ],
-                                    ],
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-                'responses' => [
-                    ['description' => 'Planning replaced'],
-                    ['description' => 'Feeder not registered'],
-                    ['description' => 'Feeder not connected'],
-                    ['description' => 'Meal plan is not valid'],
-                    ['description' => 'Feeder did not responded to request'],
-                ],
-            ],
-            denormalizationContext: ['groups' => []],
-            security: 'is_granted(\'MANAGE\', object)',
-            validationContext: ['groups' => []],
-            input: PlanningInput::class
-        ),
     ],
     normalizationContext: ['groups' => ['feeder:output']],
     denormalizationContext: ['groups' => ['feeder:input']],
@@ -269,8 +219,6 @@ class AlnFeeder
     #[Groups(['feeding:input'])]
     #[Assert\Range(min: 5, max: 150, groups: ['feeding:validation'])]
     public int $amount; // DTO used for feeding ; and changing default meal amount
-
-    public ?PlanningInput $planning = null; // DTO used for change planning
 
     public function __construct()
     {
