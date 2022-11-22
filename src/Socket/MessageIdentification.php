@@ -25,6 +25,7 @@ final class MessageIdentification
      */
     public static function identifyIncomingMessage(string $hexadecimal): MessageInterface
     {
+        $hexadecimal = trim($hexadecimal);
         if (!\str_starts_with($hexadecimal, '9da114')) {
             throw new \RuntimeException("All incoming messages should start with 9da114 ; got {$hexadecimal}");
         }

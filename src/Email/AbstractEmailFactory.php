@@ -98,7 +98,9 @@ abstract class AbstractEmailFactory
 
     protected function getLocale(): string
     {
-        return $this->translator->getLocale();
+        $components = explode('_', $this->translator->getLocale());
+
+        return reset($components);
     }
 
     /**
