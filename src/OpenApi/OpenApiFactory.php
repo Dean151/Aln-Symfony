@@ -9,7 +9,9 @@ use ApiPlatform\Core\OpenApi\Model\Operation;
 use ApiPlatform\Core\OpenApi\Model\Parameter;
 use ApiPlatform\Core\OpenApi\Model\PathItem;
 use ApiPlatform\Core\OpenApi\OpenApi;
+use Symfony\Component\DependencyInjection\Attribute\AsDecorator;
 
+#[AsDecorator('api_platform.openapi.factory')]
 class OpenApiFactory implements OpenApiFactoryInterface
 {
     private OpenApiFactoryInterface $decorated;
@@ -25,6 +27,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
     public function __invoke(array $context = []): OpenApi
     {
         $openApi = $this->decorated->__invoke($context);
+
         $this->removeParametersForPathsWithNoParameters($openApi);
 
         return $openApi;

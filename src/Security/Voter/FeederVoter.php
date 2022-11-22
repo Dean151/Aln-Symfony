@@ -6,6 +6,7 @@ namespace App\Security\Voter;
 
 use App\Entity\AlnFeeder;
 use App\Entity\User;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -14,11 +15,10 @@ final class FeederVoter extends Voter
     public const VIEW = 'VIEW';
     public const MANAGE = 'MANAGE';
 
-    private bool $authenticationEnabled;
-
-    public function __construct(bool $authenticationEnabled)
-    {
-        $this->authenticationEnabled = $authenticationEnabled;
+    public function __construct(
+        #[Autowire('%env(bool:AUTHENTICATION_ENABLED)%')]
+        private readonly bool $authenticationEnabled
+    ) {
     }
 
     public function supportsAttribute(string $attribute): bool
