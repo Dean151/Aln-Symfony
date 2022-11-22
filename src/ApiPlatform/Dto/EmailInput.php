@@ -4,39 +4,40 @@ declare(strict_types=1);
 
 namespace App\ApiPlatform\Dto;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Post;
 use App\Controller\RegisterUser;
 use App\Controller\ResetPassword;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
-    collectionOperations: [
-        'register' => [
-            'method' => 'POST',
-            'path' => '/user/register',
-            'controller' => RegisterUser::class,
-            'status' => Response::HTTP_OK,
-            'openapi_context' => [
+    operations: [
+        new Post(
+            uriTemplate: '/user/register',
+            status: 200,
+            controller: RegisterUser::class,
+            openapiContext: [
                 'tags' => ['User'],
                 'summary' => 'Register using an email',
                 'description' => 'Register using an email',
                 'responses' => [
-                    Response::HTTP_OK => [
-                        'description' => 'Register email has been sent.',
-                    ],
-                    Response::HTTP_CONFLICT => [
-                        'description' => 'Email address already in use.',
+                    'responses' => [
+                        Response::HTTP_OK => [
+                            'description' => 'Register email has been sent.',
+                        ],
+                        Response::HTTP_CONFLICT => [
+                            'description' => 'Email address already in use.',
+                        ],
                     ],
                 ],
             ],
-        ],
-        'reset' => [
-            'method' => 'POST',
-            'path' => '/user/reset',
-            'controller' => ResetPassword::class,
-            'status' => Response::HTTP_OK,
-            'openapi_context' => [
+        ),
+        new Post(
+            uriTemplate: '/user/reset',
+            status: 200,
+            controller: ResetPassword::class,
+            openapiContext: [
                 'tags' => ['User'],
                 'summary' => 'Request password reset for an account',
                 'description' => 'Request password reset for an account',
@@ -49,9 +50,8 @@ use Symfony\Component\Validator\Constraints as Assert;
                     ],
                 ],
             ],
-        ],
+        ),
     ],
-    itemOperations: [],
 )]
 final class EmailInput
 {

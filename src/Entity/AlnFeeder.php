@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiProperty;
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\ApiPlatform\Dto\IdentifierInput;
 use App\ApiPlatform\Dto\PlanningInput;
 use App\Controller\AssociateFeeder;
@@ -24,17 +28,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
-    collectionOperations: [
-        'associate' => [
-            'method' => 'POST',
-            'status' => Response::HTTP_OK,
-            'path' => '/feeders/associate',
-            'controller' => AssociateFeeder::class,
-            'input' => IdentifierInput::class,
-            'denormalization_context' => ['groups' => []],
-            'validation_groups' => [],
-            'security' => "is_granted('IS_AUTHENTICATED')",
-            'openapi_context' => [
+    shortName: 'Feeder',
+    operations: [
+        new Post(
+            uriTemplate: '/feeders/associate',
+            status: 200,
+            controller: AssociateFeeder::class,
+            openapiContext: [
                 'summary' => 'Associate an unassociated feeder to your account',
                 'description' => 'Associate an unassociated feeder to your account',
                 'requestBody' => [
@@ -43,10 +43,7 @@ use Symfony\Component\Validator\Constraints as Assert;
                             'schema' => [
                                 'type' => 'object',
                                 'properties' => [
-                                    'identifier' => [
-                                        'type' => 'string',
-                                        'example' => 'ALE123456789',
-                                    ],
+                                    'identifier' => ['type' => 'string', 'example' => 'ALE123456789'],
                                 ],
                             ],
                         ],
@@ -67,32 +64,30 @@ use Symfony\Component\Validator\Constraints as Assert;
                     ],
                 ],
             ],
-        ],
-    ],
-    itemOperations: [
-        'get' => [
-            'security' => "is_granted('VIEW', object)",
-            'openapi_context' => [
+            denormalizationContext: ['groups' => []],
+            security: 'is_granted(\'IS_AUTHENTICATED\')',
+            validationContext: ['groups' => []],
+            input: IdentifierInput::class
+        ),
+        new Get(
+            openapiContext: [
                 'summary' => 'Retrieve feeder status and settings',
                 'description' => 'Retrieve feeder status and settings',
             ],
-        ],
-        'put' => [
-            'security' => "is_granted('MANAGE', object)",
-            'openapi_context' => [
+            security: 'is_granted(\'VIEW\', object)',
+        ),
+        new Put(
+            openapiContext: [
                 'summary' => 'Update feeder name',
                 'description' => 'Update feeder name',
             ],
-        ],
-        'dissociate' => [
-            'method' => 'DELETE',
-            'status' => Response::HTTP_OK,
-            'path' => '/feeders/{id}/association',
-            'controller' => DissociateFeeder::class,
-            'denormalization_context' => ['groups' => []],
-            'validation_groups' => [],
-            'security' => "is_granted('MANAGE', object)",
-            'openapi_context' => [
+            security: 'is_granted(\'MANAGE\', object)',
+        ),
+        new Delete(
+            uriTemplate: '/feeders/{id}/association',
+            status: 200,
+            controller: DissociateFeeder::class,
+            openapiContext: [
                 'summary' => 'Dissociate an associated feeder from your account',
                 'description' => 'Dissociate an associated feeder from your account',
                 'responses' => [
@@ -110,16 +105,15 @@ use Symfony\Component\Validator\Constraints as Assert;
                     ],
                 ],
             ],
-        ],
-        'trigger_meal' => [
-            'method' => 'POST',
-            'status' => Response::HTTP_OK,
-            'path' => '/feeders/{id}/feed',
-            'controller' => TriggerManualMeal::class,
-            'denormalization_context' => ['groups' => ['feeding:input']],
-            'validation_groups' => ['feeding:validation'],
-            'security' => "is_granted('MANAGE', object)",
-            'openapi_context' => [
+            denormalizationContext: ['groups' => []],
+            security: 'is_granted(\'MANAGE\', object)',
+            validationContext: ['groups' => []]
+        ),
+        new Post(
+            uriTemplate: '/feeders/{id}/feed',
+            status: 200,
+            controller: TriggerManualMeal::class,
+            openapiContext: [
                 'summary' => 'Trigger a meal immediately with specified amount in grams',
                 'description' => 'Trigger a meal immediately with specified amount in grams',
                 'responses' => [
@@ -140,16 +134,15 @@ use Symfony\Component\Validator\Constraints as Assert;
                     ],
                 ],
             ],
-        ],
-        'set_amount' => [
-            'method' => 'PUT',
-            'status' => Response::HTTP_OK,
-            'path' => '/feeders/{id}/amount',
-            'controller' => ChangeDefaultMeal::class,
-            'denormalization_context' => ['groups' => ['feeding:input']],
-            'validation_groups' => ['feeding:validation'],
-            'security' => "is_granted('MANAGE', object)",
-            'openapi_context' => [
+            denormalizationContext: ['groups' => ['feeding:input']],
+            security: 'is_granted(\'MANAGE\', object)',
+            validationContext: ['groups' => ['feeding:validation']]
+        ),
+        new Put(
+            uriTemplate: '/feeders/{id}/amount',
+            status: 200,
+            controller: ChangeDefaultMeal::class,
+            openapiContext: [
                 'summary' => 'Update the amount distributed when the feeder button is pressed in grams',
                 'description' => 'Update the amount distributed when the feeder button is pressed in grams',
                 'responses' => [
@@ -170,17 +163,15 @@ use Symfony\Component\Validator\Constraints as Assert;
                     ],
                 ],
             ],
-        ],
-        'set_planning' => [
-            'method' => 'PUT',
-            'status' => Response::HTTP_OK,
-            'path' => '/feeders/{id}/planning',
-            'controller' => ChangePlanning::class,
-            'input' => PlanningInput::class,
-            'denormalization_context' => ['groups' => []],
-            'validation_groups' => [],
-            'security' => "is_granted('MANAGE', object)",
-            'openapi_context' => [
+            denormalizationContext: ['groups' => ['feeding:input']],
+            security: 'is_granted(\'MANAGE\', object)',
+            validationContext: ['groups' => ['feeding:validation']]
+        ),
+        new Put(
+            uriTemplate: '/feeders/{id}/planning',
+            status: 200,
+            controller: ChangePlanning::class,
+            openapiContext: [
                 'summary' => 'Replace the meal plan with a new one',
                 'description' => 'Replace the meal plan with a new one',
                 'requestBody' => [
@@ -197,25 +188,12 @@ use Symfony\Component\Validator\Constraints as Assert;
                                                 'time' => [
                                                     'type' => 'object',
                                                     'properties' => [
-                                                        'hours' => [
-                                                            'type' => 'integer',
-                                                            'example' => 12,
-                                                        ],
-                                                        'minutes' => [
-                                                            'type' => 'integer',
-                                                            'example' => 00,
-                                                        ],
+                                                        'hours' => ['type' => 'integer', 'example' => '12'],
+                                                        'minutes' => ['type' => 'integer', 'example' => '0'],
                                                     ],
                                                 ],
-                                                'amount' => [
-                                                    'type' => 'integer',
-                                                    'example' => 5,
-                                                ],
-                                                'enabled' => [
-                                                    'type' => 'boolean',
-                                                    'example' => true,
-                                                    'default' => true,
-                                                ],
+                                                'amount' => ['type' => 'integer', 'example' => '5'],
+                                                'enabled' => ['type' => 'boolean', 'example' => true, 'default' => true],
                                             ],
                                         ],
                                     ],
@@ -225,36 +203,29 @@ use Symfony\Component\Validator\Constraints as Assert;
                     ],
                 ],
                 'responses' => [
-                    Response::HTTP_OK => [
-                        'description' => 'Planning replaced',
-                    ],
-                    Response::HTTP_NOT_FOUND => [
-                        'description' => 'Feeder not registered',
-                    ],
-                    Response::HTTP_CONFLICT => [
-                        'description' => 'Feeder not connected',
-                    ],
-                    Response::HTTP_UNPROCESSABLE_ENTITY => [
-                        'description' => 'Meal plan is not valid',
-                    ],
-                    Response::HTTP_SERVICE_UNAVAILABLE => [
-                        'description' => 'Feeder did not responded to request',
-                    ],
+                    ['description' => 'Planning replaced'],
+                    ['description' => 'Feeder not registered'],
+                    ['description' => 'Feeder not connected'],
+                    ['description' => 'Meal plan is not valid'],
+                    ['description' => 'Feeder did not responded to request'],
                 ],
             ],
-        ],
+            denormalizationContext: ['groups' => []],
+            security: 'is_granted(\'MANAGE\', object)',
+            validationContext: ['groups' => []],
+            input: PlanningInput::class
+        ),
     ],
-    shortName: 'Feeder',
-    denormalizationContext: ['groups' => ['feeder:input']],
     normalizationContext: ['groups' => ['feeder:output']],
-    validationGroups: ['feeder:validation'],
+    denormalizationContext: ['groups' => ['feeder:input']],
+    validationContext: ['groups' => ['feeder:validation']],
 )]
 #[ORM\Entity(repositoryClass: AlnFeederRepository::class)]
 class AlnFeeder
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column()]
+    #[ORM\Column]
     #[Groups(['feeder:output'])]
     private ?int $id = null;
 
@@ -294,7 +265,7 @@ class AlnFeeder
     #[ORM\OneToMany(mappedBy: 'feeder', targetEntity: AlnManualMeal::class, orphanRemoval: true)]
     private Collection $manualMeals;
 
-    #[ApiProperty(required: true, example: 5)]
+    #[ApiProperty(required: true, example: '5')]
     #[Groups(['feeding:input'])]
     #[Assert\Range(min: 5, max: 150, groups: ['feeding:validation'])]
     public int $amount; // DTO used for feeding ; and changing default meal amount

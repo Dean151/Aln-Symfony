@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\ApiPlatform\Dto\LoginInput;
 use App\ApiPlatform\Dto\ResetPassTokenInput;
+use App\ApiPlatform\Processor\UserProcessor;
 use App\Controller\GetCurrentUser;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -19,13 +23,26 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 
 #[ApiResource(
-    collectionOperations: [
-        'login' => [
-            'method' => 'POST',
-            'status' => Response::HTTP_OK,
-            'path' => '/user/login',
-            'input' => LoginInput::class,
-            'openapi_context' => [
+    operations: [
+        new Get(
+            uriTemplate: '/user/me',
+            controller: GetCurrentUser::class,
+            openapiContext: [
+                'summary' => 'Get current user information',
+                'description' => '#withoutIdentifier Get current user information',
+                'parameters' => [],
+            ],
+            read: false
+        ),
+        new Put(
+            uriTemplate: '/user/{id}',
+            security: 'object == user',
+            processor: UserProcessor::class,
+        ),
+        new Post(
+            uriTemplate: '/user/login',
+            status: 200,
+            openapiContext: [
                 'summary' => 'Request an authentication token using email/password',
                 'description' => 'Request an authentication token using email/password',
                 'responses' => [
@@ -37,13 +54,12 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
                     ],
                 ],
             ],
-        ],
-        'reset_pass_token_consume' => [
-            'method' => 'POST',
-            'status' => Response::HTTP_OK,
-            'path' => '/user/reset/consume',
-            'input' => ResetPassTokenInput::class,
-            'openapi_context' => [
+            input: LoginInput::class,
+        ),
+        new Post(
+            uriTemplate: '/user/reset/consume',
+            status: 200,
+            openapiContext: [
                 'summary' => 'Request an authentication token using a reset password token',
                 'description' => 'Request an authentication token using a reset password token',
                 'responses' => [
@@ -55,33 +71,18 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
                     ],
                 ],
             ],
-        ],
+            input: ResetPassTokenInput::class,
+        ),
     ],
-    itemOperations: [
-        'get' => [
-            'path' => '/user/me',
-            'controller' => GetCurrentUser::class,
-            'openapi_context' => [
-                'summary' => 'Get current user information',
-                'description' => '#withoutIdentifier Get current user information',
-                'parameters' => [],
-            ],
-            'read' => false,
-        ],
-        'put' => [
-            'path' => '/user/{id}',
-            'security' => 'object == user',
-        ],
-    ],
-    denormalizationContext: ['groups' => ['user:input']],
     normalizationContext: ['groups' => ['user:output']],
+    denormalizationContext: ['groups' => ['user:input']]
 )]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column()]
+    #[ORM\Column]
     #[Groups(['user:output'])]
     private ?int $id = null;
 

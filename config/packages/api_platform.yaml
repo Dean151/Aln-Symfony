@@ -3,6 +3,7 @@ api_platform:
     description: 'More infos on Github: https://github.com/Dean151/Aln-Symfony'
     version: '0.2.3'
     show_webby: false
+    metadata_backward_compatibility_layer: false
     mapping:
         paths: ['%kernel.project_dir%/src/Entity', '%kernel.project_dir%/src/ApiPlatform/Dto']
     formats:
