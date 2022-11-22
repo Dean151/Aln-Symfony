@@ -11,8 +11,10 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\ApiPlatform\Dto\IdentifierInput;
+use App\ApiPlatform\Dto\PlanningInput;
 use App\Controller\AssociateFeeder;
 use App\Controller\ChangeDefaultMeal;
+use App\Controller\ChangePlanning;
 use App\Controller\DissociateFeeder;
 use App\Controller\TriggerManualMeal;
 use App\Repository\AlnFeederRepository;
@@ -164,6 +166,35 @@ use Symfony\Component\Validator\Constraints as Assert;
             denormalizationContext: ['groups' => ['feeding:input']],
             security: 'is_granted(\'MANAGE\', object)',
             validationContext: ['groups' => ['feeding:validation']]
+        ),
+        new Put(
+            uriTemplate: '/feeders/{id}/planning',
+            status: Response::HTTP_OK,
+            controller: ChangePlanning::class,
+            openapiContext: [
+                'summary' => 'Replace the meal plan with a new one',
+                'description' => 'Replace the meal plan with a new one',
+                'responses' => [
+                    Response::HTTP_OK => [
+                        'description' => 'Planning replaced',
+                    ],
+                    Response::HTTP_NOT_FOUND => [
+                        'description' => 'Feeder not registered',
+                    ],
+                    Response::HTTP_CONFLICT => [
+                        'description' => 'Feeder not connected',
+                    ],
+                    Response::HTTP_UNPROCESSABLE_ENTITY => [
+                        'description' => 'Meal plan is not valid',
+                    ],
+                    Response::HTTP_SERVICE_UNAVAILABLE => [
+                        'description' => 'Feeder did not responded to request',
+                    ],
+                ],
+            ],
+            denormalizationContext: ['groups' => ['planning:input']],
+            security: 'is_granted(\'MANAGE\', object)',
+            input: PlanningInput::class,
         ),
     ],
     normalizationContext: ['groups' => ['feeder:output']],
