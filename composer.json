@@ -130,6 +130,8 @@
         ],
         "unit": [
             "@pre-unit",
+            "@run-unit-socket",
+            "sleep 2",
             "bin/phpunit",
             "symfony server:stop"
         ],
@@ -137,12 +139,13 @@
             "bin/console lexik:jwt:generate-keypair --skip-if-exists",
             "bin/console -e test doctrine:database:create --no-interaction --if-not-exists",
             "bin/console -e test doctrine:migration:migrate --no-interaction --all-or-nothing --allow-no-migration",
-            "bin/console -e test doctrine:fixtures:load --no-interaction",
+            "bin/console -e test doctrine:fixtures:load --no-interaction"
+        ],
+        "run-unit-socket": [
             "@pause",
             "symfony run -d symfony console -e test aln:socket:run",
             "symfony run -d symfony console -e test aln:feeder:simulate --fast ABC123456789",
-            "symfony run -d symfony console -e test aln:feeder:simulate --not-responding --fast OBU293827463",
-            "sleep 2"
+            "symfony run -d symfony console -e test aln:feeder:simulate --not-responding --fast OBU293827463"
         ],
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
