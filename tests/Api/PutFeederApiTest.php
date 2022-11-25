@@ -26,7 +26,7 @@ final class PutFeederApiTest extends FeederApiTestCase
 
     public function testUpdatingWithOutOfBoundName(): void
     {
-        $newName = AlnFeederFactory::faker()->paragraph(10);
+        $newName = AlnFeederFactory::faker()->paragraph(16);
         $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
         $this->putFeederNameRequest($id, $newName);
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
