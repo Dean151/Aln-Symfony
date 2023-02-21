@@ -40,8 +40,8 @@ class OpenApiFactory implements OpenApiFactoryInterface
                 $setter = 'with'.ucfirst(strtolower($method));
                 /** @var ?Operation $operation */
                 $operation = $pathItem->$getter();
-                // echo $operation->getDescription().'<br />';
-                if ($operation && str_contains($operation->getDescription(), '#withoutIdentifier')) {
+                $description = $operation?->getDescription();
+                if ($operation && $description && str_contains($description, '#withoutIdentifier')) {
                     /** @var Parameter[] $parameters */
                     $parameters = $operation->getParameters();
                     foreach ($parameters as $i => $parameter) {
@@ -50,7 +50,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
                             break;
                         }
                     }
-                    $description = str_replace('#withoutIdentifier', '', $operation->getDescription());
+                    $description = str_replace('#withoutIdentifier', '', $description);
                     $openApi->getPaths()->addPath($path, $pathItem = $pathItem->$setter($operation->withDescription($description)->withParameters(array_values($parameters))));
                 }
             }

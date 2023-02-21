@@ -16,11 +16,10 @@ use Psr\Log\LoggerInterface;
 use React\EventLoop\LoopInterface;
 use React\Socket\ConnectionInterface;
 use React\Socket\Connector;
-
-use function Safe\hex2bin;
-
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+
+use function Safe\hex2bin;
 
 final class FeederSimulator
 {

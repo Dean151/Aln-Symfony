@@ -20,11 +20,10 @@ use PhpAmqpLib\Message\AMQPMessage;
 use Psr\Log\LoggerInterface;
 use React\Socket\ConnectionInterface;
 use Safe\DateTimeImmutable;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 use function Safe\hex2bin;
 use function Safe\parse_url;
-
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class FeederCommunicator extends AbstractQueue implements MessageDequeueInterface, SocketMessageInterface
 {
