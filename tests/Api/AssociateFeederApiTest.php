@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Api;
 
 use App\Factory\AlnFeederFactory;
+use PHPUnit\Framework\Attributes\Depends;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
@@ -38,9 +39,7 @@ final class AssociateFeederApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
 
-    /**
-     * @depends testFeederAssociation
-     */
+    #[Depends('testFeederAssociation')]
     public function testFeederAlreadyAssociated(): void
     {
         $user = $this->getUserByEmail('user.nofeeder@example.com');
@@ -55,9 +54,7 @@ final class AssociateFeederApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
-    /**
-     * @depends testFeederAlreadyAssociated
-     */
+    #[Depends('testFeederAlreadyAssociated')]
     public function testDissociateFeeder(): void
     {
         $id = $this->findFeederId(AlnFeederFactory::UNAVAILABLE_FEEDER_IDENTIFIER);
@@ -69,9 +66,7 @@ final class AssociateFeederApiTest extends FeederApiTestCase
         $this->assertNull($feeder->getOwner());
     }
 
-    /**
-     * @depends testDissociateFeeder
-     */
+    #[Depends('testDissociateFeeder')]
     public function testFeederAlreadyDissociated(): void
     {
         $id = $this->findFeederId(AlnFeederFactory::UNAVAILABLE_FEEDER_IDENTIFIER);

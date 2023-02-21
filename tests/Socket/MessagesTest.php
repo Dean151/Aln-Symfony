@@ -18,13 +18,12 @@ use App\Socket\Messages\MealTriggeredViaNetworkMessage;
 use App\Socket\Messages\PlanningChangedMessage;
 use App\Socket\Messages\TimeMessage;
 use App\Socket\Messages\TriggerMealMessage;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class MessagesTest extends TestCase
 {
-    /**
-     * @dataProvider provideIdentificationData
-     */
+    #[DataProvider('provideIdentificationData')]
     public function testIdentification(string $hexadecimal, string $expectedIdentifier): void
     {
         $message = MessageIdentification::identifyIncomingMessage($hexadecimal);
@@ -33,7 +32,7 @@ final class MessagesTest extends TestCase
         $this->assertStringStartsWith($message->hexadecimal(), $hexadecimal);
     }
 
-    public function provideIdentificationData(): \Generator
+    public static function provideIdentificationData(): \Generator
     {
         yield ['9da11441424331323334353637383901d0010000', 'ABC123456789'];
         yield ['9da1145a595839383736353433323101d0010000', 'ZYX987654321'];
@@ -43,9 +42,7 @@ final class MessagesTest extends TestCase
         yield ['9da11441424331323334353637383901d00100009da11441424331323334353637383901d00100009da1145a595839383736353433323101d0010000', 'ABC123456789'];
     }
 
-    /**
-     * @dataProvider provideDefaultMealChangedData
-     */
+    #[DataProvider('provideDefaultMealChangedData')]
     public function testDefaultMealChanged(string $hexadecimal, string $expectedIdentifier): void
     {
         $message = MessageIdentification::identifyIncomingMessage($hexadecimal);
@@ -54,15 +51,13 @@ final class MessagesTest extends TestCase
         $this->assertEquals($hexadecimal, $message->hexadecimal());
     }
 
-    public function provideDefaultMealChangedData(): \Generator
+    public static function provideDefaultMealChangedData(): \Generator
     {
         yield ['9da114414243313233343536373839c3d0a10000', 'ABC123456789'];
         yield ['9da1145a5958393837363534333231c3d0a10000', 'ZYX987654321'];
     }
 
-    /**
-     * @dataProvider providePlanningChangedData
-     */
+    #[DataProvider('providePlanningChangedData')]
     public function testPlanningChanged(string $hexadecimal, string $identifier): void
     {
         $message = MessageIdentification::identifyIncomingMessage($hexadecimal);
@@ -71,15 +66,13 @@ final class MessagesTest extends TestCase
         $this->assertEquals($hexadecimal, (new PlanningChangedMessage($identifier))->hexadecimal());
     }
 
-    public function providePlanningChangedData(): \Generator
+    public static function providePlanningChangedData(): \Generator
     {
         yield ['9da114414243313233343536373839c4d0a10000', 'ABC123456789'];
         yield ['9da1145a5958393837363534333231c4d0a10000', 'ZYX987654321'];
     }
 
-    /**
-     * @dataProvider provideMealDistributedData
-     */
+    #[DataProvider('provideMealDistributedData')]
     public function testMealDistributed(string $hexadecimal, string $identifier): void
     {
         $message = MessageIdentification::identifyIncomingMessage($hexadecimal);
@@ -88,7 +81,7 @@ final class MessagesTest extends TestCase
         $this->assertEquals($hexadecimal, (new MealTriggeredViaNetworkMessage($identifier))->hexadecimal());
     }
 
-    public function provideMealDistributedData(): \Generator
+    public static function provideMealDistributedData(): \Generator
     {
         yield ['9da114414243313233343536373839a2d0a10000', 'ABC123456789'];
         yield ['9da1145a5958393837363534333231a2d0a10000', 'ZYX987654321'];
@@ -96,9 +89,8 @@ final class MessagesTest extends TestCase
 
     /**
      * @param int<5, 150> $mealAmount
-     *
-     * @dataProvider provideMealButtonPressedData
      */
+    #[DataProvider('provideMealButtonPressedData')]
     public function testMealButtonPressed(string $hexadecimal, string $identifier, TimeInput $time, int $mealAmount): void
     {
         $message = MessageIdentification::identifyIncomingMessage($hexadecimal);
@@ -109,22 +101,20 @@ final class MessagesTest extends TestCase
         $this->assertEquals($hexadecimal, (new MealTriggeredViaButtonMessage($identifier, $mealAmount, $time))->hexadecimal());
     }
 
-    public function provideMealButtonPressedData(): \Generator
+    public static function provideMealButtonPressedData(): \Generator
     {
         yield ['9da11441424331323334353637383921037d001e', 'ABC123456789', new TimeInput(6, 53), 30];
         yield ['9da1145a59583938373635343332312103850005', 'ZYX987654321', new TimeInput(7, 1), 5];
     }
 
-    /**
-     * @dataProvider provideTimeData
-     */
+    #[DataProvider('provideTimeData')]
     public function testTime(string $hexadecimal, TimeInput $time): void
     {
         $this->assertEquals($hexadecimal, (new TimeMessage($time))->hexadecimal());
         $this->assertEquals($time, TimeMessage::decodeFrom($hexadecimal)->getTime());
     }
 
-    public function provideTimeData(): \Generator
+    public static function provideTimeData(): \Generator
     {
         yield ['9da106010000', new TimeInput(16, 0)];
         yield ['9da106010050', new TimeInput(17, 20)];
@@ -145,16 +135,15 @@ final class MessagesTest extends TestCase
 
     /**
      * @param int<5, 150> $mealAmount
-     *
-     * @dataProvider provideDefaultMealData
      */
+    #[DataProvider('provideDefaultMealData')]
     public function testChangeDefaultMeal(string $hexadecimal, int $mealAmount): void
     {
         $this->assertEquals($hexadecimal, (new ChangeDefaultMealMessage($mealAmount))->hexadecimal());
         $this->assertEquals($mealAmount, ChangeDefaultMealMessage::decodeFrom($hexadecimal)->getMealAmount());
     }
 
-    public function provideDefaultMealData(): \Generator
+    public static function provideDefaultMealData(): \Generator
     {
         yield ['9da106c30005', 5];
         yield ['9da106c3000c', 12];
@@ -165,16 +154,15 @@ final class MessagesTest extends TestCase
 
     /**
      * @param int<5, 150> $mealAmount
-     *
-     * @dataProvider provideFeedNowData
      */
+    #[DataProvider('provideFeedNowData')]
     public function testFeedNow(string $hexadecimal, int $mealAmount): void
     {
         $this->assertEquals($hexadecimal, (new TriggerMealMessage($mealAmount))->hexadecimal());
         $this->assertEquals($mealAmount, TriggerMealMessage::decodeFrom($hexadecimal)->getMealAmount());
     }
 
-    public function provideFeedNowData(): \Generator
+    public static function provideFeedNowData(): \Generator
     {
         yield ['9da106a20005', 5];
         yield ['9da106a2000c', 12];
@@ -185,16 +173,15 @@ final class MessagesTest extends TestCase
 
     /**
      * @param array<MealInput> $meals
-     *
-     * @dataProvider provideChangePlanningData
      */
+    #[DataProvider('provideChangePlanningData')]
     public function testChangePlanning(string $hexadecimal, array $meals): void
     {
         $this->assertEquals($hexadecimal, (new ChangePlanningMessage($meals))->hexadecimal());
         $this->assertEquals(array_filter($meals, function ($meal) { return $meal->isEnabled; }), ChangePlanningMessage::decodeFrom($hexadecimal)->getMeals());
     }
 
-    public function provideChangePlanningData(): \Generator
+    public static function provideChangePlanningData(): \Generator
     {
         $meal1 = new MealInput(new TimeInput(11, 30), 10);
         $meal2 = new MealInput(new TimeInput(17, 20), 15);
@@ -209,9 +196,7 @@ final class MessagesTest extends TestCase
         yield ['9da12dc4020492000a0050000f', [$meal1, $meal2, $meal4]];
     }
 
-    /**
-     * @dataProvider provideResponseMessageDependingOnSentOneData
-     */
+    #[DataProvider('provideResponseMessageDependingOnSentOneData')]
     public function testResponseMessageDependingOnSentOne(string $identifier, ExpectableMessageInterface $expectable, ExpectationMessage $expectation): void
     {
         $message = $expectable->expectationMessage($identifier);
@@ -219,7 +204,7 @@ final class MessagesTest extends TestCase
         $this->assertEquals($expectation->hexadecimal(), $message->hexadecimal());
     }
 
-    public function provideResponseMessageDependingOnSentOneData(): \Generator
+    public static function provideResponseMessageDependingOnSentOneData(): \Generator
     {
         $identifier = 'ALE291382748';
         yield [$identifier, new ChangeDefaultMealMessage(12), new DefaultMealChangedMessage($identifier)];

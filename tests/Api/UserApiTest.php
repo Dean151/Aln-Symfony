@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Api;
 
 use App\Factory\UserFactory;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -24,16 +25,14 @@ final class UserApiTest extends AuthenticatedApiTestCase
         $this->assertIsString($json['token']);
     }
 
-    /**
-     * @dataProvider provideWrongCredentials
-     */
+    #[DataProvider('provideWrongCredentials')]
     public function testAuthenticationWrongCredentials(string $email, string $password, int $expectedStatusCode): void
     {
         $this->authenticateRequest($email, $password);
         $this->assertResponseStatusCodeSame($expectedStatusCode);
     }
 
-    public function provideWrongCredentials(): \Generator
+    public static function provideWrongCredentials(): \Generator
     {
         yield ['', '', Response::HTTP_UNAUTHORIZED];
         yield ['', 'password', Response::HTTP_UNAUTHORIZED];

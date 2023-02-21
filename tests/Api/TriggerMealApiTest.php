@@ -6,6 +6,7 @@ namespace App\Tests\Api;
 
 use App\Entity\AlnManualMeal;
 use App\Factory\AlnFeederFactory;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
@@ -29,9 +30,7 @@ final class TriggerMealApiTest extends FeederApiTestCase
         $this->assertEquals($amount, $meal->getAmount());
     }
 
-    /**
-     * @dataProvider provideNonValidInputData
-     */
+    #[DataProvider('provideNonValidInputData')]
     public function testTriggerMealWithNonValidInput(int $amount): void
     {
         $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
@@ -39,7 +38,7 @@ final class TriggerMealApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function provideNonValidInputData(): \Generator
+    public static function provideNonValidInputData(): \Generator
     {
         yield [4];
         yield [151];

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Api;
 
 use App\Repository\ResetPasswordRequestRepository;
+use PHPUnit\Framework\Attributes\Depends;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\DataCollector\MessageDataCollector;
 use Symfony\Contracts\HttpClient\ResponseInterface;
@@ -29,9 +30,7 @@ final class ResetPasswordApiTest extends AuthenticatedApiTestCase
         $this->assertEquals('user.feeder@example.com', $recipients[0]->getAddress());
     }
 
-    /**
-     * @depends testResetPasswordWithEmail
-     */
+    #[Depends('testResetPasswordWithEmail')]
     public function testResetPasswordAlreadyRequested(): void
     {
         $this->resetPasswordRequest('user.feeder@example.com');

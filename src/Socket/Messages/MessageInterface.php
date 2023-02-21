@@ -15,5 +15,8 @@ abstract class MessageInterface
      */
     abstract public static function decodeFrom(string $hexadecimal): self;
 
+    /**
+     * @return non-empty-string
+     */
     abstract public function hexadecimal(): string;
 }

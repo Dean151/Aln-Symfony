@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Api;
 
 use App\Factory\AlnFeederFactory;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
@@ -13,9 +14,8 @@ final class ChangePlanningApiTest extends FeederApiTestCase
 {
     /**
      * @param array<array<string, mixed>> $meals
-     *
-     * @dataProvider providePlanningChangeData
      */
+    #[DataProvider('providePlanningChangeData')]
     public function testPlanningChange(array $meals): void
     {
         $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
@@ -32,7 +32,7 @@ final class ChangePlanningApiTest extends FeederApiTestCase
         ]);
     }
 
-    public function providePlanningChangeData(): \Generator
+    public static function providePlanningChangeData(): \Generator
     {
         $meal1 = ['time' => ['hours' => 11, 'minutes' => 30], 'amount' => 10];
         $meal2 = ['time' => ['hours' => 17, 'minutes' => 20], 'amount' => 15];
@@ -45,9 +45,8 @@ final class ChangePlanningApiTest extends FeederApiTestCase
 
     /**
      * @param-stan Response::HTTP_* $response_code
-     *
-     * @dataProvider provideNonValidInputData
      */
+    #[DataProvider('provideNonValidInputData')]
     public function testPlanningChangeWithNonValidInput(int $response_code, mixed $meals): void
     {
         $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
@@ -55,7 +54,7 @@ final class ChangePlanningApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame($response_code);
     }
 
-    public function provideNonValidInputData(): \Generator
+    public static function provideNonValidInputData(): \Generator
     {
         $valid = ['time' => ['hours' => 17, 'minutes' => 20], 'amount' => 15];
         $unvalidHours = ['time' => ['hours' => 24, 'minutes' => 0], 'amount' => 12];

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Api;
 
 use App\Repository\ResetPasswordRequestRepository;
+use PHPUnit\Framework\Attributes\Depends;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\DataCollector\MessageDataCollector;
 use Symfony\Contracts\HttpClient\ResponseInterface;
@@ -37,9 +38,7 @@ final class RegisterApiTest extends AuthenticatedApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    /**
-     * @depends testRegisterWithEmail
-     */
+    #[Depends('testRegisterWithEmail')]
     public function testRegisterWithUsedEmail(): void
     {
         $this->registerEmailRequestWithProfiler('user.nofeeder@example.com', $mailer);

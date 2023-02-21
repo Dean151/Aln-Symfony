@@ -49,4 +49,4 @@ jobs:
         run: sleep 2
 
       - name: Run PhpUnit
-        run: ./bin/phpunit
+        run: ./vendor/bin/phpunit
