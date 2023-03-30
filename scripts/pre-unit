@@ -2,10 +2,6 @@
 
 set -e
 
-docker-compose up -d
-
-sleep 1
-
 ./bin/console lexik:jwt:generate-keypair --skip-if-exists
 ./bin/console -e test doctrine:database:create --no-interaction --if-not-exists
 ./bin/console -e test doctrine:migration:migrate --no-interaction --all-or-nothing --allow-no-migration
