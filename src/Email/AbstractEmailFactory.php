@@ -26,10 +26,6 @@ abstract class AbstractEmailFactory
         private readonly string $senderEmail,
         #[Autowire('%env(string:EMAIL_UNSUBSCRIBE)%')]
         private readonly string $unsubscribeEmail,
-        #[Autowire('%env(string:EMAIL_DKIM_KEY)%')]
-        private readonly string $dkimKey,
-        #[Autowire('%env(string:EMAIL_DKIM_PASSPHRASE)%')]
-        private readonly string $dkimPassphrase,
         #[Autowire('%env(string:SITE_NAME)%')]
         protected readonly string $siteName,
         #[Autowire('%env(string:SITE_BASE_URL)%')]
@@ -56,7 +52,7 @@ abstract class AbstractEmailFactory
 
         $this->setUnsubscribeHeaders($email, $recipient);
 
-        return $this->signEmailWithDkim($email);
+        return new Message($email->getPreparedHeaders(), $email->getBody());
     }
 
     private function buildHtml(string $subject, string $body): string
@@ -77,21 +73,6 @@ abstract class AbstractEmailFactory
         $unsubscribeBody = sprintf('<%s>, <%s>', $unsubscribeMailto, $unsubscribeUrl);
         $email->getHeaders()->addTextHeader('List-Unsubscribe', $unsubscribeBody);
         $email->getHeaders()->addTextHeader('List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
-    }
-
-    private function signEmailWithDkim(Email $email): Message
-    {
-        if (empty($this->dkimKey)) {
-            return $email;
-        }
-
-        $domain = explode('@', $this->senderEmail)[1];
-        $signer = new DkimSigner($this->dkimKey, $domain, 'sf', [], $this->dkimPassphrase);
-
-        // We need to generate the body before signing
-        $email = new Message($email->getPreparedHeaders(), $email->getBody());
-
-        return $signer->sign($email);
     }
 
     protected function getLocale(): string
