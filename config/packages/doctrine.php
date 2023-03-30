@@ -6,7 +6,27 @@ use App\Dbal\Types\AlnTimeType;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
-    $containerConfigurator->extension('doctrine', ['dbal' => ['host' => '%env(resolve:MYSQL_HOST)%', 'port' => '%env(resolve:MYSQL_TCP_PORT)%', 'user' => '%env(resolve:DATABASE_USER)%', 'password' => '%env(resolve:DATABASE_PASSWORD)%', 'dbname' => '%env(resolve:DATABASE_NAME)%', 'server_version' => 'mariadb-10.8.3', 'types' => ['aln_time' => AlnTimeType::class]], 'orm' => ['auto_generate_proxy_classes' => true, 'naming_strategy' => 'doctrine.orm.naming_strategy.underscore_number_aware', 'auto_mapping' => true, 'mappings' => ['App' => ['is_bundle' => false, 'dir' => '%kernel.project_dir%/src/Entity', 'prefix' => 'App\Entity', 'alias' => 'App']]]]);
+    $containerConfigurator->extension('doctrine', [
+        'dbal' => [
+            'url' => '%env(DATABASE_URL)%',
+            'types' => [
+                'aln_time' => AlnTimeType::class
+            ],
+        ], 
+        'orm' => [
+            'auto_generate_proxy_classes' => true, 
+            'naming_strategy' => 'doctrine.orm.naming_strategy.underscore_number_aware', 
+            'auto_mapping' => true, 
+            'mappings' => [
+                'App' => [
+                    'is_bundle' => false, 
+                    'dir' => '%kernel.project_dir%/src/Entity', 
+                    'prefix' => 'App\Entity', 
+                    'alias' => 'App',
+                ],
+            ],
+        ],
+    ]);
     if ('test' === $containerConfigurator->env()) {
         $containerConfigurator->extension('doctrine', [
             'dbal' => [

@@ -31,4 +31,4 @@ jobs:
         run: ./scripts/pre-unit
 
       - name: Run PhpUnit
-        run: ./bin/phpunit
+        run: ./vendor/bin/phpunit
