@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 docker-compose up -d
 
 ./bin/console lexik:jwt:generate-keypair --skip-if-exists
