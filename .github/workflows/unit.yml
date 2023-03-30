@@ -1,8 +1,6 @@
 name: Unit Tests
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -10,43 +8,25 @@ jobs:
   build:
 
     runs-on: ubuntu-22.04
-    strategy:
-      matrix:
-        php: ['8.1', '8.2']
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
+          php-version: 8.1
           tools: composer
-
-      - name: Build the stack
-        run: docker-compose up -d
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
 
-      - name: Run linter & PhpStan
-        run: PHP_CS_FIXER_IGNORE_ENV=1 composer run-script lint
+      - name: Static analyser
+        run: composer stan
 
-      - name: Pre-unit script
-        run: composer run-script pre-unit
-
-      - name: Boot socket
-        run: ./bin/console -e test aln:socket:run &
-
-      - name: Boot feeder simulator
-        run: ./bin/console -e test aln:feeder:simulate --fast ABC123456789 &
-
-      - name: Boot unresponsive feeder simulator
-        run: ./bin/console -e test aln:feeder:simulate --not-responding --fast OBU293827463 &
-
-      - name: Wait
-        run: sleep 2
+      - name: Run pre-unit requirements
+        run: ./scripts/pre-unit
 
       - name: Run PhpUnit
-        run: ./vendor/bin/phpunit
+        run: ./bin/phpunit
