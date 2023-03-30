@@ -8,7 +8,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -19,6 +20,9 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
 
+      - name: Build the stack
+        run: docker-compose up -d
+
       - name: Static analyser
         run: composer stan
 
@@ -28,7 +32,7 @@ jobs:
       - name: Wait for the script to complete
         run: sleep 3
 
-      - name: Tests
+      - name: Run PhpUnit
         run: ./vendor/bin/phpunit
 
       - name: Remove dev dependencies
