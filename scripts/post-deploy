@@ -2,6 +2,7 @@
 
 set -e
 
+./bin/console lexik:jwt:generate-keypair --skip-if-exists
 ./bin/console -e prod doctrine:database:create --no-interaction --if-not-exists
 ./bin/console -e prod doctrine:migration:migrate --no-interaction --all-or-nothing --allow-no-migration
 
