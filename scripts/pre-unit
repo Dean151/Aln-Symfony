@@ -4,6 +4,8 @@ set -e
 
 docker-compose up -d
 
+sleep 1
+
 ./bin/console lexik:jwt:generate-keypair --skip-if-exists
 ./bin/console -e test doctrine:database:create --no-interaction --if-not-exists
 ./bin/console -e test doctrine:migration:migrate --no-interaction --all-or-nothing --allow-no-migration
@@ -12,4 +14,5 @@ docker-compose up -d
 ./bin/console -e test aln:socket:run &
 ./bin/console -e test aln:feeder:simulate --fast ABC123456789 &
 ./bin/console -e test aln:feeder:simulate --not-responding --fast OBU293827463 &
+
 sleep 2
