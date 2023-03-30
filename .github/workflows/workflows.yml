@@ -31,6 +31,14 @@ jobs:
       - name: Run pre-unit requirements
         run: composer pre-unit
 
+      - name: Boot socket
+        run: ./bin/console -e test aln:socket:run &
+
+      - name: Boot feeder simulators
+        run: |
+          ./bin/console -e test aln:feeder:simulate --fast ABC123456789 &
+          ./bin/console -e test aln:feeder:simulate --not-responding --fast OBU293827463 &
+
       - name: Wait for the script to complete
         run: sleep 5
 
