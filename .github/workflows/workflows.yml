@@ -1,4 +1,4 @@
-name: Deploy in production
+name: CI
 
 on:
   push:
@@ -8,6 +8,7 @@ on:
 
 jobs:
   tests:
+    name: Tests
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
@@ -46,6 +47,7 @@ jobs:
         run: ./vendor/bin/phpunit
 
   deploy:
+    name: Deploy in production
     needs: tests
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-22.04
