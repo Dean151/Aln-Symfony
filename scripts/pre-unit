@@ -10,5 +10,3 @@ set -e
 ./bin/console -e test aln:socket:run &
 ./bin/console -e test aln:feeder:simulate --fast ABC123456789 &
 ./bin/console -e test aln:feeder:simulate --not-responding --fast OBU293827463 &
-
-sleep 2

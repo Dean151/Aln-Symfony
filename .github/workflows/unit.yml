@@ -31,7 +31,10 @@ jobs:
         run: composer stan
 
       - name: Run pre-unit requirements
-        run: ./scripts/pre-unit
+        run: ./scripts/pre-unit &
+
+      - name: Wait for the script to complete
+        run: sleep 3
 
       - name: Run PhpUnit
         run: ./vendor/bin/phpunit
