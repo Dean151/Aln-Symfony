@@ -3,12 +3,12 @@ name: Deploy in production
 on:
   push:
     branches: [ main ]
+  pull_request:
+    branches: [ * ]
 
 jobs:
-  build:
-
+  tests:
     runs-on: ubuntu-22.04
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -29,7 +29,7 @@ jobs:
         run: composer stan
 
       - name: Run pre-unit requirements
-        run: ./scripts/pre-unit &
+        run: composer pre-unit
 
       - name: Wait for the script to complete
         run: sleep 5
@@ -37,7 +37,21 @@ jobs:
       - name: Run PhpUnit
         run: ./vendor/bin/phpunit
 
-      - name: Remove dev dependencies
+  deploy:
+    needs: tests
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+          tools: composer
+
+      - name: Install dependencies
         run: APP_ENV=prod APP_DEBUG=0 composer install --no-dev --optimize-autoloader --prefer-dist --no-progress --no-suggest
 
       - name: Warm caches
