@@ -9,7 +9,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         ->extension('api_platform', [
             'title' => 'Aln-Symfony',
             'description' => 'More infos on Github: https://github.com/Dean151/Aln-Symfony',
-            'version' => '0.2.3',
+            'version' => '0.2.4',
             'show_webby' => false,
             'mapping' => [
                 'paths' => [
