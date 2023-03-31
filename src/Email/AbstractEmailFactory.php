@@ -7,7 +7,6 @@ namespace App\Email;
 use App\Entity\User;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Message;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
@@ -68,6 +67,6 @@ abstract class AbstractEmailFactory
      */
     protected function translate(string $id, array $context, string $domain = null, string $locale = null): string
     {
-        return $this->translator->trans($id, $context, $domain, $locale);
+        return $this->translator->trans($id, $context, $domain, $locale ?? $this->getLocale());
     }
 }
