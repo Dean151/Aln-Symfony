@@ -7,6 +7,7 @@ namespace App\Command;
 use App\Queue\AsyncConsumer;
 use App\Socket\AsyncServer;
 use App\Socket\FeederCommunicator;
+use Psr\Log\LoggerInterface;
 use React\EventLoop\Loop;
 use React\EventLoop\LoopInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -14,6 +15,12 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\SignalableCommandInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
+
+use function Safe\file_get_contents;
+use function Safe\file_put_contents;
+use function Safe\getmypid;
+use function Safe\unlink;
 
 #[AsCommand(
     name: 'aln:socket:run',
@@ -28,6 +35,8 @@ final class RunSocketCommand extends Command implements SignalableCommandInterfa
         private readonly AsyncConsumer $queueConsumer,
         private readonly AsyncServer $socketServer,
         private readonly FeederCommunicator $communicator,
+        private readonly KernelInterface $kernel,
+        private readonly LoggerInterface $logger,
     ) {
         parent::__construct();
     }
@@ -43,14 +52,30 @@ final class RunSocketCommand extends Command implements SignalableCommandInterfa
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->loop = Loop::get();
+        $filename = $this->kernel->getProjectDir().'/socket.pid';
+        try {
+            if (file_exists($filename)) {
+                $this->logger->error('Socket is already running with pid '.file_get_contents($filename));
 
-        $this->queueConsumer->start($this->loop, $this->communicator);
-        $this->socketServer->start($this->loop, $this->communicator);
+                return Command::FAILURE;
+            }
+            file_put_contents($filename, getmypid());
 
-        $this->loop->run();
+            $this->loop = Loop::get();
 
-        return Command::SUCCESS;
+            $this->queueConsumer->start($this->loop, $this->communicator);
+            $this->socketServer->start($this->loop, $this->communicator);
+
+            $this->loop->run();
+
+            unlink($filename);
+
+            return Command::SUCCESS;
+        } catch (\Exception $e) {
+            unlink($filename);
+
+            return Command::FAILURE;
+        }
     }
 
     /**
