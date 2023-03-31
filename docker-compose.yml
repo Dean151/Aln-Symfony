@@ -4,6 +4,8 @@ services:
 ###> doctrine/doctrine-bundle ###
   database:
     image: 'mariadb:latest'
+    volumes:
+       - aln-db-data:/var/lib/mysql/data
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: main
@@ -17,5 +19,5 @@ services:
 
 volumes:
 ###> doctrine/doctrine-bundle ###
-  database_data:
+  aln-db-data:
 ###< doctrine/doctrine-bundle ###

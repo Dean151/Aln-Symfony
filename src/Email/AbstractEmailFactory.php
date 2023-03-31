@@ -77,8 +77,10 @@ abstract class AbstractEmailFactory
     protected function getLocale(): string
     {
         $components = explode('_', $this->translator->getLocale());
+        $langcode = reset($components);
 
-        return reset($components);
+        // FIXME: find a better way to restrict to "supported languages"
+        return in_array($langcode, ['en']) ? $langcode : 'en';
     }
 
     /**
