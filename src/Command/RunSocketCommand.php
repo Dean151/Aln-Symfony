@@ -52,7 +52,7 @@ final class RunSocketCommand extends Command implements SignalableCommandInterfa
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $filename = $this->kernel->getProjectDir().'/socket.pid';
+        $filename = $this->kernel->getProjectDir().'/var/socket.pid';
         try {
             if (file_exists($filename)) {
                 $this->logger->error('Socket is already running with pid '.file_get_contents($filename));
