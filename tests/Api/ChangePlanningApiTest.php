@@ -123,24 +123,15 @@ final class ChangePlanningApiTest extends FeederApiTestCase
     {
         $client = self::createClient();
 
-        return $client->request('PUT', "/feeders/{$feederId}/planning", [
-            'headers' => [
-                'Accept' => 'application/json',
-                ] + $this->getHeadersIfAuthenticated($authenticatedAs),
-            'json' => [
-                'meals' => $meals,
-            ],
-        ]);
+        return $client->request('PUT', "/feeders/{$feederId}/planning", $this->getOptions($authenticatedAs)->setJson([
+            'meals' => $meals,
+        ])->toArray());
     }
 
     private function getFeederRequest(int $feederId): ResponseInterface
     {
         $client = self::createClient();
 
-        return $client->request('GET', "/feeders/{$feederId}", [
-            'headers' => [
-                'Accept' => 'application/json',
-            ],
-        ]);
+        return $client->request('GET', "/feeders/{$feederId}", $this->getOptions()->toArray());
     }
 }

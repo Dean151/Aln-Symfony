@@ -95,11 +95,7 @@ final class UserApiTest extends AuthenticatedApiTestCase
     {
         $client = self::createClient();
 
-        return $client->request('GET', '/user/me', [
-            'headers' => [
-                'Accept' => 'application/json',
-            ] + $this->getHeadersIfAuthenticated($authenticatedAs),
-        ]);
+        return $client->request('GET', '/user/me', $this->getOptions($authenticatedAs)->toArray());
     }
 
     /**
@@ -109,12 +105,7 @@ final class UserApiTest extends AuthenticatedApiTestCase
     {
         $client = self::createClient();
 
-        return $client->request('PUT', "/user/{$userId}", [
-            'headers' => [
-                'Accept' => 'application/json',
-            ] + $this->getHeadersIfAuthenticated($authenticatedAs),
-            'json' => $json,
-        ]);
+        return $client->request('PUT', "/user/{$userId}", $this->getOptions($authenticatedAs)->setJson($json)->toArray());
     }
 
     private function getPasswordHasher(): UserPasswordHasher

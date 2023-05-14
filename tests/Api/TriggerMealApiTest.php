@@ -109,13 +109,8 @@ final class TriggerMealApiTest extends FeederApiTestCase
     {
         $client = self::createClient();
 
-        return $client->request('POST', "/feeders/{$feederId}/feed", [
-            'headers' => [
-                'Accept' => 'application/json',
-                ] + $this->getHeadersIfAuthenticated($authenticatedAs),
-            'json' => [
-                'amount' => $amount,
-            ],
-        ]);
+        return $client->request('POST', "/feeders/{$feederId}/feed", $this->getOptions($authenticatedAs)->setJson([
+            'amount' => $amount,
+        ])->toArray());
     }
 }

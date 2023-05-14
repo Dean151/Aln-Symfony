@@ -102,24 +102,15 @@ final class AssociateFeederApiTest extends FeederApiTestCase
     {
         $client = self::createClient();
 
-        return $client->request('POST', '/feeders/associate', [
-            'headers' => [
-                    'Accept' => 'application/json',
-                ] + $this->getHeadersIfAuthenticated($authenticatedAs),
-            'json' => [
-                'identifier' => $feederIdentifier,
-            ],
-        ]);
+        return $client->request('POST', '/feeders/associate', $this->getOptions($authenticatedAs)->setJson([
+            'identifier' => $feederIdentifier,
+        ])->toArray());
     }
 
     private function dissociateFeederRequest(int $feederId, ?UserInterface $authenticatedAs = null): ResponseInterface
     {
         $client = self::createClient();
 
-        return $client->request('DELETE', "/feeders/{$feederId}/association", [
-            'headers' => [
-                    'Accept' => 'application/json',
-                ] + $this->getHeadersIfAuthenticated($authenticatedAs),
-        ]);
+        return $client->request('DELETE', "/feeders/{$feederId}/association", $this->getOptions($authenticatedAs)->toArray());
     }
 }

@@ -111,24 +111,15 @@ final class ChangeDefaultMealApiTest extends FeederApiTestCase
     {
         $client = self::createClient();
 
-        return $client->request('PUT', "/feeders/{$feederId}/amount", [
-            'headers' => [
-                'Accept' => 'application/json',
-            ] + $this->getHeadersIfAuthenticated($authenticatedAs),
-            'json' => [
-                'amount' => $amount,
-            ],
-        ]);
+        return $client->request('PUT', "/feeders/{$feederId}/amount", $this->getOptions($authenticatedAs)->setJson([
+            'amount' => $amount,
+        ])->toArray());
     }
 
     private function getFeederRequest(int $feederId): ResponseInterface
     {
         $client = self::createClient();
 
-        return $client->request('GET', "/feeders/{$feederId}", [
-            'headers' => [
-                'Accept' => 'application/json',
-            ],
-        ]);
+        return $client->request('GET', "/feeders/{$feederId}", $this->getOptions()->toArray());
     }
 }

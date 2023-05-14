@@ -8,6 +8,7 @@ use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTManager;
+use Symfony\Component\HttpClient\HttpOptions;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 abstract class AuthenticatedApiTestCase extends ApiTestCase
@@ -21,12 +22,15 @@ abstract class AuthenticatedApiTestCase extends ApiTestCase
         return $user;
     }
 
-    /**
-     * @return string[]
-     */
-    protected function getHeadersIfAuthenticated(?UserInterface $user): array
+    protected function getOptions(?UserInterface $authenticatedAs = null): HttpOptions
     {
-        return $user ? $this->getAuthenticatedHeaders($user) : [];
+        $options = new HttpOptions();
+        $options->setHeaders(['Accept' => 'application/json']);
+        if (null !== $authenticatedAs) {
+            $options->setAuthBearer($this->getAuthenticationToken($authenticatedAs));
+        }
+
+        return $options;
     }
 
     private function getUserRepository(): UserRepository
@@ -35,21 +39,6 @@ abstract class AuthenticatedApiTestCase extends ApiTestCase
         $this->assertInstanceOf(UserRepository::class, $repository);
 
         return $repository;
-    }
-
-    /**
-     * @return string[]
-     */
-    private function getAuthenticatedHeaders(UserInterface $user): array
-    {
-        return [
-            'Authorization' => $this->getAuthorizationHeader($user),
-        ];
-    }
-
-    private function getAuthorizationHeader(UserInterface $user): string
-    {
-        return 'Bearer '.$this->getAuthenticationToken($user);
     }
 
     private function getAuthenticationToken(UserInterface $user): string
