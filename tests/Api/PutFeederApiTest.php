@@ -73,7 +73,7 @@ final class PutFeederApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
 
-    private function putFeederNameRequest(int $feederId, string $newName, ?UserInterface $authenticatedAs = null): ResponseInterface
+    private function putFeederNameRequest(int $feederId, string $newName, UserInterface $authenticatedAs = null): ResponseInterface
     {
         $client = self::createClient();
 

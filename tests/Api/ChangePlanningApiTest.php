@@ -119,7 +119,7 @@ final class ChangePlanningApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
 
-    private function changePlanningRequest(int $feederId, mixed $meals, ?UserInterface $authenticatedAs = null): ResponseInterface
+    private function changePlanningRequest(int $feederId, mixed $meals, UserInterface $authenticatedAs = null): ResponseInterface
     {
         $client = self::createClient();
 

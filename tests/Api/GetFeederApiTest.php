@@ -79,7 +79,7 @@ final class GetFeederApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
 
-    private function getFeederRequest(int $feederId, ?UserInterface $authenticatedAs = null): ResponseInterface
+    private function getFeederRequest(int $feederId, UserInterface $authenticatedAs = null): ResponseInterface
     {
         $client = self::createClient();
 
