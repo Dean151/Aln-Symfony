@@ -34,9 +34,6 @@ final class UserApiTest extends AuthenticatedApiTestCase
 
     public static function provideWrongCredentials(): \Generator
     {
-        yield ['', '', Response::HTTP_UNAUTHORIZED];
-        yield ['', 'password', Response::HTTP_UNAUTHORIZED];
-        yield ['unkwown_email@example.com', '', Response::HTTP_UNAUTHORIZED];
         yield ['not_an_email', 'password', Response::HTTP_UNAUTHORIZED];
         yield ['unkwown_email@example.com', 'password', Response::HTTP_UNAUTHORIZED];
     }

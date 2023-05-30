@@ -86,10 +86,12 @@ final class RunSocketCommand extends Command implements SignalableCommandInterfa
         return [SIGINT, SIGTERM];
     }
 
-    public function handleSignal(int $signal): void
+    public function handleSignal(int $signal): false|int
     {
-        $this->loop?->stop();
         $this->queueConsumer->shutdown();
         $this->socketServer->shutdown();
+        $this->loop?->stop();
+
+        return false;
     }
 }

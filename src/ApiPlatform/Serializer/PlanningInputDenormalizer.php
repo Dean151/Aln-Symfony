@@ -30,6 +30,14 @@ final class PlanningInputDenormalizer implements DenormalizerInterface
     }
 
     /**
+     * @return array<string, ?bool>
+     */
+    public function getSupportedTypes(?string $format): array
+    {
+        return [PlanningInput::class => true];
+    }
+
+    /**
      * @param array<string, mixed> $context
      */
     public function denormalize(mixed $data, string $type, string $format = null, array $context = []): PlanningInput

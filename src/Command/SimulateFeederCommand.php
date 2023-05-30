@@ -7,6 +7,7 @@ namespace App\Command;
 use App\Factory\AlnFeederFactory;
 use App\Socket\FeederSimulator;
 use React\EventLoop\Loop;
+use React\EventLoop\LoopInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\SignalableCommandInterface;
@@ -22,6 +23,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 class SimulateFeederCommand extends Command implements SignalableCommandInterface
 {
+    private ?LoopInterface $loop = null;
+
     public function __construct(
         private readonly FeederSimulator $simulator,
     ) {
@@ -44,9 +47,10 @@ class SimulateFeederCommand extends Command implements SignalableCommandInterfac
         $fastResponse = $input->getOption('fast') ? FeederSimulator::OPTION_FAST_RESPONSE : FeederSimulator::OPTION_NONE;
         $options = $unresponsiveFeeder | $fastResponse;
 
-        $loop = Loop::get();
-        $this->simulator->start($loop, $identifier, $options);
-        $loop->run();
+        $this->loop = Loop::get();
+
+        $this->simulator->start($this->loop, $identifier, $options);
+        $this->loop->run();
 
         return Command::SUCCESS;
     }
@@ -59,8 +63,11 @@ class SimulateFeederCommand extends Command implements SignalableCommandInterfac
         return [SIGINT, SIGTERM];
     }
 
-    public function handleSignal(int $signal): void
+    public function handleSignal(int $signal): false|int
     {
         $this->simulator->shutdown();
+        $this->loop?->stop();
+
+        return false;
     }
 }
