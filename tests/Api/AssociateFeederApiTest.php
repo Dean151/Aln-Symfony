@@ -9,12 +9,11 @@ use PHPUnit\Framework\Attributes\Depends;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
+use Zalas\PHPUnit\Globals\Attribute\Env;
 
-/**
- * @env AUTHENTICATION_ENABLED=true
- */
 final class AssociateFeederApiTest extends FeederApiTestCase
 {
+    #[Env('AUTHENTICATION_ENABLED', 'true')]
     public function testFeederAssociation(): void
     {
         $user = $this->getUserByEmail('user.feeder@example.com');
@@ -26,6 +25,7 @@ final class AssociateFeederApiTest extends FeederApiTestCase
         $this->assertEquals($user->getId(), $feeder->getOwner()->getId());
     }
 
+    #[Env('AUTHENTICATION_ENABLED', 'true')]
     public function testFeederAssociationWrongIp(): void
     {
         $user = $this->getUserByEmail('user.feeder@example.com');
@@ -33,12 +33,14 @@ final class AssociateFeederApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Env('AUTHENTICATION_ENABLED', 'true')]
     public function testFeederAssociationUnauthenticated(): void
     {
         $this->associateFeederRequest(AlnFeederFactory::UNAVAILABLE_FEEDER_IDENTIFIER);
         $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
 
+    #[Env('AUTHENTICATION_ENABLED', 'true')]
     #[Depends('testFeederAssociation')]
     public function testFeederAlreadyAssociated(): void
     {
@@ -47,6 +49,7 @@ final class AssociateFeederApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Env('AUTHENTICATION_ENABLED', 'true')]
     public function testFeederAssociationUnknown(): void
     {
         $user = $this->getUserByEmail('user.nofeeder@example.com');
@@ -54,6 +57,7 @@ final class AssociateFeederApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
+    #[Env('AUTHENTICATION_ENABLED', 'true')]
     #[Depends('testFeederAlreadyAssociated')]
     public function testDissociateFeeder(): void
     {
@@ -66,6 +70,7 @@ final class AssociateFeederApiTest extends FeederApiTestCase
         $this->assertNull($feeder->getOwner());
     }
 
+    #[Env('AUTHENTICATION_ENABLED', 'true')]
     #[Depends('testDissociateFeeder')]
     public function testFeederAlreadyDissociated(): void
     {
@@ -75,6 +80,7 @@ final class AssociateFeederApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Env('AUTHENTICATION_ENABLED', 'true')]
     public function testDissociateUnownedFeeder(): void
     {
         $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
@@ -83,6 +89,7 @@ final class AssociateFeederApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
+    #[Env('AUTHENTICATION_ENABLED', 'true')]
     public function testDissociateUnauthenticated(): void
     {
         $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
@@ -90,6 +97,7 @@ final class AssociateFeederApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
 
+    #[Env('AUTHENTICATION_ENABLED', 'true')]
     public function testDissociateUnknownFeeder(): void
     {
         $id = random_int(0, PHP_INT_MAX);

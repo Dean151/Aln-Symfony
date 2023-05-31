@@ -10,6 +10,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
+use Zalas\PHPUnit\Globals\Attribute\Env;
 
 final class TriggerMealApiTest extends FeederApiTestCase
 {
@@ -69,9 +70,7 @@ final class TriggerMealApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
-    /**
-     * @env AUTHENTICATION_ENABLED=true
-     */
+    #[Env('AUTHENTICATION_ENABLED', 'true')]
     public function testTriggerMealOwnedFeeder(): void
     {
         $amount = random_int(5, 150);
@@ -83,9 +82,7 @@ final class TriggerMealApiTest extends FeederApiTestCase
         ]);
     }
 
-    /**
-     * @env AUTHENTICATION_ENABLED=true
-     */
+    #[Env('AUTHENTICATION_ENABLED', 'true')]
     public function testTriggerMealUnownedFeeder(): void
     {
         $amount = random_int(5, 150);
@@ -94,9 +91,7 @@ final class TriggerMealApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
-    /**
-     * @env AUTHENTICATION_ENABLED=true
-     */
+    #[Env('AUTHENTICATION_ENABLED', 'true')]
     public function testTriggerMealUnauthenticated(): void
     {
         $amount = random_int(5, 150);

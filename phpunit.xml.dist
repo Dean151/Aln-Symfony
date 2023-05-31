@@ -16,7 +16,7 @@
   </testsuites>
   <coverage/>
   <extensions>
-    <bootstrap class="Zalas\PHPUnit\Globals\AnnotationExtension"/>
+    <bootstrap class="Zalas\PHPUnit\Globals\AttributeExtension" />
   </extensions>
   <source>
     <include>

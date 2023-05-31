@@ -8,6 +8,7 @@ use App\Factory\AlnFeederFactory;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
+use Zalas\PHPUnit\Globals\Attribute\Env;
 
 final class GetFeederApiTest extends FeederApiTestCase
 {
@@ -46,9 +47,7 @@ final class GetFeederApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
-    /**
-     * @env AUTHENTICATION_ENABLED=true
-     */
+    #[Env('AUTHENTICATION_ENABLED', 'true')]
     public function testFeederStatusOwnedFeeder(): void
     {
         $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
@@ -59,9 +58,7 @@ final class GetFeederApiTest extends FeederApiTestCase
         ]);
     }
 
-    /**
-     * @env AUTHENTICATION_ENABLED=true
-     */
+    #[Env('AUTHENTICATION_ENABLED', 'true')]
     public function testFeederStatusUnownedFeeder(): void
     {
         $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
@@ -69,9 +66,7 @@ final class GetFeederApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
-    /**
-     * @env AUTHENTICATION_ENABLED=true
-     */
+    #[Env('AUTHENTICATION_ENABLED', 'true')]
     public function testFeederStatusUnauthenticated(): void
     {
         $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);

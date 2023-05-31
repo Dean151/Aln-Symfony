@@ -8,6 +8,7 @@ use App\Factory\AlnFeederFactory;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
+use Zalas\PHPUnit\Globals\Attribute\Env;
 use Zenstruck\Foundry\Test\Factories;
 
 final class PutFeederApiTest extends FeederApiTestCase
@@ -40,9 +41,7 @@ final class PutFeederApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
-    /**
-     * @env AUTHENTICATION_ENABLED=true
-     */
+    #[Env('AUTHENTICATION_ENABLED', 'true')]
     public function testUpdatingFeederNameOwnedFeeder(): void
     {
         $newName = AlnFeederFactory::faker()->firstName();
@@ -51,9 +50,7 @@ final class PutFeederApiTest extends FeederApiTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    /**
-     * @env AUTHENTICATION_ENABLED=true
-     */
+    #[Env('AUTHENTICATION_ENABLED', 'true')]
     public function testUpdatingFeederNameUnownedFeeder(): void
     {
         $newName = AlnFeederFactory::faker()->firstName();
@@ -62,9 +59,7 @@ final class PutFeederApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
-    /**
-     * @env AUTHENTICATION_ENABLED=true
-     */
+    #[Env('AUTHENTICATION_ENABLED', 'true')]
     public function testUpdatingFeederNameUnauthenticated(): void
     {
         $newName = AlnFeederFactory::faker()->firstName();

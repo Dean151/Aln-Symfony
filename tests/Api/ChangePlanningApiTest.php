@@ -9,6 +9,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
+use Zalas\PHPUnit\Globals\Attribute\Env;
 
 final class ChangePlanningApiTest extends FeederApiTestCase
 {
@@ -86,9 +87,7 @@ final class ChangePlanningApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
-    /**
-     * @env AUTHENTICATION_ENABLED=true
-     */
+    #[Env('AUTHENTICATION_ENABLED', 'true')]
     public function testPlanningChangeOwnedFeeder(): void
     {
         $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
@@ -99,9 +98,7 @@ final class ChangePlanningApiTest extends FeederApiTestCase
         ]);
     }
 
-    /**
-     * @env AUTHENTICATION_ENABLED=true
-     */
+    #[Env('AUTHENTICATION_ENABLED', 'true')]
     public function testPlanningChangeUnownedFeeder(): void
     {
         $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
@@ -109,9 +106,7 @@ final class ChangePlanningApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
-    /**
-     * @env AUTHENTICATION_ENABLED=true
-     */
+    #[Env('AUTHENTICATION_ENABLED', 'true')]
     public function testPlanningChangeUnauthenticated(): void
     {
         $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
