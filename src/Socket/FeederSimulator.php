@@ -106,7 +106,7 @@ final class FeederSimulator
         }
     }
 
-    private function onConnectionError(\Exception $e): void
+    private function onConnectionError(\Throwable $e): void
     {
         $this->logger->error($e->getMessage(), ['exception' => $e]);
         $this->shutdown();
