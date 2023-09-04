@@ -8,6 +8,9 @@ on:
 
 jobs:
   tests:
+    strategy:
+      matrix:
+        version: [8.1, 8.2]
     name: Tests
     runs-on: ubuntu-22.04
     steps:
@@ -17,7 +20,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.1
+          php-version: ${{ matrix.version }}
           tools: composer
 
       - name: Install dependencies
