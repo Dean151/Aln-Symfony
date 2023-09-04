@@ -26,22 +26,27 @@ final class ChangePlanningApiTest extends FeederApiTestCase
             'message' => 'Planning have been changed',
         ]);
 
-        $this->getFeederRequest($id);
+        $response = $this->getFeederRequest($id);
         $this->assertResponseIsSuccessful();
-        $this->assertJsonContains([
-            'currentPlanning' => ['meals' => $meals],
-        ]);
+        $data = $response->toArray();
+        $new_meals = $data['currentPlanning']['meals'];
+        foreach ($meals as $meal) {
+            if (!array_key_exists('enabled', $meal)) {
+                $meal['enabled'] = true;
+            }
+            $this->assertNotFalse(array_search($meal, $new_meals), print_r($meal, true).' not found in '.print_r($new_meals, true));
+        }
     }
 
     public static function providePlanningChangeData(): \Generator
     {
         $meal1 = ['time' => ['hours' => 11, 'minutes' => 30], 'amount' => 10];
         $meal2 = ['time' => ['hours' => 17, 'minutes' => 20], 'amount' => 15];
-        $meal3 = ['time' => ['hours' => 5, 'minutes' => 0], 'amount' => 5, 'enabled' => false];
+        $disabled = ['time' => ['hours' => 21, 'minutes' => 0], 'amount' => 5, 'enabled' => false];
         yield [[]];
         yield [[$meal1]];
         yield [[$meal1, $meal2]];
-        yield [[$meal1, $meal2, $meal3]];
+        yield [[$meal1, $meal2, $disabled]];
     }
 
     /**

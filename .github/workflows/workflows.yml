@@ -8,6 +8,9 @@ on:
 
 jobs:
   tests:
+    strategy:
+      matrix:
+        version: [8.1, 8.2]
     name: Tests
     runs-on: ubuntu-22.04
     steps:
@@ -17,7 +20,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.1
+          php-version: ${{ matrix.version }}
           tools: composer
 
       - name: Install dependencies
@@ -64,13 +67,10 @@ jobs:
       - name: Install dependencies
         run: APP_ENV=prod APP_DEBUG=0 composer install --no-dev --optimize-autoloader --prefer-dist --no-progress --no-suggest
 
-      - name: Warm caches
-        run: rm -r var/cache/* && APP_ENV=prod APP_DEBUG=0 ./bin/console cache:clear
-
       - name: Rsync deploy
         uses: Burnett01/rsync-deployments@5.2.1
         with:
-          switches: -avzr --delete --exclude '.git' --exclude 'config/jwt' --exclude 'var/*.pid' --exclude 'var/log' --exclude '.env.local' --exclude '.env.*.local' --exclude '.github' --exclude '.phpunit.cache' --exclude '.php-cs-fixer.cache'
+          switches: -avzr --delete --exclude '.git' --exclude 'config/jwt' --exclude 'var' --exclude '.env.local' --exclude '.env.*.local' --exclude '.github' --exclude '.phpunit.cache' --exclude '.php-cs-fixer.cache'
           path: /
           remote_path: ${{ secrets.DEPLOY_PATH }}
           remote_host: ${{ secrets.DEPLOY_HOST }}
