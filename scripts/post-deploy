@@ -2,8 +2,15 @@
 
 set -e
 
+# Clean caches
+./bin/console -e prod cache:clear
+
+# Generate jwt keypair if needed
 ./bin/console lexik:jwt:generate-keypair --skip-if-exists
+
+# Update database
 ./bin/console -e prod doctrine:database:create --no-interaction --if-not-exists
 ./bin/console -e prod doctrine:migration:migrate --no-interaction --all-or-nothing --allow-no-migration
 
-# TODO: Restart Socket!
+# Restart socket
+# TODO: find a way to do it!
