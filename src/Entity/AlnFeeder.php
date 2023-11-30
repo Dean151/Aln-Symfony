@@ -165,7 +165,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             ],
             denormalizationContext: ['groups' => ['feeding:input']],
             security: 'is_granted(\'MANAGE\', object)',
-            validationContext: ['groups' => ['feeding:validation']]
+            validationContext: ['groups' => ['feeding:validation']],
         ),
         new Put(
             uriTemplate: '/feeders/{id}/planning',
