@@ -12,6 +12,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\ApiPlatform\Dto\IdentifierInput;
 use App\ApiPlatform\Dto\PlanningInput;
+use App\ApiPlatform\Provider\AlnFeederProvider;
 use App\Controller\AssociateFeeder;
 use App\Controller\ChangeDefaultMeal;
 use App\Controller\ChangePlanning;
@@ -136,7 +137,8 @@ use Symfony\Component\Validator\Constraints as Assert;
             ],
             denormalizationContext: ['groups' => ['feeding:input']],
             security: 'is_granted(\'MANAGE\', object)',
-            validationContext: ['groups' => ['feeding:validation']]
+            validationContext: ['groups' => ['feeding:validation']],
+            provider: AlnFeederProvider::class,
         ),
         new Put(
             uriTemplate: '/feeders/{id}/amount',

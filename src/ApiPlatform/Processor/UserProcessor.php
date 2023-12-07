@@ -10,6 +10,9 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
+/**
+ * @implements ProcessorInterface<User>
+ */
 final class UserProcessor implements ProcessorInterface
 {
     public function __construct(
