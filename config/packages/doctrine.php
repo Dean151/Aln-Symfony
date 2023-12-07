@@ -12,6 +12,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             'types' => [
                 'aln_time' => AlnTimeType::class,
             ],
+            'use_savepoints' => true,
         ],
         'orm' => [
             'auto_generate_proxy_classes' => true,

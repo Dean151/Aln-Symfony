@@ -86,7 +86,7 @@ final class RunSocketCommand extends Command implements SignalableCommandInterfa
         return [SIGINT, SIGTERM];
     }
 
-    public function handleSignal(int $signal): false|int
+    public function handleSignal(int $signal, int|false $previousExitCode = 0): false|int
     {
         $this->queueConsumer->shutdown();
         $this->socketServer->shutdown();

@@ -12,7 +12,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Temporary provider to fix an issue starting from ApiPlatform 3.1.11
- * See https://github.com/api-platform/core/issues/6014
+ * See https://github.com/api-platform/core/issues/6014 for more info.
  *
  * @implements ProviderInterface<AlnFeeder>
  */

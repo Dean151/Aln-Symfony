@@ -63,7 +63,7 @@ class SimulateFeederCommand extends Command implements SignalableCommandInterfac
         return [SIGINT, SIGTERM];
     }
 
-    public function handleSignal(int $signal): false|int
+    public function handleSignal(int $signal, int|false $previousExitCode = 0): false|int
     {
         $this->simulator->shutdown();
         $this->loop?->stop();
