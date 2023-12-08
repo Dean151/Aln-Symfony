@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use ApiPlatform\Validator\ValidatorInterface;
-use App\ApiPlatform\Dto\IdentifierInput;
+use App\ApiResource\Dto\IdentifierInput;
 use App\Entity\User;
 use App\Repository\AlnFeederRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

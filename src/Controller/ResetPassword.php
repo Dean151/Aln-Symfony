@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use ApiPlatform\Validator\ValidatorInterface;
-use App\ApiPlatform\Dto\EmailInput;
+use App\ApiResource\Dto\EmailInput;
 use App\Email\NewPasswordEmailFactory;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Response;

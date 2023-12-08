@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Socket;
 
-use App\ApiPlatform\Dto\MealInput;
-use App\ApiPlatform\Dto\TimeInput;
+use App\ApiResource\Dto\MealInput;
+use App\ApiResource\Dto\TimeInput;
 
 use function Safe\hex2bin;
 use function Safe\preg_match;

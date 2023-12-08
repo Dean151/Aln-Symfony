@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use ApiPlatform\Validator\ValidatorInterface;
-use App\ApiPlatform\Dto\PlanningInput;
+use App\ApiResource\Dto\PlanningInput;
 use App\Entity\AlnPlannedMeal;
 use App\Entity\AlnPlanning;
 use App\Queue\MessageEnqueueInterface;

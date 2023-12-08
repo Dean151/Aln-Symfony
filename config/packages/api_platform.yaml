@@ -1,0 +1,27 @@
+api_platform:
+  title: Aln-Symfony
+  description: 'More infos on Github: https://github.com/Dean151/Aln-Symfony'
+  version: '0.3.0'
+  show_webby: false
+  mapping:
+    paths:
+      - '%kernel.project_dir%/src/Entity'
+      - '%kernel.project_dir%/src/ApiResource/Dto'
+  formats:
+    json:
+      - 'application/json'
+    html:
+      - 'text/html'
+  patch_formats:
+    json:
+      - 'application/merge-patch+json'
+  swagger:
+    api_keys:
+      JWT:
+        name: 'Authorization'
+        type: 'header'
+  defaults:
+    normalization_context:
+      skip_null_values: false
+    input_formats: ['json']
+    output_formats: ['json']

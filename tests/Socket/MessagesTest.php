@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Socket;
 
-use App\ApiPlatform\Dto\MealInput;
-use App\ApiPlatform\Dto\TimeInput;
+use App\ApiResource\Dto\MealInput;
+use App\ApiResource\Dto\TimeInput;
 use App\Socket\MessageIdentification;
 use App\Socket\Messages\ChangeDefaultMealMessage;
 use App\Socket\Messages\ChangePlanningMessage;

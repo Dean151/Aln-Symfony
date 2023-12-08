@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Socket\Messages;
 
-use App\ApiPlatform\Dto\TimeInput;
+use App\ApiResource\Dto\TimeInput;
 
 final class MealTriggeredViaButtonMessage extends IdentifiedMessage
 {
