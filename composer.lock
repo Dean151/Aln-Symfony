@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a066b5d20b19a1af172f58e2d8c28f71",
+    "content-hash": "53d3a6bc4d0bac11f963d1cf3d4c76aa",
     "packages": [
         {
             "name": "api-platform/core",
@@ -2082,107 +2082,6 @@
                 }
             ],
             "time": "2023-12-05T22:22:51+00:00"
-        },
-        {
-            "name": "monolog/monolog",
-            "version": "3.5.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "c915e2634718dbc8a4a15c61b0e62e7a44e14448"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/c915e2634718dbc8a4a15c61b0e62e7a44e14448",
-                "reference": "c915e2634718dbc8a4a15c61b0e62e7a44e14448",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=8.1",
-                "psr/log": "^2.0 || ^3.0"
-            },
-            "provide": {
-                "psr/log-implementation": "3.0.0"
-            },
-            "require-dev": {
-                "aws/aws-sdk-php": "^3.0",
-                "doctrine/couchdb": "~1.0@dev",
-                "elasticsearch/elasticsearch": "^7 || ^8",
-                "ext-json": "*",
-                "graylog2/gelf-php": "^1.4.2 || ^2.0",
-                "guzzlehttp/guzzle": "^7.4.5",
-                "guzzlehttp/psr7": "^2.2",
-                "mongodb/mongodb": "^1.8",
-                "php-amqplib/php-amqplib": "~2.4 || ^3",
-                "phpstan/phpstan": "^1.9",
-                "phpstan/phpstan-deprecation-rules": "^1.0",
-                "phpstan/phpstan-strict-rules": "^1.4",
-                "phpunit/phpunit": "^10.1",
-                "predis/predis": "^1.1 || ^2",
-                "ruflin/elastica": "^7",
-                "symfony/mailer": "^5.4 || ^6",
-                "symfony/mime": "^5.4 || ^6"
-            },
-            "suggest": {
-                "aws/aws-sdk-php": "Allow sending log messages to AWS services like DynamoDB",
-                "doctrine/couchdb": "Allow sending log messages to a CouchDB server",
-                "elasticsearch/elasticsearch": "Allow sending log messages to an Elasticsearch server via official client",
-                "ext-amqp": "Allow sending log messages to an AMQP server (1.0+ required)",
-                "ext-curl": "Required to send log messages using the IFTTTHandler, the LogglyHandler, the SendGridHandler, the SlackWebhookHandler or the TelegramBotHandler",
-                "ext-mbstring": "Allow to work properly with unicode symbols",
-                "ext-mongodb": "Allow sending log messages to a MongoDB server (via driver)",
-                "ext-openssl": "Required to send log messages using SSL",
-                "ext-sockets": "Allow sending log messages to a Syslog server (via UDP driver)",
-                "graylog2/gelf-php": "Allow sending log messages to a GrayLog2 server",
-                "mongodb/mongodb": "Allow sending log messages to a MongoDB server (via library)",
-                "php-amqplib/php-amqplib": "Allow sending log messages to an AMQP server using php-amqplib",
-                "rollbar/rollbar": "Allow sending log messages to Rollbar",
-                "ruflin/elastica": "Allow sending log messages to an Elastic Search server"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-main": "3.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Monolog\\": "src/Monolog"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jordi Boggiano",
-                    "email": "j.boggiano@seld.be",
-                    "homepage": "https://seld.be"
-                }
-            ],
-            "description": "Sends your logs to files, sockets, inboxes, databases and various web services",
-            "homepage": "https://github.com/Seldaek/monolog",
-            "keywords": [
-                "log",
-                "logging",
-                "psr-3"
-            ],
-            "support": {
-                "issues": "https://github.com/Seldaek/monolog/issues",
-                "source": "https://github.com/Seldaek/monolog/tree/3.5.0"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/Seldaek",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/monolog/monolog",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2023-10-27T15:32:31+00:00"
         },
         {
             "name": "namshi/jose",
@@ -5397,166 +5296,6 @@
             "time": "2023-10-17T11:49:05+00:00"
         },
         {
-            "name": "symfony/monolog-bridge",
-            "version": "v6.4.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/monolog-bridge.git",
-                "reference": "c262c2f54ce7e160a231808817f306f880c32750"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/monolog-bridge/zipball/c262c2f54ce7e160a231808817f306f880c32750",
-                "reference": "c262c2f54ce7e160a231808817f306f880c32750",
-                "shasum": ""
-            },
-            "require": {
-                "monolog/monolog": "^1.25.1|^2|^3",
-                "php": ">=8.1",
-                "symfony/deprecation-contracts": "^2.5|^3",
-                "symfony/http-kernel": "^5.4|^6.0|^7.0",
-                "symfony/service-contracts": "^2.5|^3"
-            },
-            "conflict": {
-                "symfony/console": "<5.4",
-                "symfony/http-foundation": "<5.4",
-                "symfony/security-core": "<6.0"
-            },
-            "require-dev": {
-                "symfony/console": "^5.4|^6.0|^7.0",
-                "symfony/http-client": "^5.4|^6.0|^7.0",
-                "symfony/mailer": "^5.4|^6.0|^7.0",
-                "symfony/messenger": "^5.4|^6.0|^7.0",
-                "symfony/mime": "^5.4|^6.0|^7.0",
-                "symfony/security-core": "^6.0|^7.0",
-                "symfony/var-dumper": "^5.4|^6.0|^7.0"
-            },
-            "type": "symfony-bridge",
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Bridge\\Monolog\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Provides integration for Monolog with various Symfony components",
-            "homepage": "https://symfony.com",
-            "support": {
-                "source": "https://github.com/symfony/monolog-bridge/tree/v6.4.0"
-            },
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2023-10-31T08:18:17+00:00"
-        },
-        {
-            "name": "symfony/monolog-bundle",
-            "version": "v3.10.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/monolog-bundle.git",
-                "reference": "414f951743f4aa1fd0f5bf6a0e9c16af3fe7f181"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/monolog-bundle/zipball/414f951743f4aa1fd0f5bf6a0e9c16af3fe7f181",
-                "reference": "414f951743f4aa1fd0f5bf6a0e9c16af3fe7f181",
-                "shasum": ""
-            },
-            "require": {
-                "monolog/monolog": "^1.25.1 || ^2.0 || ^3.0",
-                "php": ">=7.2.5",
-                "symfony/config": "^5.4 || ^6.0 || ^7.0",
-                "symfony/dependency-injection": "^5.4 || ^6.0 || ^7.0",
-                "symfony/http-kernel": "^5.4 || ^6.0 || ^7.0",
-                "symfony/monolog-bridge": "^5.4 || ^6.0 || ^7.0"
-            },
-            "require-dev": {
-                "symfony/console": "^5.4 || ^6.0 || ^7.0",
-                "symfony/phpunit-bridge": "^6.3 || ^7.0",
-                "symfony/yaml": "^5.4 || ^6.0 || ^7.0"
-            },
-            "type": "symfony-bundle",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Bundle\\MonologBundle\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony MonologBundle",
-            "homepage": "https://symfony.com",
-            "keywords": [
-                "log",
-                "logging"
-            ],
-            "support": {
-                "issues": "https://github.com/symfony/monolog-bundle/issues",
-                "source": "https://github.com/symfony/monolog-bundle/tree/v3.10.0"
-            },
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2023-11-06T17:08:13+00:00"
-        },
-        {
             "name": "symfony/password-hasher",
             "version": "v6.4.0",
             "source": {
@@ -7117,20 +6856,20 @@
         },
         {
             "name": "symfony/stopwatch",
-            "version": "v6.4.0",
+            "version": "v7.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/stopwatch.git",
-                "reference": "fc47f1015ec80927ff64ba9094dfe8b9d48fe9f2"
+                "reference": "7bbfa3dd564a0ce12eb4acaaa46823c740f9cb7a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/stopwatch/zipball/fc47f1015ec80927ff64ba9094dfe8b9d48fe9f2",
-                "reference": "fc47f1015ec80927ff64ba9094dfe8b9d48fe9f2",
+                "url": "https://api.github.com/repos/symfony/stopwatch/zipball/7bbfa3dd564a0ce12eb4acaaa46823c740f9cb7a",
+                "reference": "7bbfa3dd564a0ce12eb4acaaa46823c740f9cb7a",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.1",
+                "php": ">=8.2",
                 "symfony/service-contracts": "^2.5|^3"
             },
             "type": "library",
@@ -7159,7 +6898,7 @@
             "description": "Provides a way to profile code",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/stopwatch/tree/v6.4.0"
+                "source": "https://github.com/symfony/stopwatch/tree/v7.0.0"
             },
             "funding": [
                 {
@@ -7175,7 +6914,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-02-16T10:14:28+00:00"
+            "time": "2023-07-05T13:06:06+00:00"
         },
         {
             "name": "symfony/string",
@@ -8708,74 +8447,6 @@
                 }
             ],
             "time": "2022-02-25T21:32:43+00:00"
-        },
-        {
-            "name": "dama/doctrine-test-bundle",
-            "version": "v8.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/dmaicher/doctrine-test-bundle.git",
-                "reference": "e382d27bc03ee04e0fd0ef95391047042792e7cc"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/dmaicher/doctrine-test-bundle/zipball/e382d27bc03ee04e0fd0ef95391047042792e7cc",
-                "reference": "e382d27bc03ee04e0fd0ef95391047042792e7cc",
-                "shasum": ""
-            },
-            "require": {
-                "doctrine/dbal": "^3.3 || ^4.0",
-                "doctrine/doctrine-bundle": "^2.2.2",
-                "ext-json": "*",
-                "php": "^7.3 || ^8.0",
-                "psr/cache": "^1.0 || ^2.0 || ^3.0",
-                "symfony/cache": "^5.4 || ^6.3 || ^7.0",
-                "symfony/framework-bundle": "^5.4 || ^6.3 || ^7.0"
-            },
-            "require-dev": {
-                "behat/behat": "^3.0",
-                "friendsofphp/php-cs-fixer": "^3.27",
-                "phpstan/phpstan": "^1.2",
-                "phpunit/phpunit": "^8.0 || ^9.0 || ^10.0",
-                "symfony/phpunit-bridge": "^6.3",
-                "symfony/process": "^5.4 || ^6.3 || ^7.0",
-                "symfony/yaml": "^5.4 || ^6.3 || ^7.0"
-            },
-            "type": "symfony-bundle",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "8.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "DAMA\\DoctrineTestBundle\\": "src/DAMA/DoctrineTestBundle"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "David Maicher",
-                    "email": "mail@dmaicher.de"
-                }
-            ],
-            "description": "Symfony bundle to isolate doctrine database tests and improve test performance",
-            "keywords": [
-                "doctrine",
-                "isolation",
-                "performance",
-                "symfony",
-                "testing",
-                "tests"
-            ],
-            "support": {
-                "issues": "https://github.com/dmaicher/doctrine-test-bundle/issues",
-                "source": "https://github.com/dmaicher/doctrine-test-bundle/tree/v8.0.1"
-            },
-            "time": "2023-12-05T16:11:29+00:00"
         },
         {
             "name": "doctrine/data-fixtures",
@@ -10995,27 +10666,27 @@
         },
         {
             "name": "symfony/browser-kit",
-            "version": "v6.4.0",
+            "version": "v7.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/browser-kit.git",
-                "reference": "a3bb210e001580ec75e1d02b27fae3452e6bf502"
+                "reference": "c53a6e9bcb4528be535d458450b07aa81620459e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/browser-kit/zipball/a3bb210e001580ec75e1d02b27fae3452e6bf502",
-                "reference": "a3bb210e001580ec75e1d02b27fae3452e6bf502",
+                "url": "https://api.github.com/repos/symfony/browser-kit/zipball/c53a6e9bcb4528be535d458450b07aa81620459e",
+                "reference": "c53a6e9bcb4528be535d458450b07aa81620459e",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.1",
-                "symfony/dom-crawler": "^5.4|^6.0|^7.0"
+                "php": ">=8.2",
+                "symfony/dom-crawler": "^6.4|^7.0"
             },
             "require-dev": {
-                "symfony/css-selector": "^5.4|^6.0|^7.0",
-                "symfony/http-client": "^5.4|^6.0|^7.0",
-                "symfony/mime": "^5.4|^6.0|^7.0",
-                "symfony/process": "^5.4|^6.0|^7.0"
+                "symfony/css-selector": "^6.4|^7.0",
+                "symfony/http-client": "^6.4|^7.0",
+                "symfony/mime": "^6.4|^7.0",
+                "symfony/process": "^6.4|^7.0"
             },
             "type": "library",
             "autoload": {
@@ -11043,7 +10714,7 @@
             "description": "Simulates the behavior of a web browser, allowing you to make requests, click on links and submit forms programmatically",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/browser-kit/tree/v6.4.0"
+                "source": "https://github.com/symfony/browser-kit/tree/v7.0.0"
             },
             "funding": [
                 {
@@ -11059,81 +10730,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-10-31T08:18:17+00:00"
-        },
-        {
-            "name": "symfony/debug-bundle",
-            "version": "v6.4.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/debug-bundle.git",
-                "reference": "1e07027423d1d37125b60a50997ada26a9d9d202"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/debug-bundle/zipball/1e07027423d1d37125b60a50997ada26a9d9d202",
-                "reference": "1e07027423d1d37125b60a50997ada26a9d9d202",
-                "shasum": ""
-            },
-            "require": {
-                "ext-xml": "*",
-                "php": ">=8.1",
-                "symfony/dependency-injection": "^5.4|^6.0|^7.0",
-                "symfony/http-kernel": "^5.4|^6.0|^7.0",
-                "symfony/twig-bridge": "^5.4|^6.0|^7.0",
-                "symfony/var-dumper": "^5.4|^6.0|^7.0"
-            },
-            "conflict": {
-                "symfony/config": "<5.4",
-                "symfony/dependency-injection": "<5.4"
-            },
-            "require-dev": {
-                "symfony/config": "^5.4|^6.0|^7.0",
-                "symfony/web-profiler-bundle": "^5.4|^6.0|^7.0"
-            },
-            "type": "symfony-bundle",
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Bundle\\DebugBundle\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Provides a tight integration of the Symfony VarDumper component and the ServerLogCommand from MonologBridge into the Symfony full-stack framework",
-            "homepage": "https://symfony.com",
-            "support": {
-                "source": "https://github.com/symfony/debug-bundle/tree/v6.4.0"
-            },
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2023-11-01T12:07:38+00:00"
+            "time": "2023-10-31T17:37:24+00:00"
         },
         {
             "name": "symfony/dom-crawler",
@@ -11204,28 +10801,27 @@
         },
         {
             "name": "symfony/http-client",
-            "version": "v6.4.0",
+            "version": "v7.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-client.git",
-                "reference": "5c584530b77aa10ae216989ffc48b4bedc9c0b29"
+                "reference": "c3e90d09b3c45a5d47170e81a712d51c352cbc68"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-client/zipball/5c584530b77aa10ae216989ffc48b4bedc9c0b29",
-                "reference": "5c584530b77aa10ae216989ffc48b4bedc9c0b29",
+                "url": "https://api.github.com/repos/symfony/http-client/zipball/c3e90d09b3c45a5d47170e81a712d51c352cbc68",
+                "reference": "c3e90d09b3c45a5d47170e81a712d51c352cbc68",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.1",
+                "php": ">=8.2",
                 "psr/log": "^1|^2|^3",
-                "symfony/deprecation-contracts": "^2.5|^3",
                 "symfony/http-client-contracts": "^3",
                 "symfony/service-contracts": "^2.5|^3"
             },
             "conflict": {
                 "php-http/discovery": "<1.15",
-                "symfony/http-foundation": "<6.3"
+                "symfony/http-foundation": "<6.4"
             },
             "provide": {
                 "php-http/async-client-implementation": "*",
@@ -11242,11 +10838,11 @@
                 "nyholm/psr7": "^1.0",
                 "php-http/httplug": "^1.0|^2.0",
                 "psr/http-client": "^1.0",
-                "symfony/dependency-injection": "^5.4|^6.0|^7.0",
-                "symfony/http-kernel": "^5.4|^6.0|^7.0",
-                "symfony/messenger": "^5.4|^6.0|^7.0",
-                "symfony/process": "^5.4|^6.0|^7.0",
-                "symfony/stopwatch": "^5.4|^6.0|^7.0"
+                "symfony/dependency-injection": "^6.4|^7.0",
+                "symfony/http-kernel": "^6.4|^7.0",
+                "symfony/messenger": "^6.4|^7.0",
+                "symfony/process": "^6.4|^7.0",
+                "symfony/stopwatch": "^6.4|^7.0"
             },
             "type": "library",
             "autoload": {
@@ -11277,7 +10873,7 @@
                 "http"
             ],
             "support": {
-                "source": "https://github.com/symfony/http-client/tree/v6.4.0"
+                "source": "https://github.com/symfony/http-client/tree/v7.0.0"
             },
             "funding": [
                 {
@@ -11293,7 +10889,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-11-28T20:55:58+00:00"
+            "time": "2023-11-29T08:40:23+00:00"
         },
         {
             "name": "symfony/http-client-contracts",
@@ -11534,27 +11130,27 @@
         },
         {
             "name": "symfony/phpunit-bridge",
-            "version": "v6.4.1",
+            "version": "v7.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/phpunit-bridge.git",
-                "reference": "cca5373a41d45edbeaf38b7b67f376da2205ff95"
+                "reference": "c2d059b25e31274157dd7727131cd1cf33650207"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/phpunit-bridge/zipball/cca5373a41d45edbeaf38b7b67f376da2205ff95",
-                "reference": "cca5373a41d45edbeaf38b7b67f376da2205ff95",
+                "url": "https://api.github.com/repos/symfony/phpunit-bridge/zipball/c2d059b25e31274157dd7727131cd1cf33650207",
+                "reference": "c2d059b25e31274157dd7727131cd1cf33650207",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.1.3"
+                "php": ">=7.2.5"
             },
             "conflict": {
                 "phpunit/phpunit": "<7.5|9.1.2"
             },
             "require-dev": {
                 "symfony/deprecation-contracts": "^2.5|^3.0",
-                "symfony/error-handler": "^5.4|^6.0|^7.0",
+                "symfony/error-handler": "^5.4|^6.4|^7.0",
                 "symfony/polyfill-php81": "^1.27"
             },
             "bin": [
@@ -11595,7 +11191,7 @@
             "description": "Provides utilities for PHPUnit, especially user deprecation notices management",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/phpunit-bridge/tree/v6.4.1"
+                "source": "https://github.com/symfony/phpunit-bridge/tree/v7.0.1"
             },
             "funding": [
                 {
@@ -11611,7 +11207,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-12-01T09:25:07+00:00"
+            "time": "2023-12-01T09:26:31+00:00"
         },
         {
             "name": "symfony/process",
@@ -11676,38 +11272,37 @@
         },
         {
             "name": "symfony/web-profiler-bundle",
-            "version": "v6.4.0",
+            "version": "v7.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/web-profiler-bundle.git",
-                "reference": "14752d3fb77c3c69b6cee7c03c06e2d6494a196b"
+                "reference": "e3bc3568b201fe1dec17352fef86868b74fa0226"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/web-profiler-bundle/zipball/14752d3fb77c3c69b6cee7c03c06e2d6494a196b",
-                "reference": "14752d3fb77c3c69b6cee7c03c06e2d6494a196b",
+                "url": "https://api.github.com/repos/symfony/web-profiler-bundle/zipball/e3bc3568b201fe1dec17352fef86868b74fa0226",
+                "reference": "e3bc3568b201fe1dec17352fef86868b74fa0226",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.1",
-                "symfony/config": "^5.4|^6.0|^7.0",
+                "php": ">=8.2",
+                "symfony/config": "^6.4|^7.0",
                 "symfony/framework-bundle": "^6.4|^7.0",
                 "symfony/http-kernel": "^6.4|^7.0",
-                "symfony/routing": "^5.4|^6.0|^7.0",
-                "symfony/twig-bundle": "^5.4|^6.0",
-                "twig/twig": "^2.13|^3.0.4"
+                "symfony/routing": "^6.4|^7.0",
+                "symfony/twig-bundle": "^6.4|^7.0",
+                "twig/twig": "^3.0.4"
             },
             "conflict": {
-                "symfony/form": "<5.4",
-                "symfony/mailer": "<5.4",
-                "symfony/messenger": "<5.4",
-                "symfony/twig-bundle": ">=7.0"
+                "symfony/form": "<6.4",
+                "symfony/mailer": "<6.4",
+                "symfony/messenger": "<6.4"
             },
             "require-dev": {
-                "symfony/browser-kit": "^5.4|^6.0|^7.0",
-                "symfony/console": "^5.4|^6.0|^7.0",
-                "symfony/css-selector": "^5.4|^6.0|^7.0",
-                "symfony/stopwatch": "^5.4|^6.0|^7.0"
+                "symfony/browser-kit": "^6.4|^7.0",
+                "symfony/console": "^6.4|^7.0",
+                "symfony/css-selector": "^6.4|^7.0",
+                "symfony/stopwatch": "^6.4|^7.0"
             },
             "type": "symfony-bundle",
             "autoload": {
@@ -11738,7 +11333,7 @@
                 "dev"
             ],
             "support": {
-                "source": "https://github.com/symfony/web-profiler-bundle/tree/v6.4.0"
+                "source": "https://github.com/symfony/web-profiler-bundle/tree/v7.0.0"
             },
             "funding": [
                 {
@@ -11754,7 +11349,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-11-07T14:57:07+00:00"
+            "time": "2023-11-18T18:20:00+00:00"
         },
         {
             "name": "thecodingmachine/phpstan-safe-rule",

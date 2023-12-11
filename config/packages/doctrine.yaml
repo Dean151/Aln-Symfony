@@ -1,7 +1,6 @@
 doctrine:
     dbal:
         url: '%env(resolve:DATABASE_URL)%'
-        use_savepoints: true
         types:
             aln_time: 'App\Dbal\Types\AlnTimeType'
 
