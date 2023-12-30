@@ -35,7 +35,6 @@ final class RunSocketCommand extends Command implements SignalableCommandInterfa
         private readonly AsyncConsumer $queueConsumer,
         private readonly AsyncServer $socketServer,
         private readonly FeederCommunicator $communicator,
-        private readonly KernelInterface $kernel,
         private readonly LoggerInterface $logger,
     ) {
         parent::__construct();
@@ -52,15 +51,8 @@ final class RunSocketCommand extends Command implements SignalableCommandInterfa
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $filename = $this->kernel->getProjectDir().'/var/socket.pid';
         try {
-            if (file_exists($filename)) {
-                $this->logger->error('Socket is already running with pid '.file_get_contents($filename));
-
-                return Command::FAILURE;
-            }
-            file_put_contents($filename, getmypid());
-
+            $this->logger->notice('Starting socket…');
             $this->loop = Loop::get();
 
             $this->queueConsumer->start($this->loop, $this->communicator);
@@ -68,12 +60,11 @@ final class RunSocketCommand extends Command implements SignalableCommandInterfa
 
             $this->loop->run();
 
-            unlink($filename);
+            $this->logger->notice('Socket closed.');
 
             return Command::SUCCESS;
         } catch (\Exception $e) {
-            unlink($filename);
-
+            $this->logger->error('Socket errored: '.$e->getMessage());
             return Command::FAILURE;
         }
     }
@@ -88,6 +79,8 @@ final class RunSocketCommand extends Command implements SignalableCommandInterfa
 
     public function handleSignal(int $signal, int|false $previousExitCode = 0): false|int
     {
+        $this->logger->notice('Signal retrieved: '.$signal.', shutting down.');
+
         $this->queueConsumer->shutdown();
         $this->socketServer->shutdown();
         $this->loop?->stop();
