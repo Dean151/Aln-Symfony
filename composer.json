@@ -40,7 +40,7 @@
         "symfony/twig-bundle": "6.4.*",
         "symfony/uid": "6.4.*",
         "symfony/validator": "6.4.*",
-        "symfony/yaml": "6.4.*",
+        "symfony/yaml": "7.0.*",
         "symfonycasts/reset-password-bundle": "^1.14",
         "thecodingmachine/safe": "^2.2"
     },
