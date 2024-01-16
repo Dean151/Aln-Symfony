@@ -15,12 +15,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\SignalableCommandInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\HttpKernel\KernelInterface;
-
-use function Safe\file_get_contents;
-use function Safe\file_put_contents;
-use function Safe\getmypid;
-use function Safe\unlink;
 
 #[AsCommand(
     name: 'aln:socket:run',
@@ -65,6 +59,7 @@ final class RunSocketCommand extends Command implements SignalableCommandInterfa
             return Command::SUCCESS;
         } catch (\Exception $e) {
             $this->logger->error('Socket errored: '.$e->getMessage());
+
             return Command::FAILURE;
         }
     }
