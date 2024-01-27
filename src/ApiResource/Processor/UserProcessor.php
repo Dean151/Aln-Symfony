@@ -11,13 +11,13 @@ use App\Repository\UserRepository;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /**
- * @implements ProcessorInterface<User>
+ * @implements ProcessorInterface<User, User>
  */
-final class UserProcessor implements ProcessorInterface
+final readonly class UserProcessor implements ProcessorInterface
 {
     public function __construct(
-        private readonly UserRepository $repository,
-        private readonly UserPasswordHasherInterface $userPasswordHasher,
+        private UserRepository              $repository,
+        private UserPasswordHasherInterface $userPasswordHasher,
     ) {
     }
 
