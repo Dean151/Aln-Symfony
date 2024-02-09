@@ -1,0 +1,8 @@
+includes:
+    - phpstan.dist.neon
+
+parameters:
+    paths:
+        - tests/
+    symfony:
+        containerXmlPath: var/cache/test/App_KernelTestDebugContainer.xml
