@@ -102,7 +102,7 @@ final class ChangeDefaultMealApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
 
-    private function changeDefaultMealRequest(int $feederId, int $amount, UserInterface $authenticatedAs = null): ResponseInterface
+    private function changeDefaultMealRequest(int $feederId, int $amount, ?UserInterface $authenticatedAs = null): ResponseInterface
     {
         $client = self::createClient();
 

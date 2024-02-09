@@ -22,7 +22,7 @@ abstract class AuthenticatedApiTestCase extends ApiTestCase
         return $user;
     }
 
-    protected function getOptions(UserInterface $authenticatedAs = null): HttpOptions
+    protected function getOptions(?UserInterface $authenticatedAs = null): HttpOptions
     {
         $options = new HttpOptions();
         $options->setHeaders(['Accept' => 'application/json']);

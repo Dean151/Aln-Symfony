@@ -106,7 +106,7 @@ final class AssociateFeederApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
-    private function associateFeederRequest(string $feederIdentifier, UserInterface $authenticatedAs = null): ResponseInterface
+    private function associateFeederRequest(string $feederIdentifier, ?UserInterface $authenticatedAs = null): ResponseInterface
     {
         $client = self::createClient();
 
@@ -115,7 +115,7 @@ final class AssociateFeederApiTest extends FeederApiTestCase
         ])->toArray());
     }
 
-    private function dissociateFeederRequest(int $feederId, UserInterface $authenticatedAs = null): ResponseInterface
+    private function dissociateFeederRequest(int $feederId, ?UserInterface $authenticatedAs = null): ResponseInterface
     {
         $client = self::createClient();
 

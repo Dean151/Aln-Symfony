@@ -20,7 +20,7 @@ final class PlanningInputDenormalizer implements DenormalizerInterface
     /**
      * @param array<string, mixed> $context
      */
-    public function supportsDenormalization(mixed $data, string $type, string $format = null, array $context = []): bool
+    public function supportsDenormalization(mixed $data, string $type, ?string $format = null, array $context = []): bool
     {
         if (!is_array($data) || PlanningInput::class !== $type || !($context[AbstractNormalizer::OBJECT_TO_POPULATE] instanceof AlnFeeder)) {
             return false;
@@ -40,7 +40,7 @@ final class PlanningInputDenormalizer implements DenormalizerInterface
     /**
      * @param array<string, mixed> $context
      */
-    public function denormalize(mixed $data, string $type, string $format = null, array $context = []): PlanningInput
+    public function denormalize(mixed $data, string $type, ?string $format = null, array $context = []): PlanningInput
     {
         $planning = $this->normalizer->denormalize($data, PlanningInput::class, $format, $context);
         assert($context[AbstractNormalizer::OBJECT_TO_POPULATE] instanceof AlnFeeder);

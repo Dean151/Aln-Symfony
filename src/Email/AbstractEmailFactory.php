@@ -65,7 +65,7 @@ abstract class AbstractEmailFactory
     /**
      * @param array<string, string> $context
      */
-    protected function translate(string $id, array $context, string $domain = null, string $locale = null): string
+    protected function translate(string $id, array $context, ?string $domain = null, ?string $locale = null): string
     {
         return $this->translator->trans($id, $context, $domain, $locale ?? $this->getLocale());
     }

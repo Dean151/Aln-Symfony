@@ -100,7 +100,7 @@ final class TriggerMealApiTest extends FeederApiTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
 
-    private function triggerMealRequest(int $feederId, int $amount, UserInterface $authenticatedAs = null): ResponseInterface
+    private function triggerMealRequest(int $feederId, int $amount, ?UserInterface $authenticatedAs = null): ResponseInterface
     {
         $client = self::createClient();
 

@@ -88,7 +88,7 @@ final class UserApiTest extends AuthenticatedApiTestCase
         ]);
     }
 
-    private function fetchCurrentUserRequest(UserInterface $authenticatedAs = null): ResponseInterface
+    private function fetchCurrentUserRequest(?UserInterface $authenticatedAs = null): ResponseInterface
     {
         $client = self::createClient();
 
@@ -98,7 +98,7 @@ final class UserApiTest extends AuthenticatedApiTestCase
     /**
      * @param array<string, string> $json
      */
-    private function updateUserRequest(int $userId, array $json, UserInterface $authenticatedAs = null): ResponseInterface
+    private function updateUserRequest(int $userId, array $json, ?UserInterface $authenticatedAs = null): ResponseInterface
     {
         $client = self::createClient();
 

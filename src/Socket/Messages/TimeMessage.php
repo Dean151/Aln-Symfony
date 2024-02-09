@@ -21,7 +21,7 @@ final class TimeMessage extends MessageInterface
         return new TimeMessage($time);
     }
 
-    public function __construct(TimeInput $time = null)
+    public function __construct(?TimeInput $time = null)
     {
         $this->time = $time ?? TimeInput::now();
     }
