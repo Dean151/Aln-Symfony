@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a116bf0ccbfa94b5df03d4d416f0963d",
+    "content-hash": "14b93ffe190258e4f07503bc026dd57a",
     "packages": [
         {
             "name": "api-platform/core",
@@ -3602,28 +3602,28 @@
         },
         {
             "name": "symfony/asset",
-            "version": "v6.4.3",
+            "version": "v7.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/asset.git",
-                "reference": "14b1c0fddb64af6ea626af51bb3c47af9fa19cb7"
+                "reference": "3ae493792fc17cc31b84e231f30f2d154575f171"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/asset/zipball/14b1c0fddb64af6ea626af51bb3c47af9fa19cb7",
-                "reference": "14b1c0fddb64af6ea626af51bb3c47af9fa19cb7",
+                "url": "https://api.github.com/repos/symfony/asset/zipball/3ae493792fc17cc31b84e231f30f2d154575f171",
+                "reference": "3ae493792fc17cc31b84e231f30f2d154575f171",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.1"
+                "php": ">=8.2"
             },
             "conflict": {
-                "symfony/http-foundation": "<5.4"
+                "symfony/http-foundation": "<6.4"
             },
             "require-dev": {
-                "symfony/http-client": "^5.4|^6.0|^7.0",
-                "symfony/http-foundation": "^5.4|^6.0|^7.0",
-                "symfony/http-kernel": "^5.4|^6.0|^7.0"
+                "symfony/http-client": "^6.4|^7.0",
+                "symfony/http-foundation": "^6.4|^7.0",
+                "symfony/http-kernel": "^6.4|^7.0"
             },
             "type": "library",
             "autoload": {
@@ -3651,7 +3651,7 @@
             "description": "Manages URL generation and versioning of web assets such as CSS stylesheets, JavaScript files and image files",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/asset/tree/v6.4.3"
+                "source": "https://github.com/symfony/asset/tree/v7.0.3"
             },
             "funding": [
                 {
@@ -3667,7 +3667,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-01-23T14:51:35+00:00"
+            "time": "2024-01-23T15:02:46+00:00"
         },
         {
             "name": "symfony/cache",
