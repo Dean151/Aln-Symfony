@@ -15,7 +15,7 @@ final class AsyncServer
     private ?SocketServer $socket = null;
 
     public function __construct(
-        #[Autowire('%env(string:WEBSOCKET_HOST)%')]
+        #[Autowire('%env(default:defaults.socket_host:string:WEBSOCKET_HOST)%')]
         private readonly string $host,
         #[Autowire('%env(int:WEBSOCKET_PORT)%')]
         private readonly int $port,

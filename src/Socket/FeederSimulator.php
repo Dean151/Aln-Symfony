@@ -34,9 +34,9 @@ final class FeederSimulator
     private ?ConnectionInterface $connection = null;
 
     public function __construct(
-        #[Autowire('%env(string:SIMULATOR_HOST)%')]
+        #[Autowire('%env(default:defaults.simulator_host:string:SIMULATOR_HOST)%')]
         private readonly string $host,
-        #[Autowire('%env(int:SIMULATOR_PORT)%')]
+        #[Autowire('%env(default:defaults.simulator_port:int:SIMULATOR_PORT)%')]
         private readonly int $port,
         private readonly LoggerInterface $logger,
     ) {

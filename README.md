@@ -25,8 +25,8 @@ Above, you'll also find a Swagger UI that will document available endpoints, res
 ### Create a user
 
 - `POST user/register` with your email in the body. It'll send an email with an activation link. For now this link is dead, but note the token in this URL for the next step.
-- `POST user/reset/consume` with the above in-url token to get your authorization token.
-- In swagger UI ; on the top-right "authorize" button ; add `Bearer <token>` value for making all following calls to be authenticated as yourself
+- `POST user/reset/consume` with the above in-url token to get your _authorization token_.
+- In swagger UI ; on the top-right "authorize" button ; add your _authorization token_ for all upcoming calls to be authenticated as yourself
 - `GET user/me` will allow to make sure the token is valid, that you're authenticated. And it'll respond with your associated feeders ; and your user id. Note it for next step.
 - `PUT user/{id}` with your password to create (or update) your password.
 
@@ -36,14 +36,14 @@ Please note that POST user/register will send a reset password mail if the email
 
 - `POST user/reset` with your email in the body. It'll send an email with an activation link. For now this link is dead, but note the token in this URL for the next step.
 - `POST user/reset/consume` with the above in-url token to get your authorization token.
-- In swagger UI ; on the top-right "authorize" button ; add `Bearer <token>` value for making all following calls to be authenticated as yourself
+- In swagger UI ; on the top-right "authorize" button ; add your _authorization token_ for all upcoming calls to be authenticated as yourself
 
 Please note that POST user/reset will sent a 200 response code even if the email does not exists.
 
 ### Login with password
 
 - `POST user/login` with your email & password in the body to get your authorization token.
-- In swagger UI ; on the top-right "authorize" button ; add `Bearer <token>` value for making all following calls to be authenticated as yourself
+- In swagger UI ; on the top-right "authorize" button ; add your _authorization token_ for all upcoming calls to be authenticated as yourself
 
 ### Configure your feeder
 
@@ -53,7 +53,7 @@ Before anything, you need to configure your feeder to communicate with our API.
 - Enter that IP address in your navigator ; and enter "admin" "admin" as username/password when prompted.
 - On the top-right, switch to english; unless you understand chinese.
 - Go to "Other settings"
-- Update Server Address to `api.feedmypet.app`
+- Update Server Address to `api.feedmypet.app` (or your local IP if you deploy the app yourself)
 - Make sure that Protocol is `TCP-Client`; and Port ID is `9999`
 - Save; and restart your feeder.
 
@@ -75,7 +75,7 @@ Before anything, you need to configure your feeder to communicate with our API.
 Tests run using a Docker environment:
 
 - Install dependencies with `composer install`
-- Boot a local environment using `composer boot`.
+- Boot a local environment using `docker-compose up -d`.
 - Then, run tests using `composer test`.
 
 ## Deploy your own self-hosted api
@@ -86,6 +86,42 @@ Tests run using a Docker environment:
 - MySQL database
 - RabbitMQ queuing system
 
-#### Deployment
+#### Deploy your own
 
-> Work in progress
+- Create a .env.local file with:
+```dotenv
+APP_ENV=prod
+
+# Generate a secret, see https://stackoverflow.com/questions/60837428/symfony-terminal-command-to-generate-a-new-app-secret
+APP_SECRET=<secret>
+
+# Configure your mysql database
+# <version> is either mysql (e.g. 5.7) or mariadb (mariadb-10.11.4)
+DATABASE_URL="mysql://<user>:<password>@<host>:<port>/<database_name>?serverVersion=<version>&charset=utf8mb4"
+
+# Configure RabbitMQ
+RABBITMQ_HOST=127.0.0.1
+RABBITMQ_PORT=5672
+RABBITMQ_USERNAME=guest
+RABBITMQ_PASSWORD=guest
+```
+
+- Install dependencies:
+```shell
+composer install --optimize-autoloader
+```
+
+- Even if authentication is left disabled, you need to generate a jwt pair of keys:
+```shell
+./bin/console lexik:jwt:generate-keypair
+```
+
+- Expose the Symfony /public/index.php using your preferred method. I prefer nginx
+See https://symfony.com/doc/current/deployment.html
+
+- Start the websocket for your feeder to connect to. Using something like supervisor is recommended.
+```shell
+./bin/console aln:socket:run
+```
+Now you can follow the steps for configuring your feeder above, and use it.
+If you do not enable authentication, you can skip all the authentication steps and use your feeder directly!
