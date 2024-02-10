@@ -106,22 +106,27 @@ RABBITMQ_USERNAME=guest
 RABBITMQ_PASSWORD=guest
 ```
 
+
 - Install dependencies:
 ```shell
 composer install --optimize-autoloader
 ```
+
 
 - Even if authentication is left disabled, you need to generate a jwt pair of keys:
 ```shell
 ./bin/console lexik:jwt:generate-keypair
 ```
 
-- Expose the Symfony /public/index.php using your preferred method. I prefer nginx
+
+- Expose the Symfony /public/index.php using your preferred method. (I prefer nginx)\
 See https://symfony.com/doc/current/deployment.html
+
 
 - Start the websocket for your feeder to connect to. Using something like supervisor is recommended.
 ```shell
 ./bin/console aln:socket:run
 ```
+
 Now you can follow the steps for configuring your feeder above, and use it.
 If you do not enable authentication, you can skip all the authentication steps and use your feeder directly!
