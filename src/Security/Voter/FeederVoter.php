@@ -10,6 +10,9 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
+/**
+ * @extends Voter<'VIEW'|'MANAGE', AlnFeeder>
+ */
 final class FeederVoter extends Voter
 {
     public const VIEW = 'VIEW';
