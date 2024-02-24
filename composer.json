@@ -14,7 +14,7 @@
         "api-platform/core": "^3.2",
         "doctrine/doctrine-bundle": "^2.7",
         "doctrine/doctrine-migrations-bundle": "^3.2",
-        "doctrine/orm": "^2.16",
+        "doctrine/orm": "^3.0",
         "lexik/jwt-authentication-bundle": "^2.16",
         "nelmio/cors-bundle": "^2.2",
         "php-amqplib/php-amqplib": "^3.2",
