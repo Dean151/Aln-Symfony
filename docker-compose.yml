@@ -3,21 +3,19 @@ version: '3'
 services:
 ###> doctrine/doctrine-bundle ###
   database:
-    image: 'mariadb:latest'
-    volumes:
-       - aln-db-data:/var/lib/mysql/data
+    image: mariadb:${MARIADB_VERSION:-10.11}
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: main
-    ports:
-      - 3306:3306
+      # You should definitely change the password in production
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-!ChangeMe!}
+    volumes:
+      - aln_database_data:/var/lib/mysql/data:rw
+      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
+      # - ./docker/db/data:/var/lib/postgresql/data:rw
 ###< doctrine/doctrine-bundle ###
   rabbitmq:
     image: rabbitmq:3.7-management
-    ports:
-      - 5672:5672
 
 volumes:
 ###> doctrine/doctrine-bundle ###
-  aln-db-data:
+  aln_database_data:
 ###< doctrine/doctrine-bundle ###
