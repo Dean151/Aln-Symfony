@@ -72,8 +72,14 @@ final class PutFeederApiTest extends FeederApiTestCase
     {
         $client = self::createClient();
 
-        return $client->request('PUT', "/feeders/{$feederId}", $this->getOptions($authenticatedAs)->setJson([
-            'name' => $newName,
-        ])->toArray());
+        $options = $this
+            ->getOptions($authenticatedAs)
+            ->setJson(['name' => $newName])
+            ->setHeaders([
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/merge-patch+json',
+            ]);
+
+        return $client->request('PATCH', "/feeders/{$feederId}", $options->toArray());
     }
 }

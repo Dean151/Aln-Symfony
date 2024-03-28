@@ -65,7 +65,7 @@ Before anything, you need to configure your feeder to communicate with our API.
 ### Manage your feeder
 
 - `GET feeders/{id}` will send you current status & parameters of your feeder.
-- `PUT feeders/{id}` with a name; to set a name to your feeder. I use the name of my pet for this.
+- `PATCH feeders/{id}` with a name; to set a name to your feeder. I use the name of my pet for this.
 - `POST feeders/{id}/feed` with an amount between 5 and 150 grams. Trigger an immediate meal.
 - `PUT feeders/{id}/amount` with an amount between 5 and 150 grams. Set the amount of food distributed when you press the button.
 - `PUT feeders/{id}/planning` with a set of meals. Allow to update the planned meals times and amount. Note that hours should be provided in UTC timezone, and is not sensitive to DST.
