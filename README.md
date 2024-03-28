@@ -28,7 +28,7 @@ Above, you'll also find a Swagger UI that will document available endpoints, res
 - `POST user/reset/consume` with the above in-url token to get your _authorization token_.
 - In swagger UI ; on the top-right "authorize" button ; add your _authorization token_ for all upcoming calls to be authenticated as yourself
 - `GET user/me` will allow to make sure the token is valid, that you're authenticated. And it'll respond with your associated feeders ; and your user id. Note it for next step.
-- `PUT user/{id}` with your password to create (or update) your password.
+- `PATCH user/{id}` with your password to create (or update) your password.
 
 Please note that POST user/register will send a reset password mail if the email already exists (see below)
 

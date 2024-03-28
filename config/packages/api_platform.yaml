@@ -5,6 +5,8 @@ api_platform:
   show_webby: false
   formats:
     json: [ 'application/json' ]
+  patch_formats:
+    json: [ 'application/merge-patch+json' ]
   docs_formats:
     jsonopenapi: [ 'application/vnd.openapi+json' ]
     html: [ 'text/html' ]
@@ -13,7 +15,7 @@ api_platform:
     cache_headers:
       vary: [ 'Content-Type', 'Authorization', 'Origin' ]
     extra_properties:
-      #standard_put: true
+      standard_put: true
       rfc_7807_compliant_errors: true
     normalization_context:
       skip_null_values: false
