@@ -1,5 +1,3 @@
-version: '3'
-
 services:
 ###> doctrine/doctrine-bundle ###
   database:
@@ -7,6 +5,7 @@ services:
     environment:
       # You should definitely change the password in production
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-!ChangeMe!}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-aln}
     volumes:
       - aln_database_data:/var/lib/mysql/data:rw
       # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
@@ -14,6 +13,12 @@ services:
 ###< doctrine/doctrine-bundle ###
   rabbitmq:
     image: rabbitmq:3.7-management
+
+###> symfony/mailer ###
+  mailer:
+    image: schickling/mailcatcher
+    ports: [1025, 1080]
+###< symfony/mailer ###
 
 volumes:
 ###> doctrine/doctrine-bundle ###

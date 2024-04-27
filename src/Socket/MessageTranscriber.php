@@ -83,6 +83,9 @@ trait MessageTranscriber
         $enabled = array_filter($meals, function (MealInput $meal) {
             return $meal->isEnabled;
         });
+        if (count($enabled) > 10) {
+            throw new \RuntimeException('Planning only allows up to 10 meals');
+        }
         $hexadecimalCount = str_pad(dechex(count($enabled)), 2, '0', STR_PAD_LEFT);
         $hexadecimalMeals = implode(array_map(function (MealInput $meal) {
             $hexadecimalTime = $this->encodeTime($meal->time);
