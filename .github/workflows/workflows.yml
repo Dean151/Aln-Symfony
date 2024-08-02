@@ -8,9 +8,6 @@ on:
 
 jobs:
   tests:
-    strategy:
-      matrix:
-        version: [8.3]
     name: Tests
     runs-on: ubuntu-22.04
     steps:
@@ -20,11 +17,16 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.version }}
+          php-version: 8.3
           tools: composer
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Install docker compose
+        run: |
+          curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          chmod +x /usr/local/bin/docker-compose
 
       - name: Build the stack
         run: docker-compose up -d
