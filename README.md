@@ -81,7 +81,7 @@ Tests run using a Docker environment:
 ## Deploy your own self-hosted api
 
 #### Requirements
-- PHP >= 8.2
+- PHP >= 8.3
 - Composer
 - MySQL database
 - RabbitMQ queuing system
