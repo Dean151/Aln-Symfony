@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Tests\Api;
 
-use App\Factory\UserFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 use Zenstruck\Foundry\Test\Factories;
+
+use function Zenstruck\Foundry\faker;
 
 final class UserApiTest extends AuthenticatedApiTestCase
 {
@@ -58,7 +59,7 @@ final class UserApiTest extends AuthenticatedApiTestCase
 
     public function testUpdatePassword(): void
     {
-        $newPassword = UserFactory::faker()->password();
+        $newPassword = faker()->password();
         $user = $this->getUserByEmail('user.nofeeder@example.com');
         $oldHash = $user->getPassword();
         $userId = $user->getId();

@@ -2,6 +2,7 @@ includes:
     - phpstan.dist.neon
 
 parameters:
+    tmpDir: var/phpstan/test
     paths:
         - tests/
     symfony:

@@ -23,7 +23,7 @@ final class RegisterUser extends AbstractNewPasswordController
         private readonly UserRepository $userRepository,
         ResetPasswordHelperInterface $resetPasswordHelper,
         MailerInterface $mailer,
-        NewPasswordEmailFactory $emailFactory
+        NewPasswordEmailFactory $emailFactory,
     ) {
         parent::__construct($resetPasswordHelper, $mailer, $emailFactory);
     }

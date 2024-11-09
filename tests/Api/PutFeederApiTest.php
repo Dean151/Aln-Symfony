@@ -11,13 +11,15 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 use Zalas\PHPUnit\Globals\Attribute\Env;
 use Zenstruck\Foundry\Test\Factories;
 
+use function Zenstruck\Foundry\faker;
+
 final class PutFeederApiTest extends FeederApiTestCase
 {
     use Factories;
 
     public function testUpdatingFeederName(): void
     {
-        $newName = AlnFeederFactory::faker()->name();
+        $newName = faker()->name();
         $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
         $this->putFeederNameRequest($id, $newName);
 
@@ -27,7 +29,7 @@ final class PutFeederApiTest extends FeederApiTestCase
 
     public function testUpdatingWithOutOfBoundName(): void
     {
-        $newName = AlnFeederFactory::faker()->paragraph(16);
+        $newName = faker()->paragraph(16);
         $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
         $this->putFeederNameRequest($id, $newName);
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -35,7 +37,7 @@ final class PutFeederApiTest extends FeederApiTestCase
 
     public function testUpdatingUnknownFeederId(): void
     {
-        $newName = AlnFeederFactory::faker()->firstName();
+        $newName = faker()->firstName();
         $id = random_int(0, PHP_INT_MAX);
         $this->putFeederNameRequest($id, $newName);
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
@@ -44,7 +46,7 @@ final class PutFeederApiTest extends FeederApiTestCase
     #[Env('AUTHENTICATION_ENABLED', 'true')]
     public function testUpdatingFeederNameOwnedFeeder(): void
     {
-        $newName = AlnFeederFactory::faker()->firstName();
+        $newName = faker()->firstName();
         $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
         $this->putFeederNameRequest($id, $newName, $this->getUserByEmail('user.feeder@example.com'));
         $this->assertResponseIsSuccessful();
@@ -53,7 +55,7 @@ final class PutFeederApiTest extends FeederApiTestCase
     #[Env('AUTHENTICATION_ENABLED', 'true')]
     public function testUpdatingFeederNameUnownedFeeder(): void
     {
-        $newName = AlnFeederFactory::faker()->firstName();
+        $newName = faker()->firstName();
         $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
         $this->putFeederNameRequest($id, $newName, $this->getUserByEmail('user.nofeeder@example.com'));
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
@@ -62,7 +64,7 @@ final class PutFeederApiTest extends FeederApiTestCase
     #[Env('AUTHENTICATION_ENABLED', 'true')]
     public function testUpdatingFeederNameUnauthenticated(): void
     {
-        $newName = AlnFeederFactory::faker()->firstName();
+        $newName = faker()->firstName();
         $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
         $this->putFeederNameRequest($id, $newName);
         $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);

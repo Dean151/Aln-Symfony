@@ -5,42 +5,24 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\Entity\AlnPlanning;
-use App\Repository\AlnPlanningRepository;
-use Zenstruck\Foundry\ModelFactory;
-use Zenstruck\Foundry\Proxy;
-use Zenstruck\Foundry\RepositoryProxy;
+use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
- * @extends ModelFactory<AlnPlanning>
- *
- * @method static AlnPlanning|Proxy                     createOne(array $attributes = [])
- * @method static AlnPlanning[]|Proxy[]                 createMany(int $number, array|callable $attributes = [])
- * @method static AlnPlanning|Proxy                     find(object|array|mixed $criteria)
- * @method static AlnPlanning|Proxy                     findOrCreate(array $attributes)
- * @method static AlnPlanning|Proxy                     first(string $sortedField = 'id')
- * @method static AlnPlanning|Proxy                     last(string $sortedField = 'id')
- * @method static AlnPlanning|Proxy                     random(array $attributes = [])
- * @method static AlnPlanning|Proxy                     randomOrCreate(array $attributes = [])
- * @method static AlnPlanning[]|Proxy[]                 all()
- * @method static AlnPlanning[]|Proxy[]                 findBy(array $attributes)
- * @method static AlnPlanning[]|Proxy[]                 randomSet(int $number, array $attributes = [])
- * @method static AlnPlanning[]|Proxy[]                 randomRange(int $min, int $max, array $attributes = [])
- * @method static AlnPlanningRepository|RepositoryProxy repository()
- * @method        AlnPlanning|Proxy                     create(array|callable $attributes = [])
+ * @extends PersistentProxyObjectFactory<AlnPlanning>
  */
-final class AlnPlanningFactory extends ModelFactory
+final class AlnPlanningFactory extends PersistentProxyObjectFactory
 {
     /**
      * @return array<string, mixed>
      */
-    protected function getDefaults(): array
+    protected function defaults(): array
     {
         return [
             'createdOn' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
         ];
     }
 
-    protected static function getClass(): string
+    public static function class(): string
     {
         return AlnPlanning::class;
     }

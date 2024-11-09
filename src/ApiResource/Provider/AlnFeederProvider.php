@@ -23,7 +23,7 @@ final class AlnFeederProvider implements ProviderInterface
      */
     public function __construct(
         #[Autowire('@api_platform.doctrine.orm.state.item_provider')]
-        private readonly ProviderInterface $itemProvider
+        private readonly ProviderInterface $itemProvider,
     ) {
     }
 

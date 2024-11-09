@@ -5,35 +5,17 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\Entity\AlnPlannedMeal;
-use App\Repository\AlnPlannedMealRepository;
-use Zenstruck\Foundry\ModelFactory;
-use Zenstruck\Foundry\Proxy;
-use Zenstruck\Foundry\RepositoryProxy;
+use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
- * @extends ModelFactory<AlnPlannedMeal>
- *
- * @method static AlnPlannedMeal|Proxy                     createOne(array $attributes = [])
- * @method static AlnPlannedMeal[]|Proxy[]                 createMany(int $number, array|callable $attributes = [])
- * @method static AlnPlannedMeal|Proxy                     find(object|array|mixed $criteria)
- * @method static AlnPlannedMeal|Proxy                     findOrCreate(array $attributes)
- * @method static AlnPlannedMeal|Proxy                     first(string $sortedField = 'id')
- * @method static AlnPlannedMeal|Proxy                     last(string $sortedField = 'id')
- * @method static AlnPlannedMeal|Proxy                     random(array $attributes = [])
- * @method static AlnPlannedMeal|Proxy                     randomOrCreate(array $attributes = [])
- * @method static AlnPlannedMeal[]|Proxy[]                 all()
- * @method static AlnPlannedMeal[]|Proxy[]                 findBy(array $attributes)
- * @method static AlnPlannedMeal[]|Proxy[]                 randomSet(int $number, array $attributes = [])
- * @method static AlnPlannedMeal[]|Proxy[]                 randomRange(int $min, int $max, array $attributes = [])
- * @method static AlnPlannedMealRepository|RepositoryProxy repository()
- * @method        AlnPlannedMeal|Proxy                     create(array|callable $attributes = [])
+ * @extends PersistentProxyObjectFactory<AlnPlannedMeal>
  */
-final class AlnPlannedMealFactory extends ModelFactory
+final class AlnPlannedMealFactory extends PersistentProxyObjectFactory
 {
     /**
      * @return array<string, mixed>
      */
-    protected function getDefaults(): array
+    protected function defaults(): array
     {
         return [
             'time' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
@@ -42,7 +24,7 @@ final class AlnPlannedMealFactory extends ModelFactory
         ];
     }
 
-    protected static function getClass(): string
+    public static function class(): string
     {
         return AlnPlannedMeal::class;
     }

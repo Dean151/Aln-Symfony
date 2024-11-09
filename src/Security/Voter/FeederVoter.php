@@ -20,7 +20,7 @@ final class FeederVoter extends Voter
 
     public function __construct(
         #[Autowire('%env(bool:AUTHENTICATION_ENABLED)%')]
-        private readonly bool $authenticationEnabled
+        private readonly bool $authenticationEnabled,
     ) {
     }
 
