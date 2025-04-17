@@ -108,9 +108,6 @@ final class UserApiTest extends AuthenticatedApiTestCase
 
     private function getPasswordHasher(): UserPasswordHasher
     {
-        $hasher = self::getContainer()->get(UserPasswordHasher::class);
-        \assert($hasher instanceof UserPasswordHasher);
-
-        return $hasher;
+        return self::getContainer()->get(UserPasswordHasher::class);
     }
 }

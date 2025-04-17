@@ -21,7 +21,7 @@ class AlnPlannedMeal
 
     #[ORM\ManyToOne(inversedBy: 'meals')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?AlnPlanning $planning = null;
+    private AlnPlanning $planning;
 
     /**
      * @var ?array{hours: int<0, 23>, minutes: int<0, 59>}
@@ -35,6 +35,7 @@ class AlnPlannedMeal
      */
     #[ORM\Column(type: Types::SMALLINT)]
     #[Groups(['feeder:output'])]
+    /* @phpstan-ignore doctrine.columnType */
     private int $amount;
 
     #[ORM\Column(type: Types::BOOLEAN)]
@@ -53,12 +54,12 @@ class AlnPlannedMeal
         return $this->id;
     }
 
-    public function getPlanning(): ?AlnPlanning
+    public function getPlanning(): AlnPlanning
     {
         return $this->planning;
     }
 
-    public function setPlanning(?AlnPlanning $planning): self
+    public function setPlanning(AlnPlanning $planning): self
     {
         $this->planning = $planning;
 

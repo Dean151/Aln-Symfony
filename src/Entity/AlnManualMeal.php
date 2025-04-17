@@ -19,7 +19,7 @@ class AlnManualMeal
 
     #[ORM\ManyToOne(inversedBy: 'manualMeals')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?AlnFeeder $feeder = null;
+    private AlnFeeder $feeder;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $distributedOn = null;
@@ -28,6 +28,7 @@ class AlnManualMeal
      * @var int<5, 150>
      */
     #[ORM\Column(type: Types::SMALLINT)]
+    /* @phpstan-ignore doctrine.columnType */
     private int $amount;
 
     /**
@@ -46,12 +47,12 @@ class AlnManualMeal
         return $this->id;
     }
 
-    public function getFeeder(): ?AlnFeeder
+    public function getFeeder(): AlnFeeder
     {
         return $this->feeder;
     }
 
-    public function setFeeder(?AlnFeeder $feeder): self
+    public function setFeeder(AlnFeeder $feeder): self
     {
         $this->feeder = $feeder;
 

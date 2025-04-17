@@ -35,10 +35,7 @@ abstract class AuthenticatedApiTestCase extends ApiTestCase
 
     private function getUserRepository(): UserRepository
     {
-        $repository = self::getContainer()->get(UserRepository::class);
-        $this->assertInstanceOf(UserRepository::class, $repository);
-
-        return $repository;
+        return self::getContainer()->get(UserRepository::class);
     }
 
     private function getAuthenticationToken(UserInterface $user): string
@@ -48,9 +45,6 @@ abstract class AuthenticatedApiTestCase extends ApiTestCase
 
     private function getJwtManager(): JWTManager
     {
-        $manager = self::getContainer()->get('lexik_jwt_authentication.jwt_manager');
-        $this->assertInstanceOf(JWTManager::class, $manager);
-
-        return $manager;
+        return self::getContainer()->get('lexik_jwt_authentication.jwt_manager');
     }
 }

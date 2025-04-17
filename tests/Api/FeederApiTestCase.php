@@ -12,7 +12,6 @@ abstract class FeederApiTestCase extends AuthenticatedApiTestCase
     protected function findFeeder(string $identifier): AlnFeeder
     {
         $repository = $this->getContainer()->get(AlnFeederRepository::class);
-        $this->assertInstanceOf(AlnFeederRepository::class, $repository);
         $feeder = $repository->findOneByIdentifier($identifier);
         $this->assertInstanceOf(AlnFeeder::class, $feeder);
 

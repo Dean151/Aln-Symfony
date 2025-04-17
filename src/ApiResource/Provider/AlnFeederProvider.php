@@ -8,7 +8,6 @@ use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 use App\Entity\AlnFeeder;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Temporary provider to fix an issue starting from ApiPlatform 3.1.11
@@ -31,7 +30,7 @@ final class AlnFeederProvider implements ProviderInterface
     {
         $feeder = $this->itemProvider->provide($operation, $uriVariables, $context);
         if (is_null($feeder)) {
-            throw new NotFoundHttpException();
+            return null;
         }
 
         assert($feeder instanceof AlnFeeder);

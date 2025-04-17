@@ -21,7 +21,7 @@ class AlnPlanning
 
     #[ORM\ManyToOne(inversedBy: 'plannings')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?AlnFeeder $feeder = null;
+    private AlnFeeder $feeder;
 
     /**
      * @var Collection<int, AlnPlannedMeal>
@@ -44,12 +44,12 @@ class AlnPlanning
         return $this->id;
     }
 
-    public function getFeeder(): ?AlnFeeder
+    public function getFeeder(): AlnFeeder
     {
         return $this->feeder;
     }
 
-    public function setFeeder(?AlnFeeder $feeder): self
+    public function setFeeder(AlnFeeder $feeder): self
     {
         $this->feeder = $feeder;
 
@@ -69,18 +69,6 @@ class AlnPlanning
         if (!$this->meals->contains($meal)) {
             $this->meals[] = $meal;
             $meal->setPlanning($this);
-        }
-
-        return $this;
-    }
-
-    public function removeMeal(AlnPlannedMeal $meal): self
-    {
-        if ($this->meals->removeElement($meal)) {
-            // set the owning side to null (unless already changed)
-            if ($meal->getPlanning() === $this) {
-                $meal->setPlanning(null);
-            }
         }
 
         return $this;

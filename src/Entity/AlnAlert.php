@@ -20,7 +20,7 @@ class AlnAlert
     #[ORM\Column(length: 255)]
     private string $type;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private \DateTimeImmutable $triggeredOn;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

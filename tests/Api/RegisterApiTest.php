@@ -92,9 +92,6 @@ final class RegisterApiTest extends AuthenticatedApiTestCase
 
     private function getResetPasswordRequestRepository(): ResetPasswordRequestRepository
     {
-        $repository = self::getContainer()->get(ResetPasswordRequestRepository::class);
-        $this->assertInstanceOf(ResetPasswordRequestRepository::class, $repository);
-
-        return $repository;
+        return self::getContainer()->get(ResetPasswordRequestRepository::class);
     }
 }

@@ -10,11 +10,6 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<AlnPlanning>
- *
- * @method AlnPlanning|null find($id, $lockMode = null, $lockVersion = null)
- * @method AlnPlanning|null findOneBy(array $criteria, array $orderBy = null)
- * @method AlnPlanning[]    findAll()
- * @method AlnPlanning[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 final class AlnPlanningRepository extends ServiceEntityRepository
 {

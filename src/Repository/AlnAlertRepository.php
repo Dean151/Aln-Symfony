@@ -10,11 +10,6 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<AlnAlert>
- *
- * @method AlnAlert|null find($id, $lockMode = null, $lockVersion = null)
- * @method AlnAlert|null findOneBy(array $criteria, array $orderBy = null)
- * @method AlnAlert[]    findAll()
- * @method AlnAlert[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 final class AlnAlertRepository extends ServiceEntityRepository
 {

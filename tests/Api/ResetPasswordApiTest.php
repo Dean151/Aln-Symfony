@@ -131,17 +131,11 @@ final class ResetPasswordApiTest extends AuthenticatedApiTestCase
 
     private function getResetPasswordHelper(): ResetPasswordHelperInterface
     {
-        $helper = self::getContainer()->get(ResetPasswordHelperInterface::class);
-        $this->assertInstanceOf(ResetPasswordHelperInterface::class, $helper);
-
-        return $helper;
+        return self::getContainer()->get(ResetPasswordHelperInterface::class);
     }
 
     private function getResetPasswordRequestRepository(): ResetPasswordRequestRepository
     {
-        $repository = self::getContainer()->get(ResetPasswordRequestRepository::class);
-        $this->assertInstanceOf(ResetPasswordRequestRepository::class, $repository);
-
-        return $repository;
+        return self::getContainer()->get(ResetPasswordRequestRepository::class);
     }
 }

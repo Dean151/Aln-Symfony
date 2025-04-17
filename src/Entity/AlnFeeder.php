@@ -357,18 +357,6 @@ class AlnFeeder
         return $this;
     }
 
-    public function removePlanning(AlnPlanning $planning): self
-    {
-        if ($this->plannings->removeElement($planning)) {
-            // set the owning side to null (unless already changed)
-            if ($planning->getFeeder() === $this) {
-                $planning->setFeeder(null);
-            }
-        }
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, AlnManualMeal>
      */
@@ -382,18 +370,6 @@ class AlnFeeder
         if (!$this->manualMeals->contains($meal)) {
             $this->manualMeals[] = $meal;
             $meal->setFeeder($this);
-        }
-
-        return $this;
-    }
-
-    public function removeManualMeal(AlnManualMeal $meal): self
-    {
-        if ($this->manualMeals->removeElement($meal)) {
-            // set the owning side to null (unless already changed)
-            if ($meal->getFeeder() === $this) {
-                $meal->setFeeder(null);
-            }
         }
 
         return $this;
