@@ -6,8 +6,9 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
+use ApiPlatform\OpenApi\Model\Operation;
 use App\ApiResource\Dto\LoginInput;
 use App\ApiResource\Dto\ResetPassTokenInput;
 use App\ApiResource\Processor\UserProcessor;
@@ -16,7 +17,7 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -27,50 +28,48 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
         new Get(
             uriTemplate: '/user/me',
             controller: GetCurrentUser::class,
-            openapiContext: [
-                'summary' => 'Get current user information',
-                'description' => '#withoutIdentifier Get current user information',
-                'parameters' => [],
-            ],
+            openapi: new Operation(
+                summary: 'Get current user information',
+                description: '#withoutIdentifier',
+                parameters: [],
+            ),
             read: false
         ),
-        new Put(
+        new Patch(
             uriTemplate: '/user/{id}',
             security: 'object == user',
             processor: UserProcessor::class,
         ),
         new Post(
             uriTemplate: '/user/login',
-            status: Response::HTTP_OK,
-            openapiContext: [
-                'summary' => 'Request an authentication token using email/password',
-                'description' => 'Request an authentication token using email/password',
-                'responses' => [
-                    Response::HTTP_OK => [
-                        'description' => 'Authenticated successfully',
-                    ],
-                    Response::HTTP_UNAUTHORIZED => [
-                        'description' => 'Wrong credentials',
-                    ],
+            status: HttpResponse::HTTP_OK,
+            openapi: new Operation(
+                responses: [
+                    HttpResponse::HTTP_OK => new Operation(
+                        description: 'Authenticated successfully',
+                    ),
+                    HttpResponse::HTTP_UNAUTHORIZED => new Operation(
+                        description: 'Wrong credentials',
+                    ),
                 ],
-            ],
+                summary: 'Request an authentication token using email/password',
+            ),
             input: LoginInput::class,
         ),
         new Post(
             uriTemplate: '/user/reset/consume',
-            status: Response::HTTP_OK,
-            openapiContext: [
-                'summary' => 'Request an authentication token using a reset password token',
-                'description' => 'Request an authentication token using a reset password token',
-                'responses' => [
-                    Response::HTTP_OK => [
-                        'description' => 'Authenticated successfully',
-                    ],
-                    Response::HTTP_UNAUTHORIZED => [
-                        'description' => 'Wrong credentials',
-                    ],
+            status: HttpResponse::HTTP_OK,
+            openapi: new Operation(
+                responses: [
+                    HttpResponse::HTTP_OK => new Operation(
+                        description: 'Authenticated successfully',
+                    ),
+                    HttpResponse::HTTP_UNAUTHORIZED => new Operation(
+                        description: 'Wrong credentials',
+                    ),
                 ],
-            ],
+                summary: 'Request an authentication token using a reset password token',
+            ),
             input: ResetPassTokenInput::class,
         ),
     ],

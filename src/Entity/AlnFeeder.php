@@ -8,8 +8,10 @@ use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
+use ApiPlatform\OpenApi\Model\Operation;
+use ApiPlatform\OpenApi\Model\RequestBody;
 use App\ApiResource\Dto\IdentifierInput;
 use App\ApiResource\Dto\PlanningInput;
 use App\ApiResource\Provider\AlnFeederProvider;
@@ -24,7 +26,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Safe\DateTimeImmutable;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -33,13 +35,26 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new Post(
             uriTemplate: '/feeders/associate',
-            status: Response::HTTP_OK,
+            status: HttpResponse::HTTP_OK,
             controller: AssociateFeeder::class,
-            openapiContext: [
-                'summary' => 'Associate an unassociated feeder to your account',
-                'description' => 'Associate an unassociated feeder to your account',
-                'requestBody' => [
-                    'content' => [
+            openapi: new Operation(
+                responses: [
+                    HttpResponse::HTTP_OK => new Operation(
+                        description: 'Feeder associated',
+                    ),
+                    HttpResponse::HTTP_UNAUTHORIZED => new Operation(
+                        description: 'Not logged in',
+                    ),
+                    HttpResponse::HTTP_FORBIDDEN => new Operation(
+                        description: 'Feeder already associated',
+                    ),
+                    HttpResponse::HTTP_NOT_FOUND => new Operation(
+                        description: 'Feeder not registered',
+                    ),
+                ],
+                summary: 'Associate an unassociated feeder to your account',
+                requestBody: new RequestBody(
+                    content: new \ArrayObject([
                         'application/json' => [
                             'schema' => [
                                 'type' => 'object',
@@ -48,152 +63,132 @@ use Symfony\Component\Validator\Constraints as Assert;
                                 ],
                             ],
                         ],
-                    ],
-                ],
-                'responses' => [
-                    Response::HTTP_OK => [
-                        'description' => 'Feeder associated',
-                    ],
-                    Response::HTTP_UNAUTHORIZED => [
-                        'description' => 'Not logged in',
-                    ],
-                    Response::HTTP_FORBIDDEN => [
-                        'description' => 'Feeder already associated',
-                    ],
-                    Response::HTTP_NOT_FOUND => [
-                        'description' => 'Feeder not registered',
-                    ],
-                ],
-            ],
+                    ])
+                )
+            ),
             denormalizationContext: ['groups' => []],
             security: 'is_granted(\'IS_AUTHENTICATED\')',
             validationContext: ['groups' => []],
             input: IdentifierInput::class,
         ),
         new Get(
-            openapiContext: [
-                'summary' => 'Retrieve feeder status and settings',
-                'description' => 'Retrieve feeder status and settings',
-            ],
+            openapi: new Operation(
+                summary: 'Retrieve feeder status and settings',
+            ),
             security: 'is_granted(\'VIEW\', object)',
         ),
-        new Put(
-            openapiContext: [
-                'summary' => 'Update feeder name',
-                'description' => 'Update feeder name',
-            ],
+        new Patch(
+            openapi: new Operation(
+                summary: 'Update feeder name',
+            ),
             security: 'is_granted(\'MANAGE\', object)',
         ),
         new Delete(
             uriTemplate: '/feeders/{id}/association',
-            status: Response::HTTP_OK,
+            status: HttpResponse::HTTP_OK,
             controller: DissociateFeeder::class,
-            openapiContext: [
-                'summary' => 'Dissociate an associated feeder from your account',
-                'description' => 'Dissociate an associated feeder from your account',
-                'responses' => [
-                    Response::HTTP_OK => [
-                        'description' => 'Feeder dissociated',
-                    ],
-                    Response::HTTP_UNAUTHORIZED => [
-                        'description' => 'Not logged in',
-                    ],
-                    Response::HTTP_FORBIDDEN => [
-                        'description' => 'Feeder not associated to current account',
-                    ],
-                    Response::HTTP_NOT_FOUND => [
-                        'description' => 'Feeder not registered',
-                    ],
+            openapi: new Operation(
+                responses: [
+                    HttpResponse::HTTP_OK => new Operation(
+                        description: 'Feeder dissociated',
+                    ),
+                    HttpResponse::HTTP_UNAUTHORIZED => new Operation(
+                        description: 'Not logged in',
+                    ),
+                    HttpResponse::HTTP_FORBIDDEN => new Operation(
+                        description: 'Feeder not associated to current account',
+                    ),
+                    HttpResponse::HTTP_NOT_FOUND => new Operation(
+                        description: 'Feeder not registered',
+                    ),
                 ],
-            ],
+                summary: 'Dissociate an associated feeder from your account',
+            ),
             denormalizationContext: ['groups' => []],
             security: 'is_granted(\'MANAGE\', object)',
             validationContext: ['groups' => []]
         ),
         new Post(
             uriTemplate: '/feeders/{id}/feed',
-            status: Response::HTTP_OK,
+            status: HttpResponse::HTTP_OK,
             controller: TriggerManualMeal::class,
-            openapiContext: [
-                'summary' => 'Trigger a meal immediately with specified amount in grams',
-                'description' => 'Trigger a meal immediately with specified amount in grams',
-                'responses' => [
-                    Response::HTTP_OK => [
-                        'description' => 'Meal distributed',
-                    ],
-                    Response::HTTP_NOT_FOUND => [
-                        'description' => 'Feeder not registered',
-                    ],
-                    Response::HTTP_CONFLICT => [
-                        'description' => 'Feeder not connected',
-                    ],
-                    Response::HTTP_UNPROCESSABLE_ENTITY => [
-                        'description' => 'Meal amount is not valid',
-                    ],
-                    Response::HTTP_SERVICE_UNAVAILABLE => [
-                        'description' => 'Feeder did not responded to request',
-                    ],
+            openapi: new Operation(
+                responses: [
+                    HttpResponse::HTTP_OK => new Operation(
+                        description: 'Meal distributed',
+                    ),
+                    HttpResponse::HTTP_NOT_FOUND => new Operation(
+                        description: 'Feeder not registered',
+                    ),
+                    HttpResponse::HTTP_CONFLICT => new Operation(
+                        description: 'Feeder not connected',
+                    ),
+                    HttpResponse::HTTP_UNPROCESSABLE_ENTITY => new Operation(
+                        description: 'Meal amount is not valid',
+                    ),
+                    HttpResponse::HTTP_SERVICE_UNAVAILABLE => new Operation(
+                        description: 'Feeder did not responded to request',
+                    ),
                 ],
-            ],
+                summary: 'Trigger a meal immediately with specified amount in grams',
+            ),
             denormalizationContext: ['groups' => ['feeding:input']],
             security: 'is_granted(\'MANAGE\', object)',
             validationContext: ['groups' => ['feeding:validation']],
             provider: AlnFeederProvider::class,
         ),
-        new Put(
+        new Patch(
             uriTemplate: '/feeders/{id}/amount',
-            status: Response::HTTP_OK,
+            status: HttpResponse::HTTP_OK,
             controller: ChangeDefaultMeal::class,
-            openapiContext: [
-                'summary' => 'Update the amount distributed when the feeder button is pressed in grams',
-                'description' => 'Update the amount distributed when the feeder button is pressed in grams',
-                'responses' => [
-                    Response::HTTP_OK => [
-                        'description' => 'Default meal amount updated',
-                    ],
-                    Response::HTTP_NOT_FOUND => [
-                        'description' => 'Feeder not registered',
-                    ],
-                    Response::HTTP_CONFLICT => [
-                        'description' => 'Feeder not connected',
-                    ],
-                    Response::HTTP_UNPROCESSABLE_ENTITY => [
-                        'description' => 'Meal amount is not valid',
-                    ],
-                    Response::HTTP_SERVICE_UNAVAILABLE => [
-                        'description' => 'Feeder did not responded to request',
-                    ],
+            openapi: new Operation(
+                responses: [
+                    HttpResponse::HTTP_OK => new Operation(
+                        description: 'Default meal amount updated',
+                    ),
+                    HttpResponse::HTTP_NOT_FOUND => new Operation(
+                        description: 'Feeder not registered',
+                    ),
+                    HttpResponse::HTTP_CONFLICT => new Operation(
+                        description: 'Feeder not connected',
+                    ),
+                    HttpResponse::HTTP_UNPROCESSABLE_ENTITY => new Operation(
+                        description: 'Meal amount is not valid',
+                    ),
+                    HttpResponse::HTTP_SERVICE_UNAVAILABLE => new Operation(
+                        description: 'Feeder did not responded to request',
+                    ),
                 ],
-            ],
+                summary: 'Update the amount distributed when the feeder button is pressed in grams',
+            ),
             denormalizationContext: ['groups' => ['feeding:input']],
             security: 'is_granted(\'MANAGE\', object)',
             validationContext: ['groups' => ['feeding:validation']],
         ),
-        new Put(
+        new Patch(
             uriTemplate: '/feeders/{id}/planning',
-            status: Response::HTTP_OK,
+            status: HttpResponse::HTTP_OK,
             controller: ChangePlanning::class,
-            openapiContext: [
-                'summary' => 'Replace the meal plan with a new one',
-                'description' => 'Replace the meal plan with a new one',
-                'responses' => [
-                    Response::HTTP_OK => [
-                        'description' => 'Planning replaced',
-                    ],
-                    Response::HTTP_NOT_FOUND => [
-                        'description' => 'Feeder not registered',
-                    ],
-                    Response::HTTP_CONFLICT => [
-                        'description' => 'Feeder not connected',
-                    ],
-                    Response::HTTP_UNPROCESSABLE_ENTITY => [
-                        'description' => 'Meal plan is not valid',
-                    ],
-                    Response::HTTP_SERVICE_UNAVAILABLE => [
-                        'description' => 'Feeder did not responded to request',
-                    ],
+            openapi: new Operation(
+                responses: [
+                    HttpResponse::HTTP_OK => new Operation(
+                        description: 'Planning replaced',
+                    ),
+                    HttpResponse::HTTP_NOT_FOUND => new Operation(
+                        description: 'Feeder not registered',
+                    ),
+                    HttpResponse::HTTP_CONFLICT => new Operation(
+                        description: 'Feeder not connected',
+                    ),
+                    HttpResponse::HTTP_UNPROCESSABLE_ENTITY => new Operation(
+                        description: 'Meal plan is not valid',
+                    ),
+                    HttpResponse::HTTP_SERVICE_UNAVAILABLE => new Operation(
+                        description: 'Feeder did not responded to request',
+                    ),
                 ],
-            ],
+                summary: 'Replace the meal plan with a new one',
+            ),
             denormalizationContext: ['groups' => ['planning:input']],
             security: 'is_granted(\'MANAGE\', object)',
             input: PlanningInput::class,

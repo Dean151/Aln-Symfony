@@ -123,7 +123,7 @@ final class ChangePlanningApiTest extends FeederApiTestCase
     {
         $client = self::createClient();
 
-        return $client->request('PUT', "/feeders/{$feederId}/planning", $this->getOptions($authenticatedAs)->setJson([
+        return $client->request('PATCH', "/feeders/{$feederId}/planning", $this->getOptions($authenticatedAs, 'application/merge-patch+json')->setJson([
             'meals' => $meals,
         ])->toArray());
     }

@@ -106,7 +106,7 @@ final class ChangeDefaultMealApiTest extends FeederApiTestCase
     {
         $client = self::createClient();
 
-        return $client->request('PUT', "/feeders/{$feederId}/amount", $this->getOptions($authenticatedAs)->setJson([
+        return $client->request('PATCH', "/feeders/{$feederId}/amount", $this->getOptions($authenticatedAs, 'application/merge-patch+json')->setJson([
             'amount' => $amount,
         ])->toArray());
     }
