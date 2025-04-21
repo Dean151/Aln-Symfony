@@ -28,7 +28,7 @@ Above, you'll also find a Swagger UI that will document available endpoints, res
 - `POST user/reset/consume` with the above in-url token to get your _authorization token_.
 - In swagger UI ; on the top-right "authorize" button ; add your _authorization token_ for all upcoming calls to be authenticated as yourself
 - `GET user/me` will allow to make sure the token is valid, that you're authenticated. And it'll respond with your associated feeders ; and your user id. Note it for next step.
-- `PUT user/{id}` with your password to create (or update) your password.
+- `PATCH user/{id}` with your password to create (or update) your password.
 
 Please note that POST user/register will send a reset password mail if the email already exists (see below)
 
@@ -65,10 +65,10 @@ Before anything, you need to configure your feeder to communicate with our API.
 ### Manage your feeder
 
 - `GET feeders/{id}` will send you current status & parameters of your feeder.
-- `PUT feeders/{id}` with a name; to set a name to your feeder. I use the name of my pet for this.
+- `PATCH feeders/{id}` with a name; to set a name to your feeder. I use the name of my pet for this.
 - `POST feeders/{id}/feed` with an amount between 5 and 150 grams. Trigger an immediate meal.
-- `PUT feeders/{id}/amount` with an amount between 5 and 150 grams. Set the amount of food distributed when you press the button.
-- `PUT feeders/{id}/planning` with a set of meals. Allow to update the planned meals times and amount. Note that hours should be provided in UTC timezone, and is not sensitive to DST.
+- `PATCH feeders/{id}/amount` with an amount between 5 and 150 grams. Set the amount of food distributed when you press the button.
+- `PATCH feeders/{id}/planning` with a set of meals. Allow to update the planned meals times and amount. Note that hours should be provided in UTC timezone, and is not sensitive to DST.
 
 ## Test
 

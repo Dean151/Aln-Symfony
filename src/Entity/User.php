@@ -6,8 +6,8 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
 use App\ApiResource\Dto\LoginInput;
 use App\ApiResource\Dto\ResetPassTokenInput;
 use App\ApiResource\Processor\UserProcessor;
@@ -34,7 +34,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
             ],
             read: false
         ),
-        new Put(
+        new Patch(
             uriTemplate: '/user/{id}',
             security: 'object == user',
             processor: UserProcessor::class,

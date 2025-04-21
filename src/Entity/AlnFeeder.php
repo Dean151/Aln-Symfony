@@ -8,8 +8,8 @@ use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
 use App\ApiResource\Dto\IdentifierInput;
 use App\ApiResource\Dto\PlanningInput;
 use App\ApiResource\Provider\AlnFeederProvider;
@@ -77,7 +77,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             ],
             security: 'is_granted(\'VIEW\', object)',
         ),
-        new Put(
+        new Patch(
             openapiContext: [
                 'summary' => 'Update feeder name',
                 'description' => 'Update feeder name',
@@ -140,7 +140,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             validationContext: ['groups' => ['feeding:validation']],
             provider: AlnFeederProvider::class,
         ),
-        new Put(
+        new Patch(
             uriTemplate: '/feeders/{id}/amount',
             status: Response::HTTP_OK,
             controller: ChangeDefaultMeal::class,
@@ -169,7 +169,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             security: 'is_granted(\'MANAGE\', object)',
             validationContext: ['groups' => ['feeding:validation']],
         ),
-        new Put(
+        new Patch(
             uriTemplate: '/feeders/{id}/planning',
             status: Response::HTTP_OK,
             controller: ChangePlanning::class,

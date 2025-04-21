@@ -78,15 +78,10 @@ final class UserApiTest extends AuthenticatedApiTestCase
     {
         $client = self::createClient();
 
-        return $client->request('POST', '/user/login', [
-            'headers' => [
-                'Accept' => 'application/json',
-            ],
-            'json' => [
-                'email' => $email,
-                'password' => $password,
-            ],
-        ]);
+        return $client->request('POST', '/user/login', $this->getOptions()->setJson([
+            'email' => $email,
+            'password' => $password,
+        ])->toArray());
     }
 
     private function fetchCurrentUserRequest(?UserInterface $authenticatedAs = null): ResponseInterface
@@ -103,7 +98,7 @@ final class UserApiTest extends AuthenticatedApiTestCase
     {
         $client = self::createClient();
 
-        return $client->request('PUT', "/user/{$userId}", $this->getOptions($authenticatedAs)->setJson($json)->toArray());
+        return $client->request('PATCH', "/user/{$userId}", $this->getOptions($authenticatedAs, 'application/merge-patch+json')->setJson($json)->toArray());
     }
 
     private function getPasswordHasher(): UserPasswordHasher
