@@ -2,16 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\DataFixtures;
+namespace App\Story;
 
 use App\Factory\AlnFeederFactory;
 use App\Factory\UserFactory;
-use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Persistence\ObjectManager;
+use Zenstruck\Foundry\Attribute\AsFixture;
+use Zenstruck\Foundry\Story;
 
-class AppFixtures extends Fixture
+#[AsFixture(name: 'main')]
+final class AppStory extends Story
 {
-    public function load(ObjectManager $manager): void
+    public function build(): void
     {
         $userWithFeeders = UserFactory::createOne([
             'email' => 'user.feeder@example.com',
@@ -35,7 +36,5 @@ class AppFixtures extends Fixture
         $emptyFeder = AlnFeederFactory::createOne([
             'identifier' => AlnFeederFactory::EMPTY_FEEDER_IDENTIFIER,
         ]);
-
-        $manager->flush();
     }
 }

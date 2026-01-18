@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\OpenApi\Model\Operation;
+use ApiPlatform\OpenApi\Model\Response;
 use App\ApiResource\Dto\LoginInput;
 use App\ApiResource\Dto\ResetPassTokenInput;
 use App\ApiResource\Processor\UserProcessor;
@@ -20,8 +21,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 #[ApiResource(
     operations: [
@@ -45,10 +46,10 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
             status: HttpResponse::HTTP_OK,
             openapi: new Operation(
                 responses: [
-                    HttpResponse::HTTP_OK => new Operation(
+                    HttpResponse::HTTP_OK => new Response(
                         description: 'Authenticated successfully',
                     ),
-                    HttpResponse::HTTP_UNAUTHORIZED => new Operation(
+                    HttpResponse::HTTP_UNAUTHORIZED => new Response(
                         description: 'Wrong credentials',
                     ),
                 ],
@@ -61,10 +62,10 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
             status: HttpResponse::HTTP_OK,
             openapi: new Operation(
                 responses: [
-                    HttpResponse::HTTP_OK => new Operation(
+                    HttpResponse::HTTP_OK => new Response(
                         description: 'Authenticated successfully',
                     ),
-                    HttpResponse::HTTP_UNAUTHORIZED => new Operation(
+                    HttpResponse::HTTP_UNAUTHORIZED => new Response(
                         description: 'Wrong credentials',
                     ),
                 ],

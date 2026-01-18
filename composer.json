@@ -6,43 +6,42 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.3",
+        "php": ">=8.4",
         "ext-amqp": "*",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-pcntl": "*",
         "api-platform/core": "^4.1",
-        "doctrine/doctrine-bundle": "^2.7",
-        "doctrine/doctrine-migrations-bundle": "^3.2",
+        "doctrine/doctrine-bundle": "^3.2",
+        "doctrine/doctrine-migrations-bundle": "^4.0",
         "doctrine/orm": "^3.0",
         "lexik/jwt-authentication-bundle": "^3.0",
         "nelmio/cors-bundle": "^2.2",
         "php-amqplib/php-amqplib": "^3.2",
-        "phpdocumentor/reflection-docblock": "^5.3",
+        "phpdocumentor/reflection-docblock": "^6.0",
         "react/event-loop": "^1.3",
         "react/socket": "^1.11.0",
-        "symfony/asset": "7.2.*",
-        "symfony/console": "7.2.*",
-        "symfony/dotenv": "7.2.*",
-        "symfony/expression-language": "7.2.*",
+        "symfony/asset": "*",
+        "symfony/console": "*",
+        "symfony/dotenv": "*",
+        "symfony/expression-language": "*",
         "symfony/flex": "^2",
-        "symfony/framework-bundle": "7.2.*",
-        "symfony/mailer": "7.2.*",
-        "symfony/property-access": "7.2.*",
-        "symfony/property-info": "7.2.*",
-        "symfony/runtime": "7.2.*",
-        "symfony/security-bundle": "7.2.*",
-        "symfony/serializer": "7.2.*",
-        "symfony/translation": "7.2.*",
-        "symfony/twig-bundle": "7.2.*",
-        "symfony/uid": "7.2.*",
-        "symfony/validator": "7.2.*",
-        "symfony/yaml": "7.2.*",
+        "symfony/framework-bundle": "*",
+        "symfony/mailer": "*",
+        "symfony/property-access": "*",
+        "symfony/property-info": "*",
+        "symfony/runtime": "*",
+        "symfony/security-bundle": "*",
+        "symfony/serializer": "*",
+        "symfony/translation": "*",
+        "symfony/twig-bundle": "*",
+        "symfony/uid": "*",
+        "symfony/validator": "*",
+        "symfony/yaml": "*",
         "symfonycasts/reset-password-bundle": "^1.14",
         "thecodingmachine/safe": "^3.0"
     },
     "require-dev": {
-        "doctrine/doctrine-fixtures-bundle": "^4.0",
         "friendsofphp/php-cs-fixer": "^3.57",
         "phpstan/extension-installer": "*",
         "phpstan/phpstan": "^2.0",
@@ -50,12 +49,11 @@
         "phpstan/phpstan-phpunit": "*",
         "phpstan/phpstan-symfony": "*",
         "phpunit/phpunit": "^12.0",
-        "symfony/browser-kit": "7.2.*",
-        "symfony/http-client": "7.2.*",
-        "symfony/maker-bundle": "^1.44",
-        "symfony/phpunit-bridge": "^7.0",
-        "symfony/stopwatch": "7.2.*",
-        "symfony/web-profiler-bundle": "7.2.*",
+        "symfony/browser-kit": "*",
+        "symfony/http-client": "*",
+        "symfony/maker-bundle": "*",
+        "symfony/stopwatch": "*",
+        "symfony/web-profiler-bundle": "*",
         "thecodingmachine/phpstan-safe-rule": "*",
         "zalas/phpunit-globals": "^4.0",
         "zenstruck/foundry": "^2.0"
@@ -69,7 +67,7 @@
         },
         "optimize-autoloader": true,
         "platform": {
-            "php": "8.3.6"
+            "php": "8.4.16"
         },
         "preferred-install": {
             "*": "dist"
@@ -95,7 +93,8 @@
         "symfony/polyfill-php80": "*",
         "symfony/polyfill-php81": "*",
         "symfony/polyfill-php82": "*",
-        "symfony/polyfill-php83": "*"
+        "symfony/polyfill-php83": "*",
+        "symfony/polyfill-php84": "*"
     },
     "scripts": {
         "auto-scripts": {
@@ -155,7 +154,7 @@
             "bin/console lexik:jwt:generate-keypair --skip-if-exists",
             "bin/console -e test doctrine:database:create --no-interaction --if-not-exists",
             "bin/console -e test doctrine:migration:migrate --no-interaction --all-or-nothing --allow-no-migration",
-            "bin/console -e test doctrine:fixtures:load --no-interaction"
+            "bin/console -e test foundry:load-fixtures --no-interaction"
         ],
         "run-unit-socket": [
             "@pause",
@@ -180,7 +179,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "7.2.*"
+            "require": "8.0.*"
         }
     }
 }

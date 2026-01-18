@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\Entity\AlnPlannedMeal;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<AlnPlannedMeal>
+ * @extends PersistentObjectFactory<AlnPlannedMeal>
  */
-final class AlnPlannedMealFactory extends PersistentProxyObjectFactory
+final class AlnPlannedMealFactory extends PersistentObjectFactory
 {
     /**
      * @return array<string, mixed>

@@ -30,6 +30,7 @@
     </source>
 
     <extensions>
+        <bootstrap class="Zenstruck\Foundry\PHPUnit\FoundryExtension" />
         <bootstrap class="Zalas\PHPUnit\Globals\AttributeExtension" />
     </extensions>
 </phpunit>

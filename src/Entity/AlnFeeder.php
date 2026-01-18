@@ -12,6 +12,7 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\OpenApi\Model\Operation;
 use ApiPlatform\OpenApi\Model\RequestBody;
+use ApiPlatform\OpenApi\Model\Response;
 use App\ApiResource\Dto\IdentifierInput;
 use App\ApiResource\Dto\PlanningInput;
 use App\ApiResource\Provider\AlnFeederProvider;
@@ -27,7 +28,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Safe\DateTimeImmutable;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
@@ -39,16 +40,16 @@ use Symfony\Component\Validator\Constraints as Assert;
             controller: AssociateFeeder::class,
             openapi: new Operation(
                 responses: [
-                    HttpResponse::HTTP_OK => new Operation(
+                    HttpResponse::HTTP_OK => new Response(
                         description: 'Feeder associated',
                     ),
-                    HttpResponse::HTTP_UNAUTHORIZED => new Operation(
+                    HttpResponse::HTTP_UNAUTHORIZED => new Response(
                         description: 'Not logged in',
                     ),
-                    HttpResponse::HTTP_FORBIDDEN => new Operation(
+                    HttpResponse::HTTP_FORBIDDEN => new Response(
                         description: 'Feeder already associated',
                     ),
-                    HttpResponse::HTTP_NOT_FOUND => new Operation(
+                    HttpResponse::HTTP_NOT_FOUND => new Response(
                         description: 'Feeder not registered',
                     ),
                 ],
@@ -89,16 +90,16 @@ use Symfony\Component\Validator\Constraints as Assert;
             controller: DissociateFeeder::class,
             openapi: new Operation(
                 responses: [
-                    HttpResponse::HTTP_OK => new Operation(
+                    HttpResponse::HTTP_OK => new Response(
                         description: 'Feeder dissociated',
                     ),
-                    HttpResponse::HTTP_UNAUTHORIZED => new Operation(
+                    HttpResponse::HTTP_UNAUTHORIZED => new Response(
                         description: 'Not logged in',
                     ),
-                    HttpResponse::HTTP_FORBIDDEN => new Operation(
+                    HttpResponse::HTTP_FORBIDDEN => new Response(
                         description: 'Feeder not associated to current account',
                     ),
-                    HttpResponse::HTTP_NOT_FOUND => new Operation(
+                    HttpResponse::HTTP_NOT_FOUND => new Response(
                         description: 'Feeder not registered',
                     ),
                 ],
@@ -114,19 +115,19 @@ use Symfony\Component\Validator\Constraints as Assert;
             controller: TriggerManualMeal::class,
             openapi: new Operation(
                 responses: [
-                    HttpResponse::HTTP_OK => new Operation(
+                    HttpResponse::HTTP_OK => new Response(
                         description: 'Meal distributed',
                     ),
-                    HttpResponse::HTTP_NOT_FOUND => new Operation(
+                    HttpResponse::HTTP_NOT_FOUND => new Response(
                         description: 'Feeder not registered',
                     ),
-                    HttpResponse::HTTP_CONFLICT => new Operation(
+                    HttpResponse::HTTP_CONFLICT => new Response(
                         description: 'Feeder not connected',
                     ),
-                    HttpResponse::HTTP_UNPROCESSABLE_ENTITY => new Operation(
+                    HttpResponse::HTTP_UNPROCESSABLE_ENTITY => new Response(
                         description: 'Meal amount is not valid',
                     ),
-                    HttpResponse::HTTP_SERVICE_UNAVAILABLE => new Operation(
+                    HttpResponse::HTTP_SERVICE_UNAVAILABLE => new Response(
                         description: 'Feeder did not responded to request',
                     ),
                 ],
@@ -143,19 +144,19 @@ use Symfony\Component\Validator\Constraints as Assert;
             controller: ChangeDefaultMeal::class,
             openapi: new Operation(
                 responses: [
-                    HttpResponse::HTTP_OK => new Operation(
+                    HttpResponse::HTTP_OK => new Response(
                         description: 'Default meal amount updated',
                     ),
-                    HttpResponse::HTTP_NOT_FOUND => new Operation(
+                    HttpResponse::HTTP_NOT_FOUND => new Response(
                         description: 'Feeder not registered',
                     ),
-                    HttpResponse::HTTP_CONFLICT => new Operation(
+                    HttpResponse::HTTP_CONFLICT => new Response(
                         description: 'Feeder not connected',
                     ),
-                    HttpResponse::HTTP_UNPROCESSABLE_ENTITY => new Operation(
+                    HttpResponse::HTTP_UNPROCESSABLE_ENTITY => new Response(
                         description: 'Meal amount is not valid',
                     ),
-                    HttpResponse::HTTP_SERVICE_UNAVAILABLE => new Operation(
+                    HttpResponse::HTTP_SERVICE_UNAVAILABLE => new Response(
                         description: 'Feeder did not responded to request',
                     ),
                 ],
@@ -171,19 +172,19 @@ use Symfony\Component\Validator\Constraints as Assert;
             controller: ChangePlanning::class,
             openapi: new Operation(
                 responses: [
-                    HttpResponse::HTTP_OK => new Operation(
+                    HttpResponse::HTTP_OK => new Response(
                         description: 'Planning replaced',
                     ),
-                    HttpResponse::HTTP_NOT_FOUND => new Operation(
+                    HttpResponse::HTTP_NOT_FOUND => new Response(
                         description: 'Feeder not registered',
                     ),
-                    HttpResponse::HTTP_CONFLICT => new Operation(
+                    HttpResponse::HTTP_CONFLICT => new Response(
                         description: 'Feeder not connected',
                     ),
-                    HttpResponse::HTTP_UNPROCESSABLE_ENTITY => new Operation(
+                    HttpResponse::HTTP_UNPROCESSABLE_ENTITY => new Response(
                         description: 'Meal plan is not valid',
                     ),
-                    HttpResponse::HTTP_SERVICE_UNAVAILABLE => new Operation(
+                    HttpResponse::HTTP_SERVICE_UNAVAILABLE => new Response(
                         description: 'Feeder did not responded to request',
                     ),
                 ],

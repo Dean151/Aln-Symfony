@@ -4,6 +4,4 @@ framework:
     set_content_language_from_locale: true
     translator:
         default_path: '%kernel.project_dir%/translations'
-        fallbacks:
-            - en
         providers:

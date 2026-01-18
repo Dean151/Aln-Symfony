@@ -8,8 +8,8 @@ use App\Dbal\Types\AlnTimeType;
 use App\Repository\AlnPlannedMealRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 #[ORM\Entity(repositoryClass: AlnPlannedMealRepository::class)]
 class AlnPlannedMeal

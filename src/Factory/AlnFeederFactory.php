@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\Entity\AlnFeeder;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
+use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<AlnFeeder>
+ * @extends PersistentObjectFactory<AlnFeeder>
  */
-final class AlnFeederFactory extends PersistentProxyObjectFactory
+final class AlnFeederFactory extends PersistentObjectFactory
 {
     public const AVAILABLE_FEEDER_IDENTIFIER = 'ABC123456789';
     public const UNAVAILABLE_FEEDER_IDENTIFIER = 'ZYX987654321';
