@@ -11,40 +11,41 @@ jobs:
     name: Tests
     runs-on: ubuntu-22.04
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
+      - uses: actions/checkout@v4
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.4
           tools: composer
-
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+      - name: Cache Composer packages
+        uses: actions/cache@v4
+        with:
+            path: ${{ steps.composer-cache.outputs.dir }}
+            key: "php-8.4-composer-${{ hashFiles('composer.json') }}"
+            restore-keys: "php-"
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
-
-      - name: Build the stack
-        run: docker compose up -d
-
+        run: composer install --prefer-dist --no-progress
+      - name: Code Style
+        run: composer check-style
       - name: Static analyser
         run: composer stan
-
+      - name: Build the stack
+        run: docker compose up -d --wait
       - name: Run pre-unit requirements
         run: composer pre-unit
-
       - name: Boot socket
         run: ./bin/console -e test aln:socket:run &
-
       - name: Boot feeder simulators
         run: |
           ./bin/console -e test aln:feeder:simulate --fast ABC123456789 &
           ./bin/console -e test aln:feeder:simulate --not-responding --fast OBU293827463 &
-
       - name: Wait for the script to complete
         run: sleep 5
-
       - name: Run PhpUnit
-        run: ./vendor/bin/phpunit
+        run: ./bin/phpunit
 
   deploy:
     name: Deploy in production
@@ -52,18 +53,23 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-22.04
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
+      - uses: actions/checkout@v4
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.4
           tools: composer
-
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+      - name: Cache Composer packages
+        uses: actions/cache@v4
+        with:
+            path: ${{ steps.composer-cache.outputs.dir }}
+            key: "php-8.4-composer-${{ hashFiles('composer.json') }}"
+            restore-keys: "php-"
       - name: Install dependencies
-        run: APP_ENV=prod APP_DEBUG=0 composer install --no-dev --optimize-autoloader --prefer-dist --no-progress --no-suggest
-
+        run: APP_ENV=prod APP_DEBUG=0 composer install --no-dev --optimize-autoloader --prefer-dist --no-progress
       - name: Rsync deploy
         uses: Burnett01/rsync-deployments@5.2.1
         with:
@@ -74,7 +80,6 @@ jobs:
           remote_port: ${{ secrets.DEPLOY_PORT }}
           remote_user: ${{ secrets.DEPLOY_USER }}
           remote_key: ${{ secrets.DEPLOY_KEY }}
-
       - name: Execute post-deploy actions
         uses: appleboy/ssh-action@v0.1.8
         with:

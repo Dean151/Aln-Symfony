@@ -6,6 +6,12 @@ services:
       # You should definitely change the password in production
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-!ChangeMe!}
       MYSQL_DATABASE: ${MYSQL_DATABASE:-aln}
+    healthcheck:
+        test: [ "CMD", "healthcheck.sh", "--connect", "--innodb_initialized" ]
+        start_period: 10s
+        interval: 10s
+        timeout: 5s
+        retries: 3
     volumes:
       - aln_database_data:/var/lib/mysql/data:rw
       # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
