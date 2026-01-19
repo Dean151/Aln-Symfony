@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Api;
+namespace App\Tests\Functional;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Entity\User;
@@ -13,6 +13,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 abstract class AuthenticatedApiTestCase extends ApiTestCase
 {
+    protected static ?bool $alwaysBootKernel = false;
+
     protected function getUserByEmail(string $email): User
     {
         $repository = $this->getUserRepository();

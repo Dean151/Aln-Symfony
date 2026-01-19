@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Socket;
+namespace App\Tests\Unit;
 
 use App\ApiResource\Dto\MealInput;
 use App\ApiResource\Dto\TimeInput;

@@ -28,6 +28,7 @@
         "symfony/flex": "^2",
         "symfony/framework-bundle": "*",
         "symfony/mailer": "*",
+        "symfony/monolog-bundle": "^4.0",
         "symfony/property-access": "*",
         "symfony/property-info": "*",
         "symfony/runtime": "*",

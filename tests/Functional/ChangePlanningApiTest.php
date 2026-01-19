@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Api;
+namespace App\Tests\Functional;
 
 use App\Factory\AlnFeederFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
