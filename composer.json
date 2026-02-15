@@ -49,7 +49,7 @@
         "phpstan/phpstan-doctrine": "*",
         "phpstan/phpstan-phpunit": "*",
         "phpstan/phpstan-symfony": "*",
-        "phpunit/phpunit": "^12.0",
+        "phpunit/phpunit": "^13.0",
         "symfony/browser-kit": "*",
         "symfony/http-client": "*",
         "symfony/maker-bundle": "*",
