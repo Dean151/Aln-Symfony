@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "api-platform/core",
-            "version": "v4.2.16",
+            "version": "v4.2.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/api-platform/core.git",
-                "reference": "edc7a37d9f274c9c47ef23fc3c3cf587e8c92477"
+                "reference": "f46bfb154afbfc3287be8d48cd1dce9e267cd081"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/api-platform/core/zipball/edc7a37d9f274c9c47ef23fc3c3cf587e8c92477",
-                "reference": "edc7a37d9f274c9c47ef23fc3c3cf587e8c92477",
+                "url": "https://api.github.com/repos/api-platform/core/zipball/f46bfb154afbfc3287be8d48cd1dce9e267cd081",
+                "reference": "f46bfb154afbfc3287be8d48cd1dce9e267cd081",
                 "shasum": ""
             },
             "require": {
@@ -221,9 +221,9 @@
             ],
             "support": {
                 "issues": "https://github.com/api-platform/core/issues",
-                "source": "https://github.com/api-platform/core/tree/v4.2.16"
+                "source": "https://github.com/api-platform/core/tree/v4.2.17"
             },
-            "time": "2026-02-13T17:35:57+00:00"
+            "time": "2026-02-20T20:41:34+00:00"
         },
         {
             "name": "doctrine/collections",
@@ -11634,5 +11634,5 @@
     "platform-overrides": {
         "php": "8.4.16"
     },
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.6.0"
 }
