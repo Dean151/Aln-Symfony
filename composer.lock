@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "api-platform/core",
-            "version": "v4.2.17",
+            "version": "v4.2.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/api-platform/core.git",
-                "reference": "f46bfb154afbfc3287be8d48cd1dce9e267cd081"
+                "reference": "8994a1580e072b52a632ebb697e0aeea5f2a057d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/api-platform/core/zipball/f46bfb154afbfc3287be8d48cd1dce9e267cd081",
-                "reference": "f46bfb154afbfc3287be8d48cd1dce9e267cd081",
+                "url": "https://api.github.com/repos/api-platform/core/zipball/8994a1580e072b52a632ebb697e0aeea5f2a057d",
+                "reference": "8994a1580e072b52a632ebb697e0aeea5f2a057d",
                 "shasum": ""
             },
             "require": {
@@ -221,9 +221,9 @@
             ],
             "support": {
                 "issues": "https://github.com/api-platform/core/issues",
-                "source": "https://github.com/api-platform/core/tree/v4.2.17"
+                "source": "https://github.com/api-platform/core/tree/v4.2.19"
             },
-            "time": "2026-02-20T20:41:34+00:00"
+            "time": "2026-02-27T16:05:25+00:00"
         },
         {
             "name": "doctrine/collections",
