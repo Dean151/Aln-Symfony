@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "api-platform/core",
-            "version": "v4.2.17",
+            "version": "v4.2.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/api-platform/core.git",
-                "reference": "f46bfb154afbfc3287be8d48cd1dce9e267cd081"
+                "reference": "8994a1580e072b52a632ebb697e0aeea5f2a057d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/api-platform/core/zipball/f46bfb154afbfc3287be8d48cd1dce9e267cd081",
-                "reference": "f46bfb154afbfc3287be8d48cd1dce9e267cd081",
+                "url": "https://api.github.com/repos/api-platform/core/zipball/8994a1580e072b52a632ebb697e0aeea5f2a057d",
+                "reference": "8994a1580e072b52a632ebb697e0aeea5f2a057d",
                 "shasum": ""
             },
             "require": {
@@ -221,9 +221,9 @@
             ],
             "support": {
                 "issues": "https://github.com/api-platform/core/issues",
-                "source": "https://github.com/api-platform/core/tree/v4.2.17"
+                "source": "https://github.com/api-platform/core/tree/v4.2.19"
             },
-            "time": "2026-02-20T20:41:34+00:00"
+            "time": "2026-02-27T16:05:25+00:00"
         },
         {
             "name": "doctrine/collections",
@@ -7881,16 +7881,16 @@
         },
         {
             "name": "webmozart/assert",
-            "version": "2.1.5",
+            "version": "2.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webmozarts/assert.git",
-                "reference": "79155f94852fa27e2f73b459f6503f5e87e2c188"
+                "reference": "ff31ad6efc62e66e518fbab1cde3453d389bcdc8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozarts/assert/zipball/79155f94852fa27e2f73b459f6503f5e87e2c188",
-                "reference": "79155f94852fa27e2f73b459f6503f5e87e2c188",
+                "url": "https://api.github.com/repos/webmozarts/assert/zipball/ff31ad6efc62e66e518fbab1cde3453d389bcdc8",
+                "reference": "ff31ad6efc62e66e518fbab1cde3453d389bcdc8",
                 "shasum": ""
             },
             "require": {
@@ -7937,9 +7937,9 @@
             ],
             "support": {
                 "issues": "https://github.com/webmozarts/assert/issues",
-                "source": "https://github.com/webmozarts/assert/tree/2.1.5"
+                "source": "https://github.com/webmozarts/assert/tree/2.1.6"
             },
-            "time": "2026-02-18T14:09:36+00:00"
+            "time": "2026-02-27T10:28:38+00:00"
         },
         {
             "name": "willdurand/negotiation",
