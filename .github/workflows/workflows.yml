@@ -4,28 +4,27 @@ on:
   push:
     branches: [ main ]
   pull_request:
-    branches: [ '*' ]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  PHP_VERSION: '8.4'
 
 jobs:
   tests:
     name: Tests
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup-php
         with:
-          php-version: 8.4
-          tools: composer
-      - name: Get composer cache directory
-        id: composer-cache
-        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-      - name: Cache Composer packages
-        uses: actions/cache@v4
-        with:
-            path: ${{ steps.composer-cache.outputs.dir }}
-            key: "php-8.4-composer-${{ hashFiles('composer.json') }}"
-            restore-keys: "php-"
+          php-version: ${{ env.PHP_VERSION }}
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
       - name: Code Style
@@ -37,43 +36,50 @@ jobs:
       - name: Run pre-unit requirements
         run: composer pre-unit
       - name: Boot socket
-        run: ./bin/console -e test aln:socket:run &
+        run: |
+          ./bin/console -e test aln:socket:run &
+          timeout 30 bash -c 'until nc -z 127.0.0.1 9998; do sleep 0.5; done'
       - name: Boot feeder simulators
         run: |
           ./bin/console -e test aln:feeder:simulate --fast ABC123456789 &
           ./bin/console -e test aln:feeder:simulate --not-responding --fast OBU293827463 &
-      - name: Wait for the script to complete
-        run: sleep 5
+          timeout 30 bash -c 'until [ "$(ss -Htn state established "( sport = :9998 )" | wc -l)" -ge 2 ]; do sleep 0.5; done'
+          sleep 1 # let the socket handle the identification messages
       - name: Run PhpUnit
         run: ./bin/phpunit
 
   deploy:
     name: Deploy in production
     needs: tests
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-22.04
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup-php
         with:
-          php-version: 8.4
-          tools: composer
-      - name: Get composer cache directory
-        id: composer-cache
-        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-      - name: Cache Composer packages
-        uses: actions/cache@v4
-        with:
-            path: ${{ steps.composer-cache.outputs.dir }}
-            key: "php-8.4-composer-${{ hashFiles('composer.json') }}"
-            restore-keys: "php-"
+          php-version: ${{ env.PHP_VERSION }}
       - name: Install dependencies
         run: APP_ENV=prod APP_DEBUG=0 composer install --no-dev --optimize-autoloader --prefer-dist --no-progress
       - name: Rsync deploy
-        uses: Burnett01/rsync-deployments@5.2.1
+        uses: Burnett01/rsync-deployments@155b6d6c1219ab2224c20c58d423a3f1b850395f # 9.0.1
         with:
-          switches: -avzr --delete --exclude '.git' --exclude 'config/jwt' --exclude 'var' --exclude '.env.local' --exclude '.env.*.local' --exclude '.github' --exclude '.phpunit.cache' --exclude '.php-cs-fixer.cache'
+          switches: >-
+            -avzr --delete
+            --exclude '.git'
+            --exclude '.github'
+            --exclude 'var'
+            --exclude '.env.local'
+            --exclude '.env.local.php'
+            --exclude '.env.*.local'
+            --exclude 'config/jwt'
+            --exclude 'config/dkim'
+            --exclude 'config/secrets/prod/prod.decrypt.private.php'
+            --exclude '.phpunit.cache'
+            --exclude '.php-cs-fixer.cache'
           path: /
           remote_path: ${{ secrets.DEPLOY_PATH }}
           remote_host: ${{ secrets.DEPLOY_HOST }}
@@ -81,7 +87,7 @@ jobs:
           remote_user: ${{ secrets.DEPLOY_USER }}
           remote_key: ${{ secrets.DEPLOY_KEY }}
       - name: Execute post-deploy actions
-        uses: appleboy/ssh-action@v0.1.8
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           port: ${{ secrets.DEPLOY_PORT }}
