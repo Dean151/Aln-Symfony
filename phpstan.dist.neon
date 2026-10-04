@@ -3,8 +3,11 @@ parameters:
     tmpDir: var/phpstan/dist
     paths:
         - bin/
-        - config/
         - public/
         - src/
     symfony:
         containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
+    ignoreErrors:
+        -
+            identifier: method.unused
+            path: src/Kernel.php
