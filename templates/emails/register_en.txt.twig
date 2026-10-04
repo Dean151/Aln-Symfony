@@ -1,0 +1,15 @@
+Hello,
+
+Welcome to {{ site_name }}! To finish creating your account, you need to set a password.
+
+Your registration code:
+
+    {{ token }}
+
+{% include 'emails/_consume_token_en.txt.twig' %}
+
+If you did not sign up, you can safely ignore this email.
+
+--
+The {{ site_name }} team
+(automated message, please do not reply)

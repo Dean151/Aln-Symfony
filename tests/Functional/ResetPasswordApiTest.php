@@ -8,6 +8,7 @@ use App\Repository\ResetPasswordRequestRepository;
 use PHPUnit\Framework\Attributes\Depends;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\DataCollector\MessageDataCollector;
+use Symfony\Component\Mime\Message;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 use SymfonyCasts\Bundle\ResetPassword\ResetPasswordHelperInterface;
 
@@ -28,6 +29,13 @@ final class ResetPasswordApiTest extends AuthenticatedApiTestCase
         $recipients = $event->getEnvelope()->getRecipients();
         $this->assertCount(1, $recipients);
         $this->assertEquals('user.feeder@example.com', $recipients[0]->getAddress());
+
+        $message = $event->getMessage();
+        $this->assertInstanceOf(Message::class, $message);
+        $body = $message->getBody();
+        $this->assertNotNull($body);
+        $this->assertSame('text/plain', $body->getMediaType().'/'.$body->getMediaSubtype());
+        $this->assertStringContainsString('/user/reset/consume', $body->bodyToString());
     }
 
     #[Depends('testResetPasswordWithEmail')]

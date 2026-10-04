@@ -11,8 +11,6 @@ use Symfony\Component\Mime\Message;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
-use function Safe\preg_replace;
-
 abstract class AbstractEmailFactory
 {
     public function __construct(
@@ -37,20 +35,9 @@ abstract class AbstractEmailFactory
             ->from($this->senderEmail)
             ->subject($subject);
 
-        $body = $this->twig->render($template, $context);
-        $text = strip_tags(preg_replace('{<(head|style)\b.*?</\1>}is', '', $body));
-        $email = $email->html($this->buildHtml($subject, $body))->text($text);
+        $email = $email->text($this->twig->render($template, $context));
 
         return new Message($email->getPreparedHeaders(), $email->getBody());
-    }
-
-    private function buildHtml(string $subject, string $body): string
-    {
-        return $this->twig->render('emails/base_mail.html.twig', [
-            'language' => $this->getLocale(),
-            'subject' => $subject,
-            'body' => $body,
-        ]);
     }
 
     protected function getLocale(): string

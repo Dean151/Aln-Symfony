@@ -1,0 +1,19 @@
+This code can only be used once and expires on {{ expires_at }}.
+
+1. Exchange the code for an authentication token (JWT):
+
+    curl -X POST {{ api_url }}/user/reset/consume \
+      -H 'Content-Type: application/json' \
+      -d '{"token": "{{ token }}"}'
+
+2. Get your user id, using the JWT from the response:
+
+    curl {{ api_url }}/user/me \
+      -H 'Authorization: Bearer <jwt>'
+
+3. Set your new password:
+
+    curl -X PATCH {{ api_url }}/user/<id> \
+      -H 'Authorization: Bearer <jwt>' \
+      -H 'Content-Type: application/merge-patch+json' \
+      -d '{"password": "<your new password>"}'

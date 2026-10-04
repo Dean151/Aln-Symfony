@@ -17,18 +17,14 @@ final class NewPasswordEmailFactory extends AbstractEmailFactory
         }
 
         $subject = $this->translate(sprintf('%s.subject', $type), ['%site_name%' => $this->siteName]);
-        $template = sprintf('emails/%s_%s.html.twig', $type, $this->getLocale());
+        $template = sprintf('emails/%s_%s.txt.twig', $type, $this->getLocale());
         $context = [
-            'url' => $this->buildUrl($token),
-            'recipient_email' => $recipient->getEmail(),
+            'token' => $token->getToken(),
+            'expires_at' => $token->getExpiresAt()->format('Y-m-d H:i T'),
+            'api_url' => rtrim($this->siteBaseUrl, '/'),
             'site_name' => $this->siteName,
         ];
 
         return $this->createTemplatedEmail($recipient, $subject, $template, $context);
-    }
-
-    private function buildUrl(ResetPasswordToken $token): string
-    {
-        return "{$this->siteBaseUrl}/reset/{$token->getToken()}";
     }
 }
