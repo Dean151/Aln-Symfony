@@ -8,6 +8,10 @@ set -e
 # Generate jwt keypair if needed
 ./bin/console lexik:jwt:generate-keypair --skip-if-exists
 
+# Keep secrets readable by PHP (www-data) only
+chgrp www-data config/jwt/private.pem
+chmod 640 config/jwt/private.pem
+
 # Update database
 ./bin/console -e prod doctrine:database:create --no-interaction --if-not-exists
 ./bin/console -e prod doctrine:migration:migrate --no-interaction --all-or-nothing --allow-no-migration
