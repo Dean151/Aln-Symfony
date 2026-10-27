@@ -127,6 +127,20 @@ See https://symfony.com/doc/current/deployment.html
 ```shell
 ./bin/console aln:socket:run
 ```
+Make sure your process manager restarts it whenever it exits, even successfully. With supervisor:
+```ini
+[program:alnpet-socket]
+command=php /path/to/project/bin/console aln:socket:run
+user=www-data
+autostart=true
+autorestart=true
+```
+
+
+- After each deploy, restart the websocket so it runs the new code. It exits gracefully and your process manager starts it again. With `--wait`, the command only succeeds once the new process is up (60 seconds timeout by default, see `--timeout`):
+```shell
+./bin/console aln:socket:restart --wait
+```
 
 Now you can follow the steps for configuring your feeder above, and use it.
 If you do not enable authentication, you can skip all the authentication steps and use your feeder directly!

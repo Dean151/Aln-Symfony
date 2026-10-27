@@ -18,7 +18,8 @@ final class HealthzTest extends ApiTestCase
     public function testHealthy(): void
     {
         $client = self::createClient();
-        self::getContainer()->get(SocketHeartbeat::class)->beat();
+        $heartbeat = self::getContainer()->get(SocketHeartbeat::class);
+        $heartbeat->beat($heartbeat->now());
 
         $client->request('GET', '/healthz');
         $this->assertResponseIsSuccessful();
@@ -32,7 +33,8 @@ final class HealthzTest extends ApiTestCase
     public function testStaleSocketHeartbeat(): void
     {
         $client = self::createClient();
-        self::getContainer()->get(SocketHeartbeat::class)->beat();
+        $heartbeat = self::getContainer()->get(SocketHeartbeat::class);
+        $heartbeat->beat($heartbeat->now());
         self::mockTime('+'.(SocketHeartbeat::MAX_AGE + 1).' seconds');
 
         $client->request('GET', '/healthz');

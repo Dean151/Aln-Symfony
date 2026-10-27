@@ -16,5 +16,5 @@ chmod 640 config/jwt/private.pem
 ./bin/console -e prod doctrine:database:create --no-interaction --if-not-exists
 ./bin/console -e prod doctrine:migration:migrate --no-interaction --all-or-nothing --allow-no-migration
 
-# Restart socket
-# TODO: find a way to do it!
+# Restart socket: it exits gracefully, and supervisor starts it again with the new code
+./bin/console -e prod aln:socket:restart --wait

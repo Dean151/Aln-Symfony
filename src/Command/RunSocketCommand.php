@@ -49,15 +49,22 @@ final class RunSocketCommand extends Command implements SignalableCommandInterfa
     {
         try {
             $this->logger->notice('Starting socket…');
-            $this->loop = Loop::get();
+            $this->loop = $loop = Loop::get();
 
-            $this->queueConsumer->start($this->loop, $this->communicator);
-            $this->socketServer->start($this->loop, $this->communicator);
+            $this->queueConsumer->start($loop, $this->communicator);
+            $this->socketServer->start($loop, $this->communicator);
 
-            $this->heartbeat->beat();
-            $this->loop->addPeriodicTimer(SocketHeartbeat::INTERVAL, $this->heartbeat->beat(...));
+            $startedAt = $this->heartbeat->now();
+            $this->heartbeat->beat($startedAt);
+            $loop->addPeriodicTimer(SocketHeartbeat::INTERVAL, fn () => $this->heartbeat->beat($startedAt));
+            $loop->addPeriodicTimer(SocketHeartbeat::RESTART_CHECK_INTERVAL, function () use ($startedAt) {
+                if ($this->heartbeat->isRestartRequested($startedAt)) {
+                    $this->logger->notice('Restart requested, shutting down.');
+                    $this->shutdown();
+                }
+            });
 
-            $this->loop->run();
+            $loop->run();
 
             $this->logger->notice('Socket closed.');
 
@@ -80,11 +87,15 @@ final class RunSocketCommand extends Command implements SignalableCommandInterfa
     public function handleSignal(int $signal, int|false $previousExitCode = 0): false|int
     {
         $this->logger->notice('Signal retrieved: '.$signal.', shutting down.');
+        $this->shutdown();
 
+        return false;
+    }
+
+    private function shutdown(): void
+    {
         $this->queueConsumer->shutdown();
         $this->socketServer->shutdown();
         $this->loop?->stop();
-
-        return false;
     }
 }
