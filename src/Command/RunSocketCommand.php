@@ -7,6 +7,7 @@ namespace App\Command;
 use App\Queue\AsyncConsumer;
 use App\Socket\AsyncServer;
 use App\Socket\FeederCommunicator;
+use App\Socket\SocketHeartbeat;
 use Psr\Log\LoggerInterface;
 use React\EventLoop\Loop;
 use React\EventLoop\LoopInterface;
@@ -29,6 +30,7 @@ final class RunSocketCommand extends Command implements SignalableCommandInterfa
         private readonly AsyncConsumer $queueConsumer,
         private readonly AsyncServer $socketServer,
         private readonly FeederCommunicator $communicator,
+        private readonly SocketHeartbeat $heartbeat,
         private readonly LoggerInterface $logger,
     ) {
         parent::__construct();
@@ -51,6 +53,9 @@ final class RunSocketCommand extends Command implements SignalableCommandInterfa
 
             $this->queueConsumer->start($this->loop, $this->communicator);
             $this->socketServer->start($this->loop, $this->communicator);
+
+            $this->heartbeat->beat();
+            $this->loop->addPeriodicTimer(SocketHeartbeat::INTERVAL, $this->heartbeat->beat(...));
 
             $this->loop->run();
 

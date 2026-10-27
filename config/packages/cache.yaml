@@ -3,3 +3,6 @@ framework:
         pools:
             app.cache:
                 adapter: cache.app
+            # Written by the socket daemon, read by /healthz
+            heartbeat.cache:
+                adapter: cache.app

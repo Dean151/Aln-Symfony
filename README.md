@@ -130,3 +130,21 @@ See https://symfony.com/doc/current/deployment.html
 
 Now you can follow the steps for configuring your feeder above, and use it.
 If you do not enable authentication, you can skip all the authentication steps and use your feeder directly!
+
+#### Health check
+
+`GET /healthz` reports whether the API and its dependencies are up. It requires no authentication, so you can point an uptime monitor at it.
+
+```json
+{"status":"ok","checks":{"database":"ok","queue":"ok","socket":"ok"}}
+```
+
+- `database`: the MySQL database answers a query.
+- `queue`: RabbitMQ accepts a connection.
+- `socket`: the `aln:socket:run` process wrote a heartbeat within the last 30 seconds. It writes one every 10 seconds, into `var/share/<env>/pools`.
+
+It responds `200` when every check is `ok`, and `503` with the failing checks marked `fail` otherwise.
+
+If the socket process runs as a different user than PHP (e.g. `www-data`), make sure PHP can read `var/share/<env>/pools`, or the `socket` check will always fail.
+
+The CI deploy job calls this endpoint after deploying when the `HEALTHCHECK_URL` repository variable is set (e.g. `https://api.feedmypet.app/healthz`).

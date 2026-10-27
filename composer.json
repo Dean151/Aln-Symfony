@@ -23,6 +23,7 @@
         "react/event-loop": "^1.3",
         "react/socket": "^1.11.0",
         "symfony/asset": "*",
+        "symfony/clock": "*",
         "symfony/console": "*",
         "symfony/dotenv": "*",
         "symfony/expression-language": "*",

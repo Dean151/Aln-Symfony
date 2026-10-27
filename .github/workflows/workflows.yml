@@ -96,3 +96,8 @@ jobs:
           script: |
             cd ${{ secrets.DEPLOY_PATH }}
             ./scripts/post-deploy
+      - name: Health check
+        if: vars.HEALTHCHECK_URL != ''
+        env:
+          HEALTHCHECK_URL: ${{ vars.HEALTHCHECK_URL }}
+        run: curl -fsS --retry 5 --retry-delay 5 --retry-all-errors "$HEALTHCHECK_URL"
