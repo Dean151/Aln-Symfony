@@ -71,6 +71,28 @@ final class ChangePlanningApiTest extends FeederApiTestCase
         yield [Response::HTTP_UNPROCESSABLE_ENTITY, [$valid, $unvalidAmount]];
     }
 
+    /**
+     * @param-stan Response::HTTP_* $response_code
+     */
+    #[DataProvider('provideMalformedJsonData')]
+    public function testPlanningChangeWithMalformedJson(int $response_code, string $accept): void
+    {
+        $id = $this->findFeederId(AlnFeederFactory::AVAILABLE_FEEDER_IDENTIFIER);
+        $client = self::createClient();
+        $options = $this->getOptions(null, 'application/merge-patch+json')
+            ->setHeader('Accept', $accept)
+            ->setBody('{"meals": [');
+        $client->request('PATCH', "/feeders/{$id}/planning", $options->toArray());
+        $this->assertResponseStatusCodeSame($response_code);
+    }
+
+    public static function provideMalformedJsonData(): \Generator
+    {
+        yield [Response::HTTP_BAD_REQUEST, 'application/json'];
+        yield [Response::HTTP_BAD_REQUEST, '*/*'];
+        yield [Response::HTTP_NOT_ACCEPTABLE, 'text/html'];
+    }
+
     public function testPlanningChangeWithUnavailableFeeder(): void
     {
         $id = $this->findFeederId(AlnFeederFactory::UNAVAILABLE_FEEDER_IDENTIFIER);
