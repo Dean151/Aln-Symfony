@@ -22,6 +22,14 @@ services:
     App\:
         resource: '../src/'
 
+    # Adds nginx's request id and the request details to every log record
+    app.monolog.processor.web:
+        class: Monolog\Processor\WebProcessor
+        arguments:
+            - null
+            - { request_id: HTTP_X_REQUEST_ID, ip: REMOTE_ADDR, http_method: REQUEST_METHOD, url: REQUEST_URI, server: SERVER_NAME }
+        tags: [monolog.processor]
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 

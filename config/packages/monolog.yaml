@@ -45,12 +45,14 @@ when@prod:
                 path: "%kernel.logs_dir%/%kernel.environment%.log"
                 level: debug
                 max_files: 14
+                formatter: monolog.formatter.json
             mailer:
                 type: rotating_file
                 path: "%kernel.logs_dir%/mailer.log"
                 level: info
                 max_files: 14
                 channels: [mailer]
+                formatter: monolog.formatter.json
             console:
                 type: console
                 process_psr_3_messages: false
@@ -60,3 +62,4 @@ when@prod:
                 channels: [deprecation]
                 path: "%kernel.logs_dir%/deprecation.log"
                 max_files: 7
+                formatter: monolog.formatter.json
