@@ -53,9 +53,11 @@ Before anything, you need to configure your feeder to communicate with our API.
 - Enter that IP address in your navigator ; and enter "admin" "admin" as username/password when prompted.
 - On the top-right, switch to english; unless you understand chinese.
 - Go to "Other settings"
-- Update Server Address to `api.feedmypet.app` (or your local IP if you deploy the app yourself)
+- Update Server Address to `feeder.feedmypet.app` (or your local IP if you deploy the app yourself)
 - Make sure that Protocol is `TCP-Client`; and Port ID is `9999`
 - Save; and restart your feeder.
+
+If your feeder still points at `api.feedmypet.app`, change it to `feeder.feedmypet.app`. Both reach the same server for now, but `api.feedmypet.app` will move behind a proxy that only carries HTTPS, and feeders still using it will lose their connection.
 
 ### Associate your feeder with your account
 
